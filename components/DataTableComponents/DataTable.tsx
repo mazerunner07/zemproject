@@ -41,14 +41,17 @@ import { ListFilter } from "lucide-react";
 import DateFilters from "./DateFilters";
 import DateRangeFilter from "./DateRangeFilter";
 import { DataTablePagination } from "./DataTablePagination";
+import ProjectSummary from "./ProjectSummary";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  model?: string;
 }
 export default function DataTable<TData, TValue>({
   columns,
   data,
+  model
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = useState({});
   const [columnVisibility, setColumnVisibility] = useState({});
@@ -82,8 +85,10 @@ export default function DataTable<TData, TValue>({
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
   // console.log(searchResults);
+
   return (
     <div className="space-y-4">
+      {model === "project" && (<ProjectSummary data={isSearch ? searchResults : filteredData}/>)}
       <div className="flex justify-between items-center gap-8">
         <div className="flex-1 w-full">
           <SearchBar

@@ -16,7 +16,7 @@ export async function createClient(data: UserProps) {
     };
   }
 
-  const { email, password, firstName, lastName, name, phone, image, country, location, userId } = data;
+  const { email, password, firstName, lastName, name, phone, image, country, location, userId, companyName, companyDescription } = data;
   
   // Validate required fields
   if (!email || !password || !firstName || !lastName) {
@@ -57,7 +57,9 @@ export async function createClient(data: UserProps) {
         role: UserRole.CLIENT,
         country, 
         location,
-        userId
+        userId,
+        companyName,
+        companyDescription
       },
     });
   revalidatePath("/dashboard/clients");

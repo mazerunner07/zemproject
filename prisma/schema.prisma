@@ -51,6 +51,8 @@ model User {
   userId        String?
   role          UserRole  @default(USER)
   password      String?
+  companyName      String?
+  companyDescription      String?
   country       String?
   location      String?
   status        Boolean   @default(true)
@@ -100,7 +102,7 @@ model Project {
   modules     Module[] 
   members     Member[]
   invoices    Invoice[]
-  commets     ProjectComment[]
+  comments     ProjectComment[]
   portfolioItems PortfolioItem[] @relation("ProjectPortfolio")
   payments    Payment[] @relation("ProjectPayments")
   createdAt   DateTime @default(now())

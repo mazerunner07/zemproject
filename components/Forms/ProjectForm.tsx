@@ -19,6 +19,7 @@ import FormFooter from "./FormFooter";
 import FormSelectInput from "../FormInputs/FormSelectInput";
 import { createProject, updateProjectById } from "@/actions/projects";
 import { convertDateToIso } from "@/lib/covertDataToIso";
+import { convertIsoToDateString } from "@/lib/covertISODateToNorma";
 
 export type SelectOptionProps = {
   label: string;
@@ -46,7 +47,7 @@ export default function ProjectForm({
       name: initialData?.name,
       description: initialData?.description || "",
       budget: initialData?.budget || 0,
-      startDate: initialData?.startDate || null,
+      startDate: initialData?.startDate|| null,
       endDate: initialData?.endDate || null,
     },
   });
@@ -64,8 +65,14 @@ export default function ProjectForm({
   async function saveProject(data: ProjectProps) {
     try {
       setLoading(true);
-      const myStartDate = data.startDate as Date
-      const myEndDate = data.endDate
+      const myStartDate = new Date(data.startDate); // Ensure it's a Date object
+const myEndDate = new Date(data.endDate);
+
+      if (isNaN(myStartDate.getTime()) || isNaN(myEndDate.getTime())) {
+        setLoading(false);
+        throw new Error("Invalid start or end date");
+      }
+      
       const differenceInTime = myEndDate.getTime() - myStartDate.getTime();
       const deadline = differenceInTime / (1000 * 60 * 60 * 24);
       data.deadline = Math.round(deadline);
@@ -76,8 +83,11 @@ export default function ProjectForm({
       data.startDate = convertDateToIso(data.startDate)
       data.endDate = convertDateToIso(data.endDate)
       data.budget = Number(data.budget);
+      data.thumbnail = imageUrl;
 
 
+      console.log(myEndDate);
+      console.log(myEndDate);
       console.log("Payload being sent to createProject:", data);
 
       if (editingId) {
@@ -91,8 +101,11 @@ export default function ProjectForm({
         router.push("/dashboard/projects");
         setImageUrl("/placeholder.svg");
       } else {
-        cosnt res = await createProject(data);
-        setLoading(false);
+        const res = await createProject(data);
+        if(res?.status === 409){
+          toast.error(res.error)
+        }else if(res?.status===200){
+          setLoading(false);
         // Toast
         toast.success("Successfully Created!");
         //reset
@@ -100,6 +113,9 @@ export default function ProjectForm({
         setImageUrl("/placeholder.svg");
         //route
         router.push("/dashboard/projects");
+        } else {
+          toast.error("Something went wrong");
+        }
       }
     } catch (error) {
       setLoading(false);
@@ -202,7 +218,7 @@ export default function ProjectForm({
               title="Project Thumbnail"
               imageUrl={imageUrl} 
               setImageUrl={setImageUrl}
-              endpoint="projectThumbnail"
+              endpoint="projectImage"
             />
           </div>
         </div>

@@ -13,7 +13,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { generateSlug } from "@/lib/generateSlug";
 import toast from "react-hot-toast";
-import { User, Lock, Mail, Headset, Flag, MapPin } from "lucide-react";
+import { User, Lock, Mail, Headset, Flag, MapPin, Building, Pencil } from "lucide-react";
 import { UserProps } from "@/types/types";
 import FormHeader from "./FormHeader";
 import TextInput from "../FormInputs/TextInput";
@@ -53,6 +53,8 @@ export default function ClientsForm({
       phone: initialData?.phone || "",
       country: initialData?.country || "",
       location: initialData?.location || "",
+      companyName: initialData?.companyName || "",
+      companyDescription: initialData?.companyDescription || "",
       role: initialData?.role || "CLIENT",
       password: initialData?.password || "",
     },
@@ -174,7 +176,6 @@ export default function ClientsForm({
               placeholder="eg Canada"
             />
           </div>
-
           <PasswordInput
             register={register}
             errors={errors}
@@ -184,6 +185,25 @@ export default function ClientsForm({
             placeholder="password"
             type="password"
           />
+          <div className="space-y-4">
+          <TextInput
+              register={register}
+              errors={errors}
+              label="Company Name"
+              name="Compnay Name"
+              icon={Building}
+              placeholder="Space Corp"
+            />
+          <TextInput
+              register={register}
+              errors={errors}
+              label="Company Description"
+              name="Compnay Description"
+              icon={Pencil}
+              placeholder="Leading to Space Exploration"
+            />
+          </div>
+          
             </CardContent>
           </Card>
         </div>

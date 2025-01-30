@@ -1,8 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowUpDown, Link, MoreHorizontal } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 
 import DateColumn from "@/components/DataTableColumns/DateColumn";
@@ -11,6 +10,8 @@ import SortableColumn from "@/components/DataTableColumns/SortableColumn";
 import { ColumnDef } from "@tanstack/react-table";
 import ActionColumn from "@/components/DataTableColumns/ActionColumn";
 import { Project } from "@prisma/client";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export const columns: ColumnDef<Project>[] = [
   {
@@ -40,6 +41,26 @@ export const columns: ColumnDef<Project>[] = [
     header: ({ column }) => <SortableColumn column={column} title="Name" />,
   },
   {
+    accessorKey: "budget",
+    header: "Budget",
+    cell: ({ row }) => {
+        const project = row.original
+        return (
+          <p>{project.budget?.toLocaleString()}</p>
+        )
+    },
+  },
+  {
+    accessorKey: "deadline",
+    header: "Deadline",
+    cell: ({ row }) => {
+        const project = row.original
+        return (
+          <p>{project.deadline}</p>
+        )
+    },
+  },
+  {
     accessorKey: "thumbnail",
     header: "Project Thumbnail",
     cell: ({ row }) => <ImageColumn row={row} accessorKey="thumbnail" />,
@@ -54,10 +75,13 @@ export const columns: ColumnDef<Project>[] = [
     accessorKey: "view",
     header: "View",
     cell: ({ row }) => {
+      const project = row.original
       return (
-        <Button asChild>
-          <Link href={"/dashboard/projects/view/project-name"}>View</Link>
-        </Button>
+        <Button size="sm">
+        <Link href={`/project/${project.slug}`}>
+        View
+      </Link>
+      </Button>
       )
     },
   },
