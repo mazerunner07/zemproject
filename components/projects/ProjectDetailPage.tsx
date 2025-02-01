@@ -1,25 +1,51 @@
-"use client"
-import { CalendarDays, DollarSign, Edit2, MessageSquare, Users, ChevronLeft } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { Progress } from "@/components/ui/progress"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useRouter } from "next/navigation"
-import type { ProjectData } from "@/types/types"
+"use client";
+import {
+  CalendarDays,
+  DollarSign,
+  Edit2,
+  MessageSquare,
+  Users,
+  ChevronLeft,
+  Plus,
+  X,
+} from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useRouter } from "next/navigation";
+import type { ProjectData } from "@/types/types";
+import PaymentForm from "../Forms/PaymentForm";
+import { ScrollArea } from "@radix-ui/react-scroll-area";
+import emptyfolder from "/public/empty-folder.png";
+import DescriptionForm from "../Forms/DescriptionForm";
+import { useState } from "react";
+import NotesForm from "../Forms/NotesForm";
 
-export default function ProjectDetailsPage({ projectData }: { projectData: ProjectData }) {
-  const router = useRouter()
+export default function ProjectDetailsPage({
+  projectData,
+}: {
+  projectData: ProjectData;
+}) {
+  const router = useRouter();
+  const [activeTab, setActiveTab] = useState("overview");
+  const [desc, setDesc] = useState(projectData.description);
+  const [note, setNote] = useState(projectData.notes);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isEditingNotes, setIsEditingNotes] = useState(false);
 
   if (!projectData) {
-    return <div>Project not found</div>
+    return <div>Project not found</div>;
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-8">
       <div className="relative h-48 rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 mb-8 overflow-hidden">
         <img
-          src={projectData.bannerImage || "/placeholder.svg?height=192&width=1024"}
+          src={
+            projectData.bannerImage || "/placeholder.svg?height=192&width=1024"
+          }
           alt={projectData.name}
           className="w-full h-full object-cover mix-blend-overlay"
         />
@@ -36,7 +62,11 @@ export default function ProjectDetailsPage({ projectData }: { projectData: Proje
         </div>
         <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end">
           <h1 className="text-4xl font-bold text-white">{projectData.name}</h1>
-          <Button variant="ghost" size="icon" className="text-white hover:bg-white/20">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-white hover:bg-white/20"
+          >
             <Edit2 className="h-4 w-4" />
           </Button>
         </div>
@@ -48,12 +78,21 @@ export default function ProjectDetailsPage({ projectData }: { projectData: Proje
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle>Project Description</CardTitle>
-              <Button variant="ghost" size="icon">
-                <Edit2 className="h-4 w-4" />
+              <Button onClick={()=>setIsEditing(!isEditing)} variant="ghost" size="icon">
+                {isEditing ? (<X className="h-4 w-4" />) : (
+                  <Edit2 className="h-4 w-4" />
+                )}
               </Button>
             </CardHeader>
             <CardContent>
-              <p>{projectData.description || "No description provided."}</p>
+              {isEditing ? (
+                <DescriptionForm
+                  editingId={projectData.id}
+                  initialDescription={projectData.description}
+                />
+              ) :(
+                <p>{projectData.description || "No description provided."}</p>
+              )}
             </CardContent>
           </Card>
 
@@ -61,15 +100,34 @@ export default function ProjectDetailsPage({ projectData }: { projectData: Proje
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle>Notes</CardTitle>
-              <Button variant="ghost" size="icon">
-                <Edit2 className="h-4 w-4" />
+              <Button onClick={()=>setIsEditingNotes(!isEditingNotes)} variant="ghost" size="icon">
+              {isEditingNotes ?  (
+                  <Edit2 className="h-4 w-4" />
+                ) :(<X className="h-4 w-4" />)}
               </Button>
             </CardHeader>
             <CardContent>
-              <div
+              <div className="prose">
+              {!isEditingNotes ? (
+                 <NotesForm editingId={projectData.id} initialNotes={projectData.notes} />
+              ): (
+                <>
+                {projectData.notes ? (
+                <div dangerouslySetInnerHTML={{
+                  __html: projectData.notes || "No notes available.",
+                }}/>
+              ):(
+                <p>No notes available.</p>
+              )}
+                </>
+              )}
+              </div>
+              {/* <div
                 className="prose max-w-none"
-                dangerouslySetInnerHTML={{ __html: projectData.notes || "No notes available." }}
-              ></div>
+                dangerouslySetInnerHTML={{
+                  __html: projectData.notes || "No notes available.",
+                }}
+              ></div> */}
             </CardContent>
           </Card>
 
@@ -83,7 +141,9 @@ export default function ProjectDetailsPage({ projectData }: { projectData: Proje
                 {projectData.comments.map((comment) => (
                   <div key={comment.id} className="flex items-start space-x-4">
                     <Avatar>
-                      <AvatarImage src={projectData.client.image || "/placeholder.svg"} />
+                      <AvatarImage
+                        src={projectData.client.image || "/placeholder.svg"}
+                      />
                       <AvatarFallback>
                         {projectData.client.firstName.charAt(0)}
                         {projectData.client.lastName.charAt(0)}
@@ -109,18 +169,32 @@ export default function ProjectDetailsPage({ projectData }: { projectData: Proje
               <CardTitle>Project Modules</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {projectData.modules.map((module) => (
-                  <Card
-                    key={module.id}
-                    className="bg-gradient-to-br from-indigo-50 to-purple-50 hover:from-indigo-100 hover:to-purple-100 transition-colors cursor-pointer"
-                  >
-                    <CardHeader className="p-4">
-                      <CardTitle className="text-sm font-medium">{module.name}</CardTitle>
-                    </CardHeader>
-                  </Card>
-                ))}
-              </div>
+              <ScrollArea>
+                {projectData.modules.length > 0 ? (
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {projectData.modules.map((module) => (
+                      <Card
+                        key={module.id}
+                        className="bg-gradient-to-br from-indigo-50 to-purple-50 hover:from-indigo-100 hover:to-purple-100 transition-colors cursor-pointer"
+                      >
+                        <CardHeader className="p-4">
+                          <CardTitle className="text-sm font-medium">
+                            {module.name}
+                          </CardTitle>
+                        </CardHeader>
+                      </Card>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="h-full flex items-center justify-between">
+                    <div className="space-y-4 justify-center items-center">
+                      <h2>No Modules yet</h2>
+                      {/* <Image src={emptyfolder} alt="No Modules" className="w-36 h-auto"/> */}
+                      <Button variant={"outline"}>Add Module</Button>
+                    </div>
+                  </div>
+                )}
+              </ScrollArea>
               {/* Pagination for many modules */}
               <div className="flex justify-center mt-4 space-x-2">
                 <Button variant="outline" size="sm">
@@ -144,7 +218,9 @@ export default function ProjectDetailsPage({ projectData }: { projectData: Proje
               <div className="flex items-center space-x-4">
                 <DollarSign className="h-8 w-8 text-green-500" />
                 <div>
-                  <p className="text-2xl font-bold">${projectData.budget?.toLocaleString() ?? "N/A"}</p>
+                  <p className="text-2xl font-bold">
+                    ${projectData.budget?.toLocaleString() ?? "N/A"}
+                  </p>
                   <p className="text-sm text-gray-500">Total Budget</p>
                 </div>
               </div>
@@ -163,15 +239,26 @@ export default function ProjectDetailsPage({ projectData }: { projectData: Proje
                 <CalendarDays className="h-8 w-8 text-blue-500" />
                 <div>
                   <p className="font-semibold">
-                    Start: {projectData.startDate ? new Date(projectData.startDate).toLocaleDateString() : "Not set"}
+                    Start:{" "}
+                    {projectData.startDate
+                      ? new Date(projectData.startDate).toLocaleDateString()
+                      : "Not set"}
                   </p>
                   <p className="font-semibold">
-                    End: {projectData.endDate ? new Date(projectData.endDate).toLocaleDateString() : "Not set"}
+                    Deadline:{" "}
+                    {projectData.endDate
+                      ? new Date(projectData.endDate).toLocaleDateString()
+                      : "Not set"}
+                  </p>
+                  <p className="font-semibold">
+                    Remaining: {projectData.deadline} days
                   </p>
                 </div>
               </div>
               <Progress value={40} className="mt-4" />
-              <p className="text-sm text-gray-500 mt-2">40% of project timeline completed</p>
+              <p className="text-sm text-gray-500 mt-2">
+                40% of project timeline completed
+              </p>
             </CardContent>
           </Card>
 
@@ -183,8 +270,13 @@ export default function ProjectDetailsPage({ projectData }: { projectData: Proje
             <CardContent>
               <div className="flex -space-x-2 overflow-hidden">
                 {projectData.members.map((member) => (
-                  <Avatar key={member.id} className="inline-block border-2 border-background">
-                    <AvatarImage src={`/placeholder.svg?text=${member.name.charAt(0)}`} />
+                  <Avatar
+                    key={member.id}
+                    className="inline-block border-2 border-background"
+                  >
+                    <AvatarImage
+                      src={`/placeholder.svg?text=${member.name.charAt(0)}`}
+                    />
                     <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
                   </Avatar>
                 ))}
@@ -204,7 +296,9 @@ export default function ProjectDetailsPage({ projectData }: { projectData: Proje
             <CardContent>
               <div className="flex items-center space-x-4">
                 <Avatar className="h-12 w-12">
-                  <AvatarImage src={projectData.client.image || "/placeholder.svg?text=AC"} />
+                  <AvatarImage
+                    src={projectData.client.image || "/placeholder.svg?text=AC"}
+                  />
                   <AvatarFallback>
                     {projectData.client.firstName.charAt(0)}
                     {projectData.client.lastName.charAt(0)}
@@ -212,7 +306,12 @@ export default function ProjectDetailsPage({ projectData }: { projectData: Proje
                 </Avatar>
                 <div>
                   <p className="font-semibold">{projectData.client.name}</p>
-                  <p className="text-sm text-gray-500">{projectData.client.email}</p>
+                  <p className="text-sm text-gray-500">
+                    {projectData.client.email}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    {projectData.client.phone}
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -231,6 +330,7 @@ export default function ProjectDetailsPage({ projectData }: { projectData: Proje
                 </TabsList>
                 <TabsContent value="invoices">
                   <ul className="space-y-2">
+                    <PaymentForm />
                     {projectData.invoices.map((invoice) => (
                       <li
                         key={invoice.id}
@@ -238,10 +338,14 @@ export default function ProjectDetailsPage({ projectData }: { projectData: Proje
                       >
                         <div>
                           <p className="font-medium">{invoice.invoiceNumber}</p>
-                          <p className="text-sm text-gray-500">{new Date(invoice.dueDate).toLocaleDateString()}</p>
+                          <p className="text-sm text-gray-500">
+                            {new Date(invoice.dueDate).toLocaleDateString()}
+                          </p>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <span className="font-semibold">${invoice.amount.toLocaleString()}</span>
+                          <span className="font-semibold">
+                            ${invoice.amount.toLocaleString()}
+                          </span>
                           <Button variant="outline" size="sm">
                             View
                           </Button>
@@ -259,10 +363,14 @@ export default function ProjectDetailsPage({ projectData }: { projectData: Proje
                       >
                         <div>
                           <p className="font-medium">{payment.method}</p>
-                          <p className="text-sm text-gray-500">{new Date(payment.date).toLocaleDateString()}</p>
+                          <p className="text-sm text-gray-500">
+                            {new Date(payment.date).toLocaleDateString()}
+                          </p>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <span className="font-semibold text-green-600">${payment.amount.toLocaleString()}</span>
+                          <span className="font-semibold text-green-600">
+                            ${payment.amount.toLocaleString()}
+                          </span>
                           <Button variant="outline" size="sm">
                             View
                           </Button>
@@ -277,6 +385,5 @@ export default function ProjectDetailsPage({ projectData }: { projectData: Proje
         </div>
       </div>
     </div>
-  )
+  );
 }
-

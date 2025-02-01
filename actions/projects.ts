@@ -7,47 +7,44 @@ import { error } from "console";
 import { promises } from "dns";
 import { revalidatePath } from "next/cache";
 
-<<<<<<< HEAD
- export async function createProject(data: ProjectProps) {
-   let slug = data.slug || generateSlug(data.name);
-   console.log("Generated slug:", slug); 
-   try{
-     const existingProject = await db.project.findUnique({
-       where:{
-         slug,
-       }
-     });
-     if(existingProject) {
-       return {
-         status:409,
-         error: `Project ${data.name} Already Exists`
-       };
-     }
-     const newProject = await db.project.create({
-       data:{
-         name: data.name,
-         slug: slug,
-         description: data.description,
-         thumbnail:data.thumbnail,
-         startDate: data.startDate,
-         clientId: data.clientId,
-         userId: data.userId,
-         deadline: data.deadline,
-         endDate: data.endDate,
-         budget: data.budget
-       },
-     })
-     revalidatePath("/dashboard/projects");
-     return newProject;
-   }catch (error) {
-     console.log(error);
-     return null;
-   }
- }
-=======
 
+//  export async function createProject(data: ProjectProps) {
+//    let slug = data.slug || generateSlug(data.name);
+//    console.log("Generated slug:", slug); 
+//    try{
+//      const existingProject = await db.project.findUnique({
+//        where:{
+//          slug,
+//        }
+//      });
+//      if(existingProject) {
+//        return {
+//          status:409,
+//          error: `Project ${data.name} Already Exists`
+//        };
+//      }
+//      const newProject = await db.project.create({
+//        data:{
+//          name: data.name,
+//          slug: slug,
+//          description: data.description,
+//          thumbnail:data.thumbnail,
+//          startDate: data.startDate,
+//          clientId: data.clientId,
+//          userId: data.userId,
+//          deadline: data.deadline,
+//          endDate: data.endDate,
+//          budget: data.budget
+//        },
+//      })
+//      revalidatePath("/dashboard/projects");
+//      return newProject;
+//    }catch (error) {
+//      console.log(error);
+//      return null;
+//    }
+//  }
 
->>>>>>> a5c1cc1 (Add Project Detail v1)
 
 export async function createProject(data: ProjectProps) {
   const slug = data.slug;
@@ -128,40 +125,38 @@ export async function getUserProject(userId: string | undefined) {
   }
 }
 export async function updateProjectById(id: string, data: ProjectProps) {
-  const slug = data.slug;
+  // ✅ Validate `data` before proceeding
+  if (!data || typeof data !== "object" || Object.keys(data).length === 0) {
+    throw new TypeError("The 'data' argument must be a valid object. Received: " + JSON.stringify(data));
+  }
+
   try {
+    console.log("Updating project:", id, "with data:", data);
+
     const updatedProject = await db.project.update({
-      where: {
-        id,
-      },
-      data:{
+      where: { id },
+      data: {
         name: data.name,
-        slug: slug,
+        slug: data.slug,
         description: data.description,
-        thumbnail:data.thumbnail,
-        startDate: data.startDate?.toISOString()??"",
+        thumbnail: data.thumbnail,
+        startDate: data.startDate ? new Date(data.startDate).toISOString() : null,
         clientId: data.clientId,
-        userId: data.userId
+        userId: data.userId,
+        deadline: data.deadline,
+        endDate: data.endDate ? new Date(data.endDate).toISOString() : null,
+        budget: data.budget,
       },
     });
+
     revalidatePath("/dashboard/projects");
     return updatedProject;
   } catch (error) {
-    console.log(error);
+    console.error("Error updating project:", error);
+    throw error;
   }
 }
-export async function getProjectById(id: string) {
-  try {
-    const project = await db.project.findUnique({
-      where: {
-        id,
-      },
-    });
-    return project;
-  } catch (error) {
-    console.log(error);
-  }
-}
+
 export async function getProjectDetailsBySlug(slug: string): Promise<ProjectData | null> {
   try {
     console.log("Fetching project details for slug:", slug);
@@ -221,6 +216,19 @@ export async function getProjectDetailsBySlug(slug: string): Promise<ProjectData
     return null;
   }
   
+}
+
+export async function getProjectById(id: string) {
+  try {
+    const project = await db.project.findUnique({
+      where: {
+        id,
+      },
+    });
+    return project;
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export async function deleteProject(id: string) {

@@ -168,12 +168,15 @@ model Invoice {
 model Payment {
   id        String   @id @default(uuid())
   amount    Float
-  date      DateTime
+  tax    Float
+  date      DateTime @default(now())
+  invoiceNumber String   @unique
   method    String
   project   Project  @relation("ProjectPayments", fields: [projectId], references: [id]) 
   projectId String
   user      User     @relation(fields: [userId], references: [id])
   userId    String
+  clientId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
