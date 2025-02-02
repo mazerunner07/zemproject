@@ -42,7 +42,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
     "dayjs": "^1.11.12",
-    "emblor": "^1.3.5",
+    "emblor": "^1.4.7",
     "framer-motion": "^11.3.19",
     "lottie-react": "^2.4.0",
     "lucide-react": "^0.418.0",

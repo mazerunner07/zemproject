@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TextArea from "../FormInputs/TextAreaInput";
 import { ProjectProps } from "@/types/types";
 import { useRouter } from "next/navigation";
@@ -9,21 +9,18 @@ import { updateProjectById } from "@/actions/projects";
 import toast from "react-hot-toast";
 import SubmitButton from "../FormInputs/SubmitButton";
 
-export type SelectOptionProps = {
-  label: string;
-  value: string;
-};
-
 export default function DescriptionForm({
   editingId,
   initialDescription,
+  onUpdateSuccess, // ✅ Added callback to exit edit mode
 }: {
-  editingId?: string | undefined;
-  initialDescription?: string | undefined | null;
+  editingId?: string;
+  initialDescription?: string | null;
+  onUpdateSuccess?: () => void;
 }) {
-  const [content, setContent] = useState<any>(
-      initialDescription
-    );
+  const [loading, setLoading] = useState(false);
+  const [content, setContent] = useState(initialDescription || "");
+
   const {
     register,
     handleSubmit,
@@ -36,28 +33,31 @@ export default function DescriptionForm({
   });
 
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  
+
+  // ✅ Sync `content` when `initialDescription` changes
+  useEffect(() => {
+    setContent(initialDescription || "");
+    reset({ description: initialDescription || "" });
+  }, [initialDescription, reset]);
 
   async function updateDescription(data: ProjectProps) {
     try {
       setLoading(true);
 
-      // ✅ Ensure `data` is valid before calling the API
-      if (!data || typeof data !== "object" || Object.keys(data).length === 0) {
-        console.error("Invalid payload: data is null or empty", data);
-        toast.error("Invalid form data. Please try again.");
-        setLoading(false);
+      if (!data || !editingId) {
+        toast.error("Invalid form data.");
         return;
       }
 
       console.log("Updating project with ID:", editingId, "Payload:", data);
+      await updateProjectById(editingId, data);
 
-      if (editingId) {
-        await updateProjectById(editingId, data); // ✅ Now correctly calling the function
-        toast.success("Updated Successfully!");
-        router.refresh();
-      }
+      toast.success("Updated Successfully!");
+      router.refresh();
+
+      // ✅ Exit editing mode & update state
+      if (onUpdateSuccess) onUpdateSuccess();
+      setContent(data.description);
     } catch (error) {
       console.error("Error updating project:", error);
       toast.error("Failed to update project.");
@@ -67,7 +67,7 @@ export default function DescriptionForm({
   }
 
   return (
-    <form className="" onSubmit={handleSubmit(updateDescription)}>
+    <form onSubmit={handleSubmit(updateDescription)}>
       <div className="grid gap-3">
         <TextArea
           register={register}

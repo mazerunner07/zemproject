@@ -3,10 +3,12 @@ import ProjectDetailsPage from '@/components/projects/ProjectDetailPage'
 import { notFound } from 'next/navigation';
 import React from 'react'
 
-export default async function page({ params: { slug } }: { params: { slug: string } }) {
+export default async function page({ params }: { params: { slug: string } }) {
+  // Await params if necessary (in case you are using async route params)
+  const { slug } = await params;
+
   try {
     const projectData = await getProjectDetailsBySlug(slug);
-
     if (!projectData) {
       console.error("Project not found for slug:", slug);
       return notFound();

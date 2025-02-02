@@ -78,58 +78,62 @@ export default function ProjectDetailsPage({
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle>Project Description</CardTitle>
-              <Button onClick={()=>setIsEditing(!isEditing)} variant="ghost" size="icon">
-                {isEditing ? (<X className="h-4 w-4" />) : (
+              <Button
+                onClick={() => setIsEditing(!isEditing)}
+                variant="ghost"
+                size="icon"
+              >
+                {isEditing ? (
+                  <X className="h-4 w-4" />
+                ) : (
                   <Edit2 className="h-4 w-4" />
                 )}
               </Button>
             </CardHeader>
             <CardContent>
-              {isEditing ? (
-                <DescriptionForm
-                  editingId={projectData.id}
-                  initialDescription={projectData.description}
-                />
-              ) :(
-                <p>{projectData.description || "No description provided."}</p>
-              )}
+            {isEditing ? (
+              <DescriptionForm
+                editingId={projectData.id}
+                initialDescription={projectData.description}
+                onUpdateSuccess={() => setIsEditing(false)} // ✅ Exit edit mode on success
+              />
+            ) : (
+              <p>{projectData.description || "No description provided."}</p>
+            )}
+            
             </CardContent>
           </Card>
 
           {/* Notes */}
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle>Notes</CardTitle>
-              <Button onClick={()=>setIsEditingNotes(!isEditingNotes)} variant="ghost" size="icon">
-              {isEditingNotes ?  (
-                  <Edit2 className="h-4 w-4" />
-                ) :(<X className="h-4 w-4" />)}
-              </Button>
-            </CardHeader>
-            <CardContent>
-              <div className="prose">
-              {!isEditingNotes ? (
-                 <NotesForm editingId={projectData.id} initialNotes={projectData.notes} />
-              ): (
-                <>
-                {projectData.notes ? (
-                <div dangerouslySetInnerHTML={{
-                  __html: projectData.notes || "No notes available.",
-                }}/>
-              ):(
-                <p>No notes available.</p>
-              )}
-                </>
-              )}
-              </div>
-              {/* <div
-                className="prose max-w-none"
-                dangerouslySetInnerHTML={{
-                  __html: projectData.notes || "No notes available.",
-                }}
-              ></div> */}
-            </CardContent>
-          </Card>
+  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+    <CardTitle>Notes</CardTitle>
+    <Button
+      onClick={() => setIsEditingNotes(!isEditingNotes)}
+      variant="ghost"
+      size="icon"
+    >
+      {isEditingNotes ? <X className="h-4 w-4" /> : <Edit2 className="h-4 w-4" />}
+    </Button>
+  </CardHeader>
+  <CardContent>
+    {isEditingNotes ? (
+      <NotesForm
+        editingId={projectData.id}
+        initialNotes={projectData.notes}
+        onUpdateSuccess={() => setIsEditingNotes(false)} // ✅ Exit edit mode on success
+      />
+    ) : (
+      <div className="prose notes-container"
+      dangerouslySetInnerHTML={{
+        __html: projectData.notes
+          .replace(/(\n\s*){2,}/g, '\n')  // Replaces multiple blank lines with a single blank line
+          .replace(/\n/g, "<br />") || "No notes available.", // Adds <br /> for each line break
+      }}></div>
+    )}
+  </CardContent>
+</Card>
+
 
           {/* Comments */}
           <Card>

@@ -20,7 +20,8 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([provider, providerAccountId])
 }
 
@@ -32,40 +33,33 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-enum UserRole {
-  USER
-  ADMIN
-  CLIENT
-  MEMBER
-}
-
 model User {
-  id            String    @id @default(uuid())
-  name          String
-  firstName     String
-  lastName      String
-  phone         String
-  email         String   @unique
-  emailVerified DateTime?
-  image         String?
-  userId        String?
-  role          UserRole  @default(USER)
-  password      String?
-  companyName      String?
-  companyDescription      String?
-  country       String?
-  location      String?
-  status        Boolean   @default(true)
-  accounts      Account[]
-  sessions      Session[]
-  projects      Project[]
-  invoices      Invoice[]
-  payments      Payment[]
-  portfolioItems PortfolioItem[]
-  isVerified    Boolean   @default(false)
-  token         Int?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id                 String          @id @default(uuid())
+  name               String
+  firstName          String
+  lastName           String
+  phone              String
+  email              String          @unique
+  emailVerified      DateTime?
+  image              String?
+  role               UserRole        @default(USER)
+  password           String?
+  status             Boolean         @default(true)
+  isVerified         Boolean         @default(false)
+  token              Int?
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  country            String?
+  location           String?
+  userId             String?
+  companyDescription String?
+  companyName        String?
+  accounts           Account[]
+  invoices           Invoice[]
+  payments           Payment[]
+  portfolioItems     PortfolioItem[]
+  projects           Project[]
+  sessions           Session[]
 }
 
 model Category {
@@ -78,66 +72,61 @@ model Category {
   updatedAt   DateTime? @updatedAt
 }
 
-enum ProjectStatus {
-  COMPLETE
-  ONGOING
-}
-
 model Project {
-  id          String   @id @default(uuid())
-  name        String
-  slug        String @unique
-  notes       String?
-  description String?
-  bannerImage String?
-  thumbnail   String?
-  budget      Int? @default(0)
-  deadline    Int?
-  startDate   DateTime? @default(now())
-  endDate     DateTime?
-  status      ProjectStatus @default(ONGOING)
-  clientId    String
-  user        User     @relation(fields: [userId], references: [id])
-  userId      String
-  modules     Module[] 
-  members     Member[]
-  invoices    Invoice[]
-  comments     ProjectComment[]
-  portfolioItems PortfolioItem[] @relation("ProjectPortfolio")
-  payments    Payment[] @relation("ProjectPayments")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id             String           @id @default(uuid())
+  name           String
+  description    String?
+  startDate      DateTime?        @default(now())
+  endDate        DateTime?
+  clientId       String
+  userId         String
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  bannerImage    String?
+  notes          String?
+  slug           String           @unique
+  thumbnail      String?
+  status         ProjectStatus    @default(ONGOING)
+  budget         Int?             @default(0)
+  deadline       Int?
+  invoices       Invoice[]
+  members        Member[]
+  modules        Module[]
+  payments       Payment[]        @relation("ProjectPayments")
+  portfolioItems PortfolioItem[]  @relation("ProjectPortfolio")
+  user           User             @relation(fields: [userId], references: [id])
+  comments       ProjectComment[]
 }
 
 model ProjectComment {
-  id String @id @default(uuid())
-  content String
+  id        String   @id @default(uuid())
+  content   String
   projectId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   project   Project  @relation(fields: [projectId], references: [id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
 }
 
 model Module {
   id        String   @id @default(uuid())
   name      String
-  project   Project  @relation(fields: [projectId], references: [id])
   projectId String
-  tasks     Task[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  project   Project  @relation(fields: [projectId], references: [id])
+  tasks     Task[]
 }
 
 model Task {
-  id          String   @id @default(uuid())
+  id          String    @id @default(uuid())
   title       String
   description String?
   status      String
   dueDate     DateTime?
-  module      Module   @relation(fields: [moduleId], references: [id])
   moduleId    String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  module      Module    @relation(fields: [moduleId], references: [id])
 }
 
 model Member {
@@ -145,10 +134,10 @@ model Member {
   name      String
   email     String
   role      String
-  project   Project  @relation(fields: [projectId], references: [id])
   projectId String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  project   Project  @relation(fields: [projectId], references: [id])
 }
 
 model Invoice {
@@ -157,28 +146,28 @@ model Invoice {
   amount        Float
   status        String
   dueDate       DateTime
-  project       Project  @relation(fields: [projectId], references: [id])
   projectId     String
-  user          User     @relation(fields: [userId], references: [id])
   userId        String
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  project       Project  @relation(fields: [projectId], references: [id])
+  user          User     @relation(fields: [userId], references: [id])
 }
 
 model Payment {
-  id        String   @id @default(uuid())
-  amount    Float
-  tax    Float
-  date      DateTime @default(now())
+  id            String   @id @default(uuid())
+  amount        Float
+  date          DateTime @default(now())
+  method        String
+  projectId     String
+  userId        String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  clientId      String
   invoiceNumber String   @unique
-  method    String
-  project   Project  @relation("ProjectPayments", fields: [projectId], references: [id]) 
-  projectId String
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String
-  clientId    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  tax           Float
+  project       Project  @relation("ProjectPayments", fields: [projectId], references: [id])
+  user          User     @relation(fields: [userId], references: [id])
 }
 
 model PortfolioItem {
@@ -187,10 +176,22 @@ model PortfolioItem {
   description String
   imageUrl    String?
   projectUrl  String?
-  project     Project  @relation("ProjectPortfolio", fields: [projectId], references: [id])
   projectId   String
-  user        User     @relation(fields: [userId], references: [id])
   userId      String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  project     Project  @relation("ProjectPortfolio", fields: [projectId], references: [id])
+  user        User     @relation(fields: [userId], references: [id])
+}
+
+enum UserRole {
+  USER
+  ADMIN
+  CLIENT
+  MEMBER
+}
+
+enum ProjectStatus {
+  COMPLETE
+  ONGOING
 }

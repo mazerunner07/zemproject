@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+.notes-container {
+  white-space: pre-line; /* This will respect newlines but ignore extra blank lines */
+  word-wrap: break-word;  /* Prevents long words from breaking layout */
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
