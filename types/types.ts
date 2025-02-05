@@ -1,4 +1,5 @@
-import { ProjectStatus, UserRole } from "@prisma/client";
+import { ProjectStatus, User, UserRole } from "@prisma/client";
+import { Attributes } from "react";
 
 export type CategoryProps = {
   title: string;
@@ -16,6 +17,7 @@ export interface UserProps {
   image?: string;
   userId?: string;
   role?: UserRole;
+  userLogo?: UserRole;
   country?: string;
   location?: string;
   companyName?: string;
@@ -32,6 +34,7 @@ export type ProjectProps = {
   notes: string;
   description: string;
   bannerImage: string;
+  gradient: string;
   thumbnail: string;
   startDate: any;
   endDate: any;
@@ -49,6 +52,7 @@ export type ProjectData = {
   notes:string | null;
   description: string | null;
   bannerImage: string | null;
+  gradient: string | null;
   thumbnail: string | null;
   budget: number | null;
   deadline: number | null
@@ -109,13 +113,24 @@ export type Payment = {
   id:string
   amount: number
   date: Date
+  title: string
   method: string
   projectId: string
   userId: string
   createdAt: Date
   updatedAt: Date
 }
-
+export type PaymentProps={
+  amount: number
+  tax: number
+  date: string
+  title: string
+  invoiceNumber: string
+  method: string
+  projectId: string
+  userId: string
+  clientId : string
+}
 export type ClientData = {
   id:string
   name: string

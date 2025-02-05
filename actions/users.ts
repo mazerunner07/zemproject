@@ -96,6 +96,33 @@ export async function deleteUser(id: string) {
     };
   }
 }
+export async function getUserById(id: string) {
+  try {
+    const user = await db.user.findUnique({
+      where: {
+        id, // Use the unique identifier
+      },
+    });
+
+    return user;
+  } catch (error) {
+    console.error("Error in Get User By Id", error);
+  }
+}
+export async function updateUserById(id: string, data: UserProps) {
+  try {
+    const updatedUser = await db.user.update({
+      where: {
+        id,
+      },
+      data,
+    });
+    revalidatePath("/dashboard/clients");
+    return updatedUser;
+  } catch (error) {
+    console.log(error);
+  }
+}
 export async function getKitUsers() {
   const endpoint = process.env.KIT_API_ENDPOINT as string;
   try {

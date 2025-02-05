@@ -85,16 +85,7 @@ export default function CategoryForm({
       console.log(error);
     }
   }
-  // async function handleDeleteAll() {
-  // setLoading(true);
-  // try {
-  // await deleteManyCategories();
-  // setLoading(false);
-  // } catch (error) {
-  // console.log(error);
-  // }
-  // }
-  console.log(status);
+  
 
   return (
     <form className="" onSubmit={handleSubmit(saveCategory)}>

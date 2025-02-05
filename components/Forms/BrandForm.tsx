@@ -13,7 +13,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { generateSlug } from "@/lib/generateSlug";
 import toast from "react-hot-toast";
-import { User, Lock, Mail, Headset, Flag, MapPin, Building, Pencil } from "lucide-react";
+import { User, Lock, Mail, Headset, Flag, MapPin, Building, Pencil, Headphones, Phone } from "lucide-react";
 import { UserProps } from "@/types/types";
 import FormHeader from "./FormHeader";
 import TextInput from "../FormInputs/TextInput";
@@ -30,14 +30,12 @@ type SelectOptionProps = {
 
 type ClientsFormProps = {
   editingId?: string | undefined;
-  userId?: string
   initialData?: Partial<UserProps> | undefined | null;
 };
 
-export default function ClientsForm({
+export default function BrandForm({
   editingId,
-  initialData,
-  userId
+  initialData
 }: ClientsFormProps)
  {
   const {
@@ -47,50 +45,36 @@ export default function ClientsForm({
     formState: { errors },
   } = useForm<UserProps>({
     defaultValues: {
-      firstName: initialData?.firstName || "",
-      lastName: initialData?.lastName || "",
-      email: initialData?.email || "",
-      phone: initialData?.phone || "",
+      email: initialData?.country || "",
+      phone: initialData?.country || "",
       country: initialData?.country || "",
       location: initialData?.location || "",
       companyName: initialData?.companyName || "",
-      companyDescription: initialData?.companyDescription || "",
-      role: initialData?.role || "CLIENT",
-      password: initialData?.password || "",
+      companyDescription: initialData?.companyDescription || ""
     },
   });
 
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [emailErr, setEmailErr] = useState<string | null>(null);
-  const initialImage = initialData?.image || "/placeholder.svg";
+  const initialImage = initialData?.userLogo || "/placeholder.svg";
   const [imageUrl, setImageUrl] = useState(initialImage);
 
   async function saveClient(data: UserProps) {
+    setLoading(true);
+    data.userLogo=imageUrl
     try {
-      setLoading(true);
 
-      // Add image URL to the data
-      data.image = imageUrl;
-      data.name = `${data.firstName} ${data.lastName}`;
-      data.role = "CLIENT";
-      data.userId = userId;
-      console.log(data)
       if (editingId) {
         // Update client
         await updateUserById(editingId, data);
         toast.success("Client updated successfully!");
-      } else {
-        // Create client
-        await createClient(data);
-        toast.success("Client created successfully!");
-      }
+      } 
 
       // Reset form and navigate
       reset();
       setImageUrl("/placeholder.svg");
       setLoading(false);
-      router.push("/dashboard/clients");
     } catch (error) {
       setLoading(false);
       console.error("Error saving user:", error);
@@ -100,65 +84,32 @@ export default function ClientsForm({
 
 
   return (
-    <form className="" onSubmit={handleSubmit(saveClient)}>
-      <FormHeader
-        href="/clients"
-        parent=""
-        title="Clients"
-        editingId={editingId}
-        loading={loading}
-      />
+    <form className="m-6" onSubmit={handleSubmit(saveClient)}>
 
-      <div className="grid grid-cols-12 gap-6 py-8">
+      <div className="grid grid-cols-12 gap-6 ">
         <div className="lg:col-span-8 col-span-full space-y-3">
           <Card>
-            <CardHeader>
-              <CardTitle>Clients Profile</CardTitle>
-            </CardHeader>
             <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          
+          <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-4">
             <TextInput
               register={register}
               errors={errors}
-              label="First Name"
-              name="firstName"
-              icon={User}
-              placeholder="first Name"
+              label="Email Address"
+              name="email"
+              icon={Mail}
+              placeholder=""
             />
-            <TextInput
-              register={register}
-              errors={errors}
-              label="Last Name"
-              name="lastName"
-              icon={User}
-              placeholder="last Name"
-            />
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <TextInput
               register={register}
               errors={errors}
               label="Phone"
               name="phone"
-              icon={Headset}
-              placeholder="phone"
+              icon={Phone}
+              placeholder=""
             />
-            <div className="">
-              <TextInput
-                type="email"
-                register={register}
-                errors={errors}
-                label="Email Address"
-                name="email"
-                icon={Mail}
-                placeholder="email"
-              />
-              {emailErr && (
-                <p className="text-red-500 text-xs mt-2">{emailErr}</p>
-              )}
-            </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid mt-2 grid-cols-1 md:grid-cols-2 gap-4">
             <TextInput
               register={register}
               errors={errors}
@@ -176,16 +127,8 @@ export default function ClientsForm({
               placeholder="eg Canada"
             />
           </div>
-          <PasswordInput
-            register={register}
-            errors={errors}
-            label="Password"
-            name="password"
-            icon={Lock}
-            placeholder="password"
-            type="password"
-          />
-          <div className="space-y-4">
+          
+          <div className="mt-2 space-y-4">
           <TextInput
               register={register}
               errors={errors}
@@ -194,6 +137,8 @@ export default function ClientsForm({
               icon={Building}
               placeholder="Space Corp"
             />
+            </div>
+            <div className="mt-2 space-y-4">
           <TextInput
               register={register}
               errors={errors}
@@ -210,7 +155,7 @@ export default function ClientsForm({
         <div className="lg:col-span-4 col-span-full ">
           <div className="grid auto-rows-max items-start gap-4 ">
             <ImageInput
-              title="Client Profile Image"
+              title="Brand Logo"
               imageUrl={imageUrl}
               setImageUrl={setImageUrl}
               endpoint="clientProfileImage"
@@ -219,10 +164,10 @@ export default function ClientsForm({
         </div>
       </div>
       <FormFooter
-        href="/clients"
+        href="/brand-setting"
         editingId={editingId}
         loading={loading}
-        title="Clients"
+        title="Brand Settings"
         parent=""
       />
     </form>

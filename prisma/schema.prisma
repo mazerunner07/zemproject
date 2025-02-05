@@ -42,6 +42,7 @@ model User {
   email              String          @unique
   emailVerified      DateTime?
   image              String?
+  userLogo           String?
   role               UserRole        @default(USER)
   password           String?
   status             Boolean         @default(true)
@@ -83,6 +84,7 @@ model Project {
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
   bannerImage    String?
+  gradient    String?
   notes          String?
   slug           String           @unique
   thumbnail      String?
@@ -144,6 +146,8 @@ model Invoice {
   id            String   @id @default(uuid())
   invoiceNumber String   @unique
   amount        Float
+  tax           Float
+  title         String
   status        String
   dueDate       DateTime
   projectId     String
@@ -159,6 +163,7 @@ model Payment {
   amount        Float
   date          DateTime @default(now())
   method        String
+  title        String
   projectId     String
   userId        String
   createdAt     DateTime @default(now())

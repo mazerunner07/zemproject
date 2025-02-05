@@ -1,4 +1,5 @@
 "use client";
+
 import {
   CalendarDays,
   DollarSign,
@@ -9,9 +10,12 @@ import {
   Plus,
   X,
 } from "lucide-react";
+
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { Session } from "next-auth";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter } from "next/navigation";
@@ -22,16 +26,25 @@ import emptyfolder from "/public/empty-folder.png";
 import DescriptionForm from "../Forms/DescriptionForm";
 import { useState } from "react";
 import NotesForm from "../Forms/NotesForm";
+import ProjectBanner from './ProjectBanner';
+import { ModeToggle } from "../mode-toggle";
+import { AvatarMenuButton } from "../dashboard/AvatarMenuButton";
 
 export default function ProjectDetailsPage({
+  session,
   projectData,
 }: {
+  session: Session | null;
   projectData: ProjectData;
 }) {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState("overview");
+
   const [desc, setDesc] = useState(projectData.description);
   const [note, setNote] = useState(projectData.notes);
+  const paidAmount = projectData.payments.reduce((acc, item) => {
+    return acc + item.amount;
+  }, 0);
+  const remainingAmount = projectData.budget ? projectData.budget - paidAmount : 0
   const [isEditing, setIsEditing] = useState(false);
   const [isEditingNotes, setIsEditingNotes] = useState(false);
 
@@ -41,36 +54,27 @@ export default function ProjectDetailsPage({
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-8">
-      <div className="relative h-48 rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 mb-8 overflow-hidden">
-        <img
-          src={
-            projectData.bannerImage || "/placeholder.svg?height=192&width=1024"
-          }
-          alt={projectData.name}
-          className="w-full h-full object-cover mix-blend-overlay"
-        />
-        <div className="absolute top-4 left-4">
+      <div className="flex mb-3 justify-between">
+        <div>
           <Button
             onClick={() => router.push("/dashboard/projects")}
             variant="outline"
             size="sm"
-            className="bg-white/50 backdrop-blur-sm"
+            className="bg-white/50 backdrop-blur-sm
+             dark:bg-black dark:border-black dark:text-white dark:hover:bg-white dark:hover:text-black"
           >
             <ChevronLeft className="mr-2 h-4 w-4" />
             Back to Projects
           </Button>
+
+
         </div>
-        <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end">
-          <h1 className="text-4xl font-bold text-white">{projectData.name}</h1>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-white hover:bg-white/20"
-          >
-            <Edit2 className="h-4 w-4" />
-          </Button>
+        <div className="flex gap-3">
+          <ModeToggle />
+          <AvatarMenuButton session={session} />
         </div>
       </div>
+      <ProjectBanner bg={projectData.gradient} editingId={projectData.id} name={projectData.name} bannerImage={projectData.bannerImage} />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
@@ -91,48 +95,48 @@ export default function ProjectDetailsPage({
               </Button>
             </CardHeader>
             <CardContent>
-            {isEditing ? (
-              <DescriptionForm
-                editingId={projectData.id}
-                initialDescription={projectData.description}
-                onUpdateSuccess={() => setIsEditing(false)} // ✅ Exit edit mode on success
-              />
-            ) : (
-              <p>{projectData.description || "No description provided."}</p>
-            )}
-            
+              {isEditing ? (
+                <DescriptionForm
+                  editingId={projectData.id}
+                  initialDescription={projectData.description}
+                  onUpdateSuccess={() => setIsEditing(false)} // ✅ Exit edit mode on success
+                />
+              ) : (
+                <p>{projectData.description || "No description provided."}</p>
+              )}
+
             </CardContent>
           </Card>
 
           {/* Notes */}
           <Card>
-  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-    <CardTitle>Notes</CardTitle>
-    <Button
-      onClick={() => setIsEditingNotes(!isEditingNotes)}
-      variant="ghost"
-      size="icon"
-    >
-      {isEditingNotes ? <X className="h-4 w-4" /> : <Edit2 className="h-4 w-4" />}
-    </Button>
-  </CardHeader>
-  <CardContent>
-    {isEditingNotes ? (
-      <NotesForm
-        editingId={projectData.id}
-        initialNotes={projectData.notes}
-        onUpdateSuccess={() => setIsEditingNotes(false)} // ✅ Exit edit mode on success
-      />
-    ) : (
-      <div className="prose notes-container"
-      dangerouslySetInnerHTML={{
-        __html: projectData.notes
-          .replace(/(\n\s*){2,}/g, '\n')  // Replaces multiple blank lines with a single blank line
-          .replace(/\n/g, "<br />") || "No notes available.", // Adds <br /> for each line break
-      }}></div>
-    )}
-  </CardContent>
-</Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle>Notes</CardTitle>
+              <Button
+                onClick={() => setIsEditingNotes(!isEditingNotes)}
+                variant="ghost"
+                size="icon"
+              >
+                {isEditingNotes ? <X className="h-4 w-4" /> : <Edit2 className="h-4 w-4" />}
+              </Button>
+            </CardHeader>
+            <CardContent>
+              {isEditingNotes ? (
+                <NotesForm
+                  editingId={projectData.id}
+                  initialNotes={projectData.notes}
+                  onUpdateSuccess={() => setIsEditingNotes(false)} // ✅ Exit edit mode on success
+                />
+              ) : (
+                <div className="prose notes-container"
+                  dangerouslySetInnerHTML={{
+                    __html: projectData.notes
+                      .replace(/(\n\s*){2,}/g, '\n')  // Replaces multiple blank lines with a single blank line
+                      .replace(/\n/g, "<br />") || "No notes available.", // Adds <br /> for each line break
+                  }}></div>
+              )}
+            </CardContent>
+          </Card>
 
 
           {/* Comments */}
@@ -219,14 +223,26 @@ export default function ProjectDetailsPage({
               <CardTitle>Project Budget</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center space-x-4">
-                <DollarSign className="h-8 w-8 text-green-500" />
+              <div className="flex justify-between items-center space-x-4">
+
+                  <div className="flex items-center">
+                <DollarSign className="h-8 w-8 mr-3 text-green-500" />
                 <div>
-                  <p className="text-2xl font-bold">
-                    ${projectData.budget?.toLocaleString() ?? "N/A"}
-                  </p>
-                  <p className="text-sm text-gray-500">Total Budget</p>
-                </div>
+                    <p className="text-sm text-gray-500">Total Budget</p>
+                    <p className="text-2xl font-bold">
+                      ${projectData.budget?.toLocaleString() ?? "N/A"}
+                    </p>
+                  </div>
+                  </div>
+                  <div className="flex items-center">
+                <DollarSign className="h-8 w-8 mr-3 text-green-500" />
+                <div>
+                    <p className="text-sm text-gray-500">Paid Amount</p>
+                    <p className="text-2xl font-bold">
+                      ${paidAmount?.toLocaleString() ?? "N/A"}
+                    </p>
+                    </div>
+                    </div>
               </div>
               <Progress value={65} className="mt-4" />
               <p className="text-sm text-gray-500 mt-2">65% of budget used</p>
@@ -327,14 +343,14 @@ export default function ProjectDetailsPage({
               <CardTitle>Invoices & Payments</CardTitle>
             </CardHeader>
             <CardContent>
-              <Tabs defaultValue="invoices">
+              <Tabs defaultValue="payments">
                 <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="invoices">Invoices</TabsTrigger>
                   <TabsTrigger value="payments">Payments</TabsTrigger>
+                  <TabsTrigger value="invoices">Invoices</TabsTrigger>
                 </TabsList>
                 <TabsContent value="invoices">
                   <ul className="space-y-2">
-                    <PaymentForm />
+
                     {projectData.invoices.map((invoice) => (
                       <li
                         key={invoice.id}
@@ -359,6 +375,7 @@ export default function ProjectDetailsPage({
                   </ul>
                 </TabsContent>
                 <TabsContent value="payments">
+                  <PaymentForm projectId={projectData.id} userId={projectData.userId} clientId={projectData.clientId} remainingAmount={remainingAmount} />
                   <ul className="space-y-2">
                     {projectData.payments.map((payment) => (
                       <li
@@ -366,7 +383,7 @@ export default function ProjectDetailsPage({
                         className="flex justify-between items-center p-2 hover:bg-gray-100 rounded-md"
                       >
                         <div>
-                          <p className="font-medium">{payment.method}</p>
+                          <p className="font-medium">{payment.title}</p>
                           <p className="text-sm text-gray-500">
                             {new Date(payment.date).toLocaleDateString()}
                           </p>
@@ -376,7 +393,7 @@ export default function ProjectDetailsPage({
                             ${payment.amount.toLocaleString()}
                           </span>
                           <Button variant="outline" size="sm">
-                            View
+                            View Invoice
                           </Button>
                         </div>
                       </li>

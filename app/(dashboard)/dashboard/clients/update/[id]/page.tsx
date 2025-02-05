@@ -1,4 +1,5 @@
 import { getClientsById } from "@/actions/clients";
+import { getUserById } from "@/actions/users";
 import ClientsForm from "@/components/Forms/ClientsForm";
 import React from "react";
 
@@ -8,7 +9,7 @@ export default async function page({
   params: Promise<{ id: string }>;
 }) {
   const id = (await params).id;
-  const client = await getClientsById(id);
+  const client = await getUserById(id);
 
   const transformedClient = client
     ? {
