@@ -9,6 +9,9 @@ import {
   ChevronLeft,
   Plus,
   X,
+  Link,
+  Eye,
+  EyeIcon,
 } from "lucide-react";
 
 
@@ -225,24 +228,24 @@ export default function ProjectDetailsPage({
             <CardContent>
               <div className="flex justify-between items-center space-x-4">
 
-                  <div className="flex items-center">
-                <DollarSign className="h-8 w-8 mr-3 text-green-500" />
-                <div>
+                <div className="flex items-center">
+                  <DollarSign className="h-8 w-8 mr-3 text-green-500" />
+                  <div>
                     <p className="text-sm text-gray-500">Total Budget</p>
                     <p className="text-2xl font-bold">
                       ${projectData.budget?.toLocaleString() ?? "N/A"}
                     </p>
                   </div>
-                  </div>
-                  <div className="flex items-center">
-                <DollarSign className="h-8 w-8 mr-3 text-green-500" />
-                <div>
+                </div>
+                <div className="flex items-center">
+                  <DollarSign className="h-8 w-8 mr-3 text-green-500" />
+                  <div>
                     <p className="text-sm text-gray-500">Paid Amount</p>
                     <p className="text-2xl font-bold">
                       ${paidAmount?.toLocaleString() ?? "N/A"}
                     </p>
-                    </div>
-                    </div>
+                  </div>
+                </div>
               </div>
               <Progress value={65} className="mt-4" />
               <p className="text-sm text-gray-500 mt-2">65% of budget used</p>
@@ -351,23 +354,26 @@ export default function ProjectDetailsPage({
                 <TabsContent value="invoices">
                   <ul className="space-y-2">
 
-                    {projectData.invoices.map((invoice) => (
+                    {projectData.payments.map((invoice) => (
                       <li
                         key={invoice.id}
                         className="flex justify-between items-center p-2 hover:bg-gray-100 rounded-md"
                       >
                         <div>
-                          <p className="font-medium">{invoice.invoiceNumber}</p>
+                          <p className="font-medium">#{invoice.invoiceNumber}</p>
                           <p className="text-sm text-gray-500">
-                            {new Date(invoice.dueDate).toLocaleDateString()}
+                            {new Date(invoice.date).toLocaleDateString()}
                           </p>
                         </div>
                         <div className="flex items-center space-x-2">
                           <span className="font-semibold">
                             ${invoice.amount.toLocaleString()}
                           </span>
-                          <Button variant="outline" size="sm">
-                            View
+                          <Button variant="outline" size="sm" asChild>
+                            <a href={`/project/invoice/${invoice.id}?project=${projectData.slug}`}>
+                              <Eye className="h-4 w-4 mr-2" />
+                              View
+                            </a>
                           </Button>
                         </div>
                       </li>
@@ -392,7 +398,7 @@ export default function ProjectDetailsPage({
                           <span className="font-semibold text-green-600">
                             ${payment.amount.toLocaleString()}
                           </span>
-                          <Button variant="outline" size="sm">
+                          <Button variant="outline" size="sm" >
                             View Invoice
                           </Button>
                         </div>

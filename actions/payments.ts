@@ -21,20 +21,58 @@ export async function createPayment(data: PaymentProps) {
 }
 
 // ✅ Fix: Correct function to fetch payments
-export async function getPayments() {
+export async function getInvoiceById(id: string) {
   try {
-    const payments = await db.payment.findMany({
-      orderBy: {
-        createdAt: "desc",
+    const payment = await db.payment.findUnique({
+      where: { id },
+    });
+
+    if (!payment) {
+      return null;
+    }
+
+    // Fetch the user (business owner)
+    const user = await db.user.findUnique({
+      where: {
+        id: payment.userId,
+        role: "USER",
+      },
+      select: {
+        name: true,
+        phone: true,
+        email: true,
+        companyName: true,
+        companyDescription: true,
+        userLogo: true,
       },
     });
 
-    return payments;
+    // Fetch the client
+    const client = await db.user.findUnique({
+      where: {
+        id: payment.clientId,
+        role: "CLIENT",
+      },
+      select: {
+        name: true,
+        phone: true,
+        email: true,
+        companyName: true,
+        companyDescription: true,
+      },
+    });
+
+    return {
+      invoice: payment,
+      user,
+      client,
+    };
   } catch (error) {
-    console.error("Error fetching payments:", error);
+    console.error("Error fetching invoice:", error);
     return null;
   }
 }
+
 
 // ✅ Update category by ID with validation
 export async function updateCategoryById(id: string, data: CategoryProps) {

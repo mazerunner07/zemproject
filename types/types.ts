@@ -119,6 +119,7 @@ export type Payment = {
   userId: string
   createdAt: Date
   updatedAt: Date
+  invoiceNumber: string
 }
 export type PaymentProps={
   amount: number
