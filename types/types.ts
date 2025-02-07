@@ -1,4 +1,5 @@
 import { ProjectStatus, User, UserRole } from "@prisma/client";
+import { Stringifier } from "postcss";
 import { Attributes } from "react";
 
 export type CategoryProps = {
@@ -83,6 +84,8 @@ export type ProjectComment = {
   id: string
   content: string
   projectId: string
+  userName: string
+  userRole: UserRole
   createdAt: Date
   updatedAt: Date
 }
@@ -109,6 +112,13 @@ export type Invoice = {
   updatedAt: Date
 }
 
+export type ModuleProps = {
+   name : string
+   userName : string
+   userId : string
+   projectId : string
+}
+
 export type Payment = {
   id:string
   amount: number
@@ -131,6 +141,13 @@ export type PaymentProps={
   projectId: string
   userId: string
   clientId : string
+}
+export type CommentProps={
+  content : string
+  projectId : string
+  userName : string
+  userRole : UserRole
+  userId :string
 }
 export type ClientData = {
   id:string

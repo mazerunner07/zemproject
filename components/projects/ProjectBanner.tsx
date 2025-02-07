@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useForm } from "react-hook-form";
 import ImageInput from "../FormInputs/ImageInput";
-import { Link, Edit2, ChevronLeft } from "lucide-react";
+import { Link, Edit2, ChevronLeft, Edit, Pen } from "lucide-react";
 import TextInput from "../FormInputs/TextInput";
 import { toast } from "react-hot-toast";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,6 +17,7 @@ import { DialogTitle } from "@/components/ui/dialog";
 // ✅ Define the missing ProjectProps type
 interface ProjectProps {
   bannerImage: string;
+  name : string;
 }
 
 // ✅ Placeholder function for updating the project
@@ -55,9 +56,11 @@ export default function ProjectBanner({
   const [gradient, setGradient] = useState(bg || gradients[0]);
   const [imageUrl, setImageUrl] = useState(bannerImage || "/placeholder.svg");
   const [loading, setLoading] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [projectName,setProjectName] = useState(name);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<ProjectProps>({
-    defaultValues: { bannerImage: "" },
+  const { register,reset, handleSubmit, formState: { errors } } = useForm<ProjectProps>({
+    defaultValues: { bannerImage: "", name : projectName },
   });
 
   async function handleGradientClick(newGradient: string) {
@@ -105,21 +108,60 @@ export default function ProjectBanner({
       setLoading(false);
     }
   }
+  async function updateProjectTitle(data: ProjectProps) {
+    try {
+      setLoading(true);
+      if (!editingId) {
+        toast.error("Invalid form data.");
+        return;
+      }
+      await updateProjectById(editingId, data);
+      
+      setProjectName(data.name);
+      toast.success("Title Updated!");
+      reset();
+      setEditing(false)
+    } catch (error) {
+      toast.error("Failed to update Title");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
-    <div className={cn("relative h-48 rounded-lg mb-8 overflow-hidden", gradient)}>
+    <div className={cn("relative group h-48 rounded-lg mb-8 overflow-hidden", gradient)}>
       <img
         src={bannerImage || "/placeholder.svg?height=192&width=1024"}
         alt={name}
         className="w-full h-full object-cover mix-blend-overlay"
       />
-      
+
       <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end">
-        <h1 className="text-4xl font-bold text-white">{name}</h1>
+        <div className=" flex items-center">
+          {editing ? (<form onSubmit={handleSubmit(updateProjectTitle)} className="flex max-w-[600px] items-center gap-3">
+            <TextInput
+              register={register}
+              errors={errors}
+              label=""
+              name="name"
+              placeholder=""
+              className=""
+            />
+            <SubmitButton className="mt-2" size="sm" title="Update" loading={loading} />
+          </form>):
+           <h1 className="text-4xl font-bold text-white">{projectName}</h1>
+          }
+
+          {!editing && <Button onClick={()=>{
+          setEditing(true); reset({name:projectName});
+          }} variant="link" size="icon" className="">
+            <Pen className="h-4 w-4 text-white opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100" />
+          </Button>}
+        </div>
         <Sheet>
           <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="text-white hover:bg-white/20">
-              <Edit2 className="h-4 w-4" />
+            <Button variant="ghost" size="icon" className="text-white border opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100 hover:bg-white/20">
+              <Edit className="h-4 w-4" />
             </Button>
           </SheetTrigger>
           <SheetContent>
@@ -173,7 +215,7 @@ export default function ProjectBanner({
                 <TabsContent value="link">
                   <Card>
                     <CardHeader>
-                      <CardTitle className= "mb-2">Enter Image URL</CardTitle>
+                      <CardTitle className="mb-2">Enter Image URL</CardTitle>
                       <form onSubmit={handleSubmit(updateBannerByUrl)} className="grid gap-3">
                         <TextInput
                           register={register}

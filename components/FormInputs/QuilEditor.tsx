@@ -1,18 +1,31 @@
 "use client";
-import React from "react";
-import ReactQuill from "react-quill";
+
+import React, { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
+
+// Dynamically import ReactQuill to prevent SSR issues
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+
+interface QuillEditorProps {
+  label: string;
+  className?: string;
+  value: string;
+  onChange: (content: string) => void;
+}
+
 export default function QuillEditor({
   label,
   className = "sm:col-span-2",
   value,
   onChange,
-}: {
-  label: string;
-  className: string;
-  value: any;
-  onChange: any;
-}) {
+}: QuillEditorProps) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const modules = {
     toolbar: [
       [{ header: [1, 2, false] }],
@@ -23,6 +36,7 @@ export default function QuillEditor({
       ["clean"],
     ],
   };
+
   const formats = [
     "header",
     "bold",
@@ -38,21 +52,21 @@ export default function QuillEditor({
     "code-block",
     "color",
   ];
+
   return (
     <div className={className}>
-      <label
-        htmlFor="content"
-        className="block text-sm font-medium leading-6 text-gray-900 dark:text-slate-50 mb-2"
-      >
+      <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
         {label}
       </label>
-      <ReactQuill
-        theme="snow"
-        value={value}
-        onChange={onChange}
-        modules={modules}
-        formats={formats}
-      />
+      {mounted && (
+        <ReactQuill
+          theme="snow"
+          value={value}
+          onChange={onChange}
+          modules={modules}
+          formats={formats}
+        />
+      )}
     </div>
   );
 }
