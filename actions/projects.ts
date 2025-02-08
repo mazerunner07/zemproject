@@ -58,6 +58,20 @@ export async function getUserProject(userId: string | undefined) {
     return null;
   }
 }
+export async function getUserRecentProject(userId: string | undefined) {
+  if (!userId) return []; // Return an empty array instead of null
+  try {
+    return await db.project.findMany({
+      orderBy: { createdAt: "desc" },
+      where: { userId },
+      take: 1,
+    });
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+}
+
 
 export async function updateProjectById(id: string, data: ProjectProps) {
   if (!data || typeof data !== "object" || Object.keys(data).length === 0) {

@@ -98,6 +98,28 @@ export async function getUserClient(userId: string | undefined) {
     }
   }
 }
+export async function getUserRecentClient(userId: string | undefined) {
+  if(userId){
+    try {
+      const users = await db.user.findMany({
+        orderBy: {
+          createdAt: "desc",
+        },
+        where: {
+          role: "CLIENT",
+          userId
+        },
+        take:3
+      });
+  
+      return users;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
+}
+
 
 export async function updateClientById(id: string, data: Partial<UserProps>) {
   try {

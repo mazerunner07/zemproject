@@ -431,6 +431,59 @@ export default function ProjectDetailsPage({
         </div>
 
         <div className="space-y-8">
+          {/* Client Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Client Details</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center space-x-4">
+                <Avatar className="h-12 w-12">
+                  <AvatarImage
+                    src={projectData.client.image || "/placeholder.svg?text=AC"}
+                  />
+                  <AvatarFallback>
+                    {projectData.client.firstName.charAt(0)}
+                    {projectData.client.lastName.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <p className="font-semibold">{projectData.client.name}</p>
+                  <p className="text-sm text-gray-500">
+                    {projectData.client.email}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    {projectData.client.phone}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          {/* Members */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Team Members</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex -space-x-2 overflow-hidden">
+                {projectData.members.map((member) => (
+                  <Avatar
+                    key={member.id}
+                    className="inline-block border-2 border-background"
+                  >
+                    <AvatarImage
+                      src={`/placeholder.svg?text=${member.name.charAt(0)}`}
+                    />
+                    <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                ))}
+              </div>
+              <Button variant="outline" className="mt-4 w-full">
+                <Users className="mr-2 h-4 w-4" />
+                Manage Team
+              </Button>
+            </CardContent>
+          </Card>
           {/* Project Budget */}
           <Card>
             <CardHeader>
@@ -521,60 +574,7 @@ export default function ProjectDetailsPage({
             </CardContent>
           </Card> */}
 
-          {/* Members */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Team Members</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex -space-x-2 overflow-hidden">
-                {projectData.members.map((member) => (
-                  <Avatar
-                    key={member.id}
-                    className="inline-block border-2 border-background"
-                  >
-                    <AvatarImage
-                      src={`/placeholder.svg?text=${member.name.charAt(0)}`}
-                    />
-                    <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                ))}
-              </div>
-              <Button variant="outline" className="mt-4 w-full">
-                <Users className="mr-2 h-4 w-4" />
-                Manage Team
-              </Button>
-            </CardContent>
-          </Card>
 
-          {/* Client Card */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Client Details</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center space-x-4">
-                <Avatar className="h-12 w-12">
-                  <AvatarImage
-                    src={projectData.client.image || "/placeholder.svg?text=AC"}
-                  />
-                  <AvatarFallback>
-                    {projectData.client.firstName.charAt(0)}
-                    {projectData.client.lastName.charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="font-semibold">{projectData.client.name}</p>
-                  <p className="text-sm text-gray-500">
-                    {projectData.client.email}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    {projectData.client.phone}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
 
           
         </div>
