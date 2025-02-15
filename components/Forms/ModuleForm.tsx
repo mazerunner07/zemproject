@@ -80,7 +80,7 @@ export default function ModuleForm({
               className="opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100"
               onClick={() => setIsOpen(true)}
             >
-              <Pen className="h-4 w-4 ml-2" />
+              <Pen className="h-4 text-green-500 w-4 ml-2" />
             </button>
           ) : (
             <Button variant="outline" className="w-full" onClick={() => setIsOpen(true)}>

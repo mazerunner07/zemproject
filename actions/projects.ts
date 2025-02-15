@@ -3,7 +3,6 @@
 import { generateSlug } from "@/lib/generateSlug";
 import { db } from "@/prisma/db";
 import { revalidatePath } from "next/cache";
-import { Project, Member, Invoice, Payment, Module, ProjectComment, User } from "@/models"; // ✅ Import models
 import { ProjectProps } from "@/types/types";
 
 export async function createProject(data: ProjectProps) {

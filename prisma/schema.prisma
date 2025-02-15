@@ -127,12 +127,17 @@ model Module {
   project   Project  @relation(fields: [projectId], references: [id])
   tasks     Task[]
 }
+enum TaskStatus {
+  TODO
+  INPROGRESS
+  COMPLETE
+} 
 
 model Task {
   id          String    @id @default(uuid())
   title       String
   description String?
-  status      String
+  status      TaskStatus @default(TODO)
   dueDate     DateTime?
   moduleId    String
   createdAt   DateTime  @default(now())

@@ -19,18 +19,39 @@ export async function createModule(data: ModuleProps) {
     return null;
   }
 }
-export async function getAllCategories() {
-  try {
-    const categories = await db.category.findMany({
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+// export async function getProjectModules(projectId : string | undefined) {
+//   if (projectId) {
+    
+//     try {
+//       const modules = await db.module.findMany({
+//       orderBy: {
+//         createdAt: "desc",
+//       },  
+//       where :{
+//         projectId  
+//       },
+//       include:{
+//         tasks:true,
+//       }
+//     });
 
-    return categories;
+//     return modules;
+//   } catch (error) {
+//     console.log(error);
+//     return null;
+//   }
+// }
+// }
+export async function getProjectModules(projectId: string) {
+  try {
+    return await db.module.findMany({
+      orderBy: { createdAt: "desc" },
+      where: { projectId },
+      include: { tasks: true },
+    }) || [];
   } catch (error) {
-    console.log(error);
-    return null;
+    console.error("Error fetching modules:", error);
+    return [];
   }
 }
 export async function updateModuleById(id: string, data: CommentProps) {
@@ -47,29 +68,29 @@ export async function updateModuleById(id: string, data: CommentProps) {
     console.log(error);
   }
 }
-export async function getCategoryById(id: string) {
+export async function getModuleById(id: string) {
   try {
-    const category = await db.category.findUnique({
+    const modules = await db.module.findUnique({
       where: {
         id,
       },
     });
-    return category;
+    return modules;
   } catch (error) {
     console.log(error);
   }
 }
-export async function deleteCategory(id: string) {
+export async function deleteModule(id: string) {
   try {
-    const deletedCategory = await db.category.delete({
+    const deletedModule = await db.module.delete({
       where: {
         id,
       },
     });
-
+revalidatePath('dashboard/projects')
     return {
       ok: true,
-      data: deletedCategory,
+      data: deletedModule,
     };
   } catch (error) {
     console.log(error);

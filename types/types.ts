@@ -1,4 +1,4 @@
-import { ProjectStatus, User, UserRole } from "@prisma/client";
+import { ProjectStatus, TaskStatus, User, UserRole } from "@prisma/client";
 import { Stringifier } from "postcss";
 import { Attributes } from "react";
 
@@ -46,6 +46,16 @@ export type ProjectProps = {
   deadline: number;
 };
 
+export type ModuleData = {
+  id:string;
+  name:string;
+  userName:string;
+  userId:string
+  projectId:string
+  tasks:Module[]
+  createdAt:Date;
+  updatedAt:Date
+}
 export type ProjectData = {
   id:string;
   name:string;
@@ -79,6 +89,7 @@ export type Module = {
   createdAt: Date
   updatedAt: Date
 }
+
 
 export type ProjectComment = {
   id: string

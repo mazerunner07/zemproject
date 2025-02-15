@@ -9,11 +9,13 @@ import {
   ChevronLeft,
   Plus,
   X,
-  Link,
+
   Eye,
   EyeIcon,
   Edit,
   Pen,
+  Trash,
+  TriangleAlert,
 } from "lucide-react";
 import { useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -32,16 +34,40 @@ import { useState } from "react";
 import parse from "html-react-parser";
 import NotesForm from "../Forms/NotesForm";
 import ProjectBanner from './ProjectBanner';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { ModeToggle } from "../mode-toggle";
 import { AvatarMenuButton } from "../dashboard/AvatarMenuButton";
 import CommentForm from "../Forms/CommentForm";
 import { get } from "http";
 import { getInitials } from "@/lib/generateInitials";
 import ModuleForm from "../Forms/ModuleForm";
+import { deleteModule } from "@/actions/modules";
+import toast from "react-hot-toast";
+import Link from "next/link";
 
 interface TimelineProps {
   startDate: string | Date;
   endDate: string | Date;
+}
+async function handleModuleDelete(id:string) {
+  try {
+    const res = await deleteModule(id)
+    if (res?.ok) {
+      toast.success("Module Deleted")
+    }
+  } catch (error) {
+    
+  }
 }
 
 const Timeline = ({ startDate, endDate }: TimelineProps) => {
@@ -235,12 +261,17 @@ export default function ProjectDetailsPage({
                     onUpdateSuccess={() => setIsEditingNotes(false)} // ✅ Exit edit mode on success
                   />
                 ) : (
-                  <div className="prose notes-container"
-                    dangerouslySetInnerHTML={{
-                      __html: projectData.notes
-                        .replace(/(\n\s*){2,}/g, '\n')  // Replaces multiple blank lines with a single blank line
-                        .replace(/\n/g, "<br />") || "No notes available.", // Adds <br /> for each line break
-                    }}></div>
+                  <div
+  className="prose notes-container"
+  dangerouslySetInnerHTML={{
+    __html: projectData.notes
+      ? projectData.notes
+          .replace(/(\n\s*){2,}/g, "\n") // Replaces multiple blank lines with a single blank line
+          .replace(/\n/g, "<br />")
+      : "No notes available.", // Fallback if notes are null or undefined
+  }}
+></div>
+
                 )}
               </CardContent>
             </Card></TabsContent>
@@ -310,9 +341,46 @@ export default function ProjectDetailsPage({
                           className="bg-gradient-to-br from-indigo-50 to-purple-50 hover:from-indigo-100 hover:to-purple-100 transition-colors cursor-pointer"
                         >
                           <CardHeader className="p-4">
-                            <CardTitle className="text-sm font-medium flex items-center space-x-2">
+                            <CardTitle className="text-sm font-medium justify-between flex items-center space-x-2">
                               {module.name}
+                              <div className="flex items-center gap-3">
                               <ModuleForm editingId={module.id} initialContent={module.name} projectId={projectData.id} userId={user.id} userName={user.name} />
+                              <AlertDialog>
+      <AlertDialogTrigger asChild>
+      <button onClick={()=>handleModuleDelete(module.id)} className="opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100">
+                                <Trash className="w-4 h-4 text-red-500" />
+                              </button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>
+            <div className="flex items-center text-red-600">
+              <TriangleAlert  className="w-5 h-5 font-bold mr-2" />
+                            Are you absolutely sure?
+            </div>
+          </AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone. This will permanently delete your
+            Module.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction asChild>
+            <button onClick={()=>handleModuleDelete(module.id)}>
+Continue and Delete
+
+            </button>
+
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+                     <Link className="opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100"
+                      href={`/project/modules/${module.id}?pId=${module.projectId}`}>
+                      <Eye className="w-4 h-4 text-purple-500" />
+                      </Link>        
+                              </div>
                             </CardTitle>
                           </CardHeader>
                         </Card>
@@ -419,15 +487,6 @@ export default function ProjectDetailsPage({
           </Card>
             </TabsContent>
           </Tabs>
-
-         
-
-
-
-        
-
-
-
         </div>
 
         <div className="space-y-8">
