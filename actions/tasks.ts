@@ -1,19 +1,19 @@
 "use server";
 
 import { db } from "@/prisma/db";
-import { CommentProps, ModuleProps } from "@/types/types";
+import { CommentProps, ModuleProps, TaskProps } from "@/types/types";
 import { revalidatePath } from "next/cache";
 
-export async function createModule(data: ModuleProps) {
+export async function createTask(data: TaskProps) {
   
   try {
     
-    const newModule = await db.module.create({
+    const newTask = await db.task.create({
       data,
     });
     // console.log(newCategory);
     revalidatePath("/dashboard/projects");
-    return newModule;
+    return newTask;
   } catch (error) {
     console.log(error);
     return null;
@@ -44,26 +44,29 @@ export async function createModule(data: ModuleProps) {
 // }
 export async function getProjectModules(projectId: string) {
   try {
-    return await db.module.findMany({
+    const modules = await db.module.findMany({
       orderBy: { createdAt: "desc" },
       where: { projectId },
       include: { tasks: true },
-    }) || [];
+    });
+
+    return modules || []; // Ensure it never returns null
   } catch (error) {
     console.error("Error fetching modules:", error);
     return [];
   }
 }
-export async function updateModuleById(id: string, data: CommentProps) {
+
+export async function updateTaskById(id: string, data: TaskProps) {
   try {
-    const updatedModule = await db.module.update({
+    const updatedTask = await db.task.update({
       where: {
         id,
       },
       data,
     });
     revalidatePath("/dashboard/projects");
-    return updatedModule;
+    return updatedTask;
   } catch (error) {
     console.log(error);
   }
@@ -71,25 +74,26 @@ export async function updateModuleById(id: string, data: CommentProps) {
 export async function getModuleById(id: string) {
   try {
     const modules = await db.module.findUnique({
-      where: { id },
-    include: { tasks: true },
+      where: {
+        id,
+      },
     });
     return modules;
   } catch (error) {
     console.log(error);
   }
 }
-export async function deleteModule(id: string) {
+export async function deleteTask(id: string) {
   try {
-    const deletedModule = await db.module.delete({
+    const deletedTask = await db.task.delete({
       where: {
         id,
       },
     });
-revalidatePath('dashboard/projects')
+// revalidatePath('dashboard/projects')
     return {
       ok: true,
-      data: deletedModule,
+      data: deleteTask,
     };
   } catch (error) {
     console.log(error);

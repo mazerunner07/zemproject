@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -15,12 +14,11 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Check, MessageSquare, Pen, Plus } from "lucide-react";
+import { Pen, Plus } from "lucide-react";
 import { ModuleProps } from "@/types/types";
 import { useForm } from "react-hook-form";
 import SubmitButton from "../FormInputs/SubmitButton";
 import TextInput from "../FormInputs/TextInput";
-import IconInput from "../FormInputs/IconInput";
 import toast from "react-hot-toast";
 import { createModule, updateModuleById } from "@/actions/modules";
 
@@ -30,42 +28,44 @@ export default function ModuleForm({
   userName,
   initialContent,
   editingId,
+  onModuleAdded, // Callback function to trigger fetch after adding a module
 }: {
   projectId: string;
   userId: string;
   initialContent?: string;
   userName: string;
   editingId?: string;
+  onModuleAdded?: () => void; // Function to be called after a module is successfully added
 }) {
   const { register, handleSubmit, reset, formState: { errors } } = useForm<ModuleProps>({
     defaultValues: {
       name: initialContent || ""
     }
   });
+
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedIcon, setSelectedIcon] = useState<string | undefined>(undefined);
 
   async function saveModule(data: ModuleProps) {
     data.userName = userName;
     data.projectId = projectId;
     data.userId = userId;
-    
 
     try {
       setLoading(true);
       if (editingId) {
-         await updateModuleById(editingId, data);
-        toast.success("Updated successfully!");
+        await updateModuleById(editingId, data);
+        toast.success("Module updated successfully!");
       } else {
-         await createModule(data);
-        toast.success("Successfully created!");
+        await createModule(data);
+        toast.success("Module created successfully!");
         reset();
+        if (onModuleAdded) onModuleAdded(); // Trigger fetchModules in parent component
       }
       setIsOpen(false);
     } catch (error) {
-      console.error(error);
-      toast.error("Error saving module.");
+      console.error("Error saving module:", error);
+      toast.error("Failed to save module.");
     } finally {
       setLoading(false);
     }
@@ -95,25 +95,31 @@ export default function ModuleForm({
               <DialogHeader>
                 <DialogTitle>{editingId ? "Edit Module" : "Add New Module"}</DialogTitle>
                 <DialogDescription>
-                  {/* Add description if needed */}
+                  {editingId ? "Update the module details." : "Enter the new module details."}
                 </DialogDescription>
               </DialogHeader>
               <Card>
-                <CardContent>
-                  <div className="grid gap-3">
+                <CardContent className="p-3">
+                  <TextInput
+                    register={register}
+                    errors={errors}
+                    label="Module Name"
+                    name="name"
+                  />
+                </CardContent>
+                {/* <div className="grid gap-3">
                     <TextInput
                       register={register}
                       errors={errors}
                       label=""
                       name="name"
                       icon={Check}
-                    />
-                    <IconInput 
+                    /> */}
+                    {/* <IconInput 
                       onIconSelect={setSelectedIcon}
                       selectedIcon={selectedIcon}
-                    />
-                  </div>
-                </CardContent>
+                    /> */}
+                  {/* </div> */}
               </Card>
               <div className="py-3">
                 <SubmitButton title={editingId ? "Update" : "Add"} loading={loading} />

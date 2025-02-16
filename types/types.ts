@@ -88,6 +88,7 @@ export type Module = {
   projectId: string
   createdAt: Date
   updatedAt: Date
+  tasks?: TaskProps[];
 }
 
 
@@ -128,6 +129,11 @@ export type ModuleProps = {
    userName : string
    userId : string
    projectId : string
+}
+export type TaskProps = {
+   title : string
+   status : TaskStatus
+   moduleId : string
 }
 
 export type Payment = {

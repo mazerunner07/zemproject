@@ -3,10 +3,10 @@ import Link from "next/link"
 import { Search, Home, FileText, Phone, ArrowLeft, Briefcase } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { useRouter } from "next/navigation"
+// import { useRouter } from "next/navigation"
 
 export default function NotFound() {
-  const router = useRouter()
+  // const router = useRouter()
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex items-center justify-center px-4 sm:px-6 lg:px-8">
       <div className="max-w-lg w-full space-y-8 text-center">
@@ -43,7 +43,7 @@ export default function NotFound() {
           >
             <Briefcase className="mr-2 h-4 w-4" /> View Projects
           </Link>
-            <Button onClick={()=>{router.back()}} className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-primary bg-primary/10 hover:bg-primary/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+            <Button  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-primary bg-primary/10 hover:bg-primary/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
             <ArrowLeft className="mr-2 h-4 w-4" /> Back To Project
             </Button>
         </div>

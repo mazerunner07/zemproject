@@ -1,126 +1,177 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { Button } from "@/components/ui/button";
-import { Pencil, Trash2, Plus, Eye } from "lucide-react";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import Link from "next/link";
+import { notFound, useParams, useRouter, useSearchParams } from "next/navigation";
 import { getModuleById, getProjectModules } from "@/actions/modules";
-import { notFound } from "next/navigation";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Card, CardHeader } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Check, CheckCheck, MoreVertical, ChevronRight } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import Link from "next/link";
+import TaskForm from "@/components/Forms/TaskForm";
+import { Module } from "@/types/types";
+import { DeleteTask } from "@/components/Forms/DeleteTask";
+import ModuleForm from "@/components/Forms/ModuleForm";
+import { ModeToggle } from "@/components/mode-toggle";
+import { AvatarMenuButton } from "@/components/dashboard/AvatarMenuButton";
+import { useSession } from "next-auth/react";
+import BackBtn from "@/components/BackBtn";
 
-export default function Page({ params, searchParams }: { params: { id: string }; searchParams: { [key: string]: string | string[] | undefined } }) {
-  const { pId } = searchParams;
-  const [modules, setModules] = useState([]);
-  const [tasks, setTasks] = useState({ todo: [], inProgress: [], complete: [] });
+export default function Page() {
+  const router = useRouter();
+  const params = useParams();
+  const searchParams = useSearchParams();
+  const pId = searchParams.get("pId");
+  const moduleId = params.id as string;
+  const { data: session } = useSession();
+  const [modules, setModules] = useState<Module[]>([]);
+  const [activeModule, setActiveModule] = useState<Module | null>(null);
+  const [user, setUser] = useState<{ id: string; name: string } | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function fetchModules() {
-      if (!pId) return;
-      try {
-        const activeModule = await getModuleById(id)
-        const projectModules = await getProjectModules(pId as string) || [];
-        if (!activeModule || module?.length<0) {
-          return notFound()
-        }
-        setModules(projectModules);
+  async function fetchModules() {
+    if (!pId || !moduleId) return;
+    setLoading(true);
+    try {
+      const projectModules: Module[] = (await getProjectModules(pId)) || [];
+      const activeModuleData: Module | null = await getModuleById(moduleId);
 
-        const categorizedTasks = { todo: [], inProgress: [], complete: [] };
-        projectModules.forEach(module => {
-          module.tasks.forEach(task => {
-            if (task.status === "TODO") categorizedTasks.todo.push(task);
-            else if (task.status === "INPROGRESS") categorizedTasks.inProgress.push(task);
-            else if (task.status === "COMPLETE") categorizedTasks.complete.push(task);
-          });
-        });
-        setTasks(categorizedTasks);
-      } catch (error) {
-        console.error("Error fetching modules:", error);
-      } finally {
-        setLoading(false);
+      if (!activeModuleData || projectModules.length === 0) {
+        return notFound();
       }
+
+      setActiveModule(activeModuleData);
+      setModules(projectModules);
+      setUser({ id: activeModuleData.userId, name: activeModuleData.userName });
+    } catch (error) {
+      console.error("Error fetching modules:", error);
+    } finally {
+      setLoading(false);
     }
+  }
+
+  useEffect(() => {
     fetchModules();
-  }, [pId]);
+  }, [pId, moduleId]);
+
+  let percentageCompletion = 0;
+  const allTask = activeModule?.tasks?.length ?? 0;
+  const completeTask = activeModule?.tasks?.filter(task => task.status === "COMPLETE").length ?? 0;
+  if (allTask > 0) {
+    percentageCompletion = (completeTask / allTask) * 100;
+  }
 
   return (
-    <DragDropContext onDragEnd={() => {}}>
-      <div className="bg-gradient-to-r from-cyan-500 to-blue-500 p-8 h-screen flex">
-        {/* Left Side - Project Modules */}
-        <div className="w-1/4 bg-white rounded-xl shadow-lg p-6 flex flex-col space-y-4 overflow-hidden h-full">
-          <h2 className="text-2xl font-bold">Project Modules</h2>
-          {loading ? <p>Loading...</p> : (
-            <div className="space-y-4 overflow-y-auto no-scrollbar flex-1">
-              {modules.map(module => (
-                <Card key={module.id} className="bg-gradient-to-br from-indigo-50 to-purple-50 hover:from-indigo-100 hover:to-purple-100 transition-colors cursor-pointer">
-                  <CardHeader className="flex justify-between items-center">
-                    <CardTitle>{module.name}</CardTitle>
-                  </CardHeader>
-                </Card>
-              ))}
-            </div>
-          )}
-          <Button className="mt-auto">+ Add Module</Button>
-        </div>
-
-        {/* Right Side - Tasks and Progress */}
-        <div className="w-3/4 bg-white rounded-xl shadow-lg p-6 space-y-6 flex flex-col h-full">
-          {/* Progress Bar */}
-          <div className="w-full bg-gray-200 rounded-full h-4">
-            <div
-              className="bg-blue-600 h-4 rounded-full transition-all"
-              style={{
-                width: `${
-                  (tasks.complete.length /
-                    (tasks.todo.length + tasks.inProgress.length + tasks.complete.length)) *
-                    100 || 0
-                }%`,
-              }}
-            ></div>
-          </div>
-
-          {/* Task Columns */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 flex-1 overflow-y-auto no-scrollbar">
-            {Object.entries({ todo: "Todo", inProgress: "In Progress", complete: "Complete" }).map(([columnId, title]) => (
-              <Droppable key={columnId} droppableId={columnId}>
-                {(provided) => (
-                  <div className="bg-secondary p-4 rounded-lg h-full flex flex-col" ref={provided.innerRef} {...provided.droppableProps}>
-                    <div className="flex justify-between items-center mb-2">
-                      <h2 className="text-xl font-semibold">{title}</h2>
-                      <Button size="sm">
-                        <Plus className="h-4 w-4" />
-                      </Button>
-                    </div>
-                    <ul className="space-y-2 overflow-y-auto no-scrollbar flex-1">
-                      {tasks[columnId]?.map((task, index) => (
-                        <Draggable key={task.id} draggableId={task.id} index={index}>
-                          {(provided) => (
-                            <li ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps} className="bg-background p-3 rounded-md shadow-sm">
-                              <div className="flex items-center justify-between">
-                                <span>{task.title}</span>
-                                <div className="space-x-2">
-                                  <Button size="icon" variant="ghost">
-                                    <Pencil className="h-4 w-4" />
-                                  </Button>
-                                  <Button size="icon" variant="ghost">
-                                    <Trash2 className="h-4 w-4" />
-                                  </Button>
-                                </div>
-                              </div>
-                            </li>
-                          )}
-                        </Draggable>
-                      ))}
-                      {provided.placeholder}
-                    </ul>
-                  </div>
-                )}
-              </Droppable>
-            ))}
-          </div>
+    <div className="h-screen w-full flex flex-col p-4 bg-gradient-to-r from-blue-200 to-blue-200 dark:from-gray-900 dark:to-gray-800">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-4">
+        <BackBtn title="Back" />
+        <div className="flex gap-3">
+          <ModeToggle />
+          <AvatarMenuButton session={session} />
         </div>
       </div>
-    </DragDropContext>
+
+      {/* Main Content */}
+      <div className="flex flex-1 w-full h-full overflow-hidden rounded-lg shadow-lg bg-white dark:bg-gray-900">
+        {/* Sidebar - Modules */}
+        <div className="w-full md:w-1/4 flex flex-col p-4 border-r bg-gray-50 dark:bg-gray-800">
+          <h2 className="text-lg font-bold">Project Modules</h2>
+          <Separator className="my-3" />
+          <ScrollArea className="flex-1">
+            {loading ? (
+              <p>Loading...</p>
+            ) : (
+              <div className="space-y-3">
+                {modules.map((module) => (
+                  <Link key={module.id} href={`/project/modules/${module.id}?pId=${module.projectId}`}>
+                    <Card
+                      className={`cursor-pointer p-2 ${
+                        activeModule?.id === module.id ? "bg-blue-200 dark:bg-blue-700" : "hover:bg-gray-200 dark:hover:bg-gray-700"
+                      }`}
+                    >
+                      <CardHeader className="">
+                        <div className="flex items-center justify-start">
+
+                        {activeModule?.id === module.id ? (
+                          <CheckCheck className="h-4 w-4 mr-4 text-blue-500" />
+                        ) : (
+                          <Check className="h-4 w-4 mr-4 text-gray-500" />
+                        )}
+                        <h1>{module.name}</h1>
+                        </div>
+                      </CardHeader>
+                    </Card>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </ScrollArea>
+          <ModuleForm projectId={pId as string} userId={user?.id ?? ""} userName={user?.name ?? ""} onModuleAdded={fetchModules} />
+        </div>
+
+        {/* Main Panel - Tasks */}
+        <div className="w-full md:w-3/4 flex flex-col p-6 bg-gray-50 dark:bg-gray-900">
+          {activeModule ? (
+            <>
+              <h1 className="text-2xl font-bold">{activeModule.name}</h1>
+              <Separator className="my-3" />
+              <div className="flex items-center gap-3">
+                <Progress value={percentageCompletion} className="w-full bg-gray-200 dark:bg-gray-700" />
+                <span className="text-sm text-gray-500">{percentageCompletion}% Completed</span>
+                <TaskForm moduleId={activeModule.id} initialStatus="TODO" onTaskAdded={fetchModules} isDefault />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 overflow-y-auto flex-1">
+                {["TODO", "INPROGRESS", "COMPLETE"].map((status) => (
+                  <div key={status} className="p-4 rounded-lg border border-gray-200 dark:border-gray-700 flex flex-col">
+                    <div
+                      className={`p-3 py-1 flex justify-between items-center rounded-md font-semibold ${
+                        status === "TODO" ? "bg-orange-100 dark:bg-orange-700" : status === "INPROGRESS" ? "bg-blue-100 dark:bg-blue-700" : "bg-green-100 dark:bg-green-700"
+                      }`}
+                    >
+                      {status.replace("INPROGRESS", "In Progress")}
+                      <TaskForm moduleId={activeModule.id} initialStatus={status} onTaskAdded={fetchModules} isDefault={false} />
+                    </div>
+                    <ul className="space-y-2 mt-4 overflow-y-auto flex-1">
+                      {activeModule.tasks?.filter((task) => task.status === status).length > 0 ? (
+                        activeModule.tasks.filter((task) => task.status === status).map((task) => (
+                          <Card key={task.id} className="flex p-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 items-center">
+                            <ChevronRight className="w-4 h-4 mr-2" />
+                            <span>{task.title}</span>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button size="icon" variant="ghost">
+                                  <MoreVertical className="h-4 w-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuItem asChild>
+                                  <TaskForm moduleId={activeModule.id} editingId={task.id} initialStatus={task.status} onTaskAdded={fetchModules} initialTitle={task.title} />
+                                </DropdownMenuItem>
+                                <DropdownMenuItem asChild>
+                                  <DeleteTask id={task.id} onTaskDeleted={fetchModules} />
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </Card>
+                        ))
+                      ) : (
+                        <p className="text-gray-500 text-sm">No tasks in this category.</p>
+                      )}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <p className="text-center text-gray-500">No module selected.</p>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
