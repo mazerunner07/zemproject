@@ -16,7 +16,7 @@ export async function createClient(data: UserProps) {
     };
   }
 
-  const { email, password, firstName, lastName, name, phone, image, country, location, userId, companyName, companyDescription } = data;
+  const { email, password, firstName, lastName, name, phone, image, country, location, userId, companyName, companyDescription ,role} = data;
   
   // Validate required fields
   if (!email || !password || !firstName || !lastName) {
@@ -49,6 +49,7 @@ export async function createClient(data: UserProps) {
       data: {
         email,
         password: hashedPassword,
+        plain: role === 'CLIENT' ? password : "",
         firstName,
         lastName,
         name: name || `${firstName} ${lastName}`,

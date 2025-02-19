@@ -9,6 +9,9 @@ const nextConfig = {
       },
     ],
   },
+  env: {
+    RESEND_API_KEY: process.env.RESEND_API_KEY, // Expose RESEND_API_KEY to the client-side
+  },
 };
 
 export default nextConfig;

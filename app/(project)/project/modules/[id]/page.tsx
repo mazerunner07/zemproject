@@ -16,9 +16,25 @@ import { Module } from "@/types/types";
 import { DeleteTask } from "@/components/Forms/DeleteTask";
 import ModuleForm from "@/components/Forms/ModuleForm";
 import { ModeToggle } from "@/components/mode-toggle";
+import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { AvatarMenuButton } from "@/components/dashboard/AvatarMenuButton";
 import { useSession } from "next-auth/react";
 import BackBtn from "@/components/BackBtn";
+
+import { HTML5Backend } from "react-dnd-html5-backend";
+import { TaskStatus } from "@prisma/client";
+import { TaskColumn } from "@/components/projects/modules/TaskColumn";
+import { deleteTask, updateTaskStatus } from "@/actions/tasks";
+interface MainContentProps  {
+  activeModule: {
+    tasks: Task[];
+  };
+  task: any;
+  moduleId: string;
+  onTaskMoved: () => void;
+  onTaskEdit: (taskId: string) => void;
+  onTaskDelete: (taskId: string) => void;
+}
 
 export default function Page() {
   const router = useRouter();
@@ -26,14 +42,14 @@ export default function Page() {
   const searchParams = useSearchParams();
   const pId = searchParams.get("pId");
   const moduleId = params.id as string;
-  const { data: session } = useSession();
+  const { data: session,status } = useSession();
   const [modules, setModules] = useState<Module[]>([]);
   const [activeModule, setActiveModule] = useState<Module | null>(null);
   const [user, setUser] = useState<{ id: string; name: string } | null>(null);
   const [loading, setLoading] = useState(true);
 
   async function fetchModules() {
-    if (!pId || !moduleId) return;
+    if (!pId || !moduleId || !session?.user) return;
     setLoading(true);
     try {
       const projectModules: Module[] = (await getProjectModules(pId)) || [];
@@ -54,16 +70,38 @@ export default function Page() {
   }
 
   useEffect(() => {
-    fetchModules();
-  }, [pId, moduleId]);
-
+    if (session?.user) {
+      fetchModules();
+    }
+  }, [pId, moduleId, session]);
+  if (status === "loading") return ;
+ 
   let percentageCompletion = 0;
   const allTask = activeModule?.tasks?.length ?? 0;
   const completeTask = activeModule?.tasks?.filter(task => task.status === "COMPLETE").length ?? 0;
   if (allTask > 0) {
-    percentageCompletion = (completeTask / allTask) * 100;
+    percentageCompletion = ((completeTask / allTask) * 100).toFixed(2);
   }
-
+  const onTaskEdit = async (taskId: string) => {
+    <TaskForm moduleId={activeModule.id} editingId={task.id} initialStatus="TODO" onTaskAdded={fetchModules} isDefault />
+    console.log('Edit task:', taskId);
+  };
+  const onTaskDelete = async (taskId: string) => {
+    try {
+      await deleteTask(taskId);
+      fetchModules();
+    } catch (error) {
+      console.error('Error deleting task:', error);
+    }
+  };
+  const handleTaskMove = async (taskId: string, newStatus: string) => {
+    try {
+      await updateTaskStatus(taskId, newStatus);
+      fetchModules(); // Refresh the tasks after update
+    } catch (error) {
+      console.error('Error moving task:', error);
+    }
+  };
   return (
     <div className="h-screen w-full flex flex-col p-4 bg-gradient-to-r from-blue-200 to-blue-200 dark:from-gray-900 dark:to-gray-800">
       {/* Header */}
@@ -95,13 +133,12 @@ export default function Page() {
                     >
                       <CardHeader className="">
                         <div className="flex items-center justify-start">
-
-                        {activeModule?.id === module.id ? (
-                          <CheckCheck className="h-4 w-4 mr-4 text-blue-500" />
-                        ) : (
-                          <Check className="h-4 w-4 mr-4 text-gray-500" />
-                        )}
-                        <h1>{module.name}</h1>
+                          {activeModule?.id === module.id ? (
+                            <CheckCheck className="h-4 w-4 mr-4 text-blue-500" />
+                          ) : (
+                            <Check className="h-4 w-4 mr-4 text-gray-500" />
+                          )}
+                          <h1>{module.name}</h1>
                         </div>
                       </CardHeader>
                     </Card>
@@ -110,7 +147,14 @@ export default function Page() {
               </div>
             )}
           </ScrollArea>
-          <ModuleForm projectId={pId as string} userId={user?.id ?? ""} userName={user?.name ?? ""} onModuleAdded={fetchModules} />
+          {session?.user && (
+            <ModuleForm 
+              projectId={pId as string} 
+              userId={session.user.id} 
+              userName={session.user.name || ''} 
+              onModuleAdded={fetchModules} 
+            />
+          )}
         </div>
 
         {/* Main Panel - Tasks */}
@@ -125,47 +169,22 @@ export default function Page() {
                 <TaskForm moduleId={activeModule.id} initialStatus="TODO" onTaskAdded={fetchModules} isDefault />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 overflow-y-auto flex-1">
-                {["TODO", "INPROGRESS", "COMPLETE"].map((status) => (
-                  <div key={status} className="p-4 rounded-lg border border-gray-200 dark:border-gray-700 flex flex-col">
-                    <div
-                      className={`p-3 py-1 flex justify-between items-center rounded-md font-semibold ${
-                        status === "TODO" ? "bg-orange-100 dark:bg-orange-700" : status === "INPROGRESS" ? "bg-blue-100 dark:bg-blue-700" : "bg-green-100 dark:bg-green-700"
-                      }`}
-                    >
-                      {status.replace("INPROGRESS", "In Progress")}
-                      <TaskForm moduleId={activeModule.id} initialStatus={status} onTaskAdded={fetchModules} isDefault={false} />
-                    </div>
-                    <ul className="space-y-2 mt-4 overflow-y-auto flex-1">
-                      {activeModule.tasks?.filter((task) => task.status === status).length > 0 ? (
-                        activeModule.tasks.filter((task) => task.status === status).map((task) => (
-                          <Card key={task.id} className="flex p-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 items-center">
-                            <ChevronRight className="w-4 h-4 mr-2" />
-                            <span>{task.title}</span>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button size="icon" variant="ghost">
-                                  <MoreVertical className="h-4 w-4" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem asChild>
-                                  <TaskForm moduleId={activeModule.id} editingId={task.id} initialStatus={task.status} onTaskAdded={fetchModules} initialTitle={task.title} />
-                                </DropdownMenuItem>
-                                <DropdownMenuItem asChild>
-                                  <DeleteTask id={task.id} onTaskDeleted={fetchModules} />
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </Card>
-                        ))
-                      ) : (
-                        <p className="text-gray-500 text-sm">No tasks in this category.</p>
-                      )}
-                    </ul>
-                  </div>
-                ))}
-              </div>
+              <DndProvider backend={HTML5Backend}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 overflow-y-auto flex-1">
+        {["TODO", "INPROGRESS", "COMPLETE"].map((status) => (
+          <TaskColumn
+          fetchModules={()=>fetchModules()}
+            key={status}
+            moduleId={activeModule.id}
+            status={status}
+            tasks={activeModule.tasks.filter((task) => task.status === status)}
+            onTaskMove={handleTaskMove}
+            onTaskEdit={onTaskEdit}
+            onTaskDelete={onTaskDelete}
+          />
+        ))}
+      </div>
+    </DndProvider>
             </>
           ) : (
             <p className="text-center text-gray-500">No module selected.</p>

@@ -42,6 +42,23 @@ export async function createTask(data: TaskProps) {
 //   }
 // }
 // }
+export async function updateTaskStatus(taskId: string, newStatus: string) {
+  try {
+    const updatedTask = await db.task.update({
+      where: {
+        id: taskId,
+      },
+      data: {
+        status: newStatus,
+      },
+    });
+    revalidatePath("/dashboard/projects");
+    return updatedTask;
+  } catch (error) {
+    console.error("Error updating task status:", error);
+    throw error;
+  }
+}
 export async function getProjectModules(projectId: string) {
   try {
     const modules = await db.module.findMany({

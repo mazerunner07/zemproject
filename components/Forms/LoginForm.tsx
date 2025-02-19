@@ -24,7 +24,9 @@ export default function LoginForm() {
     reset,
   } = useForm<LoginProps>();
   const params = useSearchParams();
-  const returnUrl = params.get("returnUrl") || "/dashboard";
+  const returnUrl = params.get("returnUrl") ? decodeURIComponent(params.get("returnUrl")!) : "/dashboard";
+
+
   const [passErr, setPassErr] = useState("");
   const router = useRouter();
   async function onSubmit(data: LoginProps) {
@@ -49,7 +51,8 @@ export default function LoginForm() {
         setLoading(false);
         toast.success("Login Successful");
         setPassErr("");
-        router.push(returnUrl);
+        router.replace(returnUrl);
+
       }
     } catch (error) {
       setLoading(false);

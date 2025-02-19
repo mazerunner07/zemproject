@@ -33,6 +33,8 @@ import DescriptionForm from "../Forms/DescriptionForm";
 import { useState } from "react";
 import parse from "html-react-parser";
 import NotesForm from "../Forms/NotesForm";
+import { useReactToPrint } from "react-to-print";
+import { useRef } from "react";
 import ProjectBanner from './ProjectBanner';
 import {
   AlertDialog,
@@ -54,19 +56,23 @@ import ModuleForm from "../Forms/ModuleForm";
 import { deleteModule } from "@/actions/modules";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import { signOut } from "next-auth/react";
+import { Separator } from "../ui/separator";
+import InviteClient from "../DataTableColumns/InviteClient";
+import { CodeSandboxLogoIcon } from "@radix-ui/react-icons";
 
 interface TimelineProps {
   startDate: string | Date;
   endDate: string | Date;
 }
-async function handleModuleDelete(id:string) {
+async function handleModuleDelete(id: string) {
   try {
     const res = await deleteModule(id)
     if (res?.ok) {
       toast.success("Module Deleted")
     }
   } catch (error) {
-    
+
   }
 }
 
@@ -163,6 +169,7 @@ export default function ProjectDetailsPage({
 }) {
   const router = useRouter();
   const user = session?.user
+  const role = user?.role
   const [desc, setDesc] = useState(projectData.description);
   const [note, setNote] = useState(projectData.notes);
   const paidAmount = projectData.payments.reduce((acc, item) => {
@@ -175,12 +182,21 @@ export default function ProjectDetailsPage({
   if (!projectData) {
     return <div>Project not found</div>;
   }
-
+  async function handleLogout() {
+    try {
+      const response = await signOut({ redirect: false }); // Prevents automatic redirect
+      router.push("/login"); // Manually redirect the user
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  }
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-8">
       <div className="flex mb-3 justify-between">
         <div>
-          <Button
+          {role === "USER" ? (
+            <Button
             onClick={() => router.push("/dashboard/projects")}
             variant="outline"
             size="sm"
@@ -190,6 +206,18 @@ export default function ProjectDetailsPage({
             <ChevronLeft className="mr-2 h-4 w-4" />
             Back to Projects
           </Button>
+          ) : (
+            <Button
+            onClick={handleLogout} 
+            variant="outline"
+            size="sm"
+            className="bg-black/100 text-white backdrop-blur-sm
+             dark:bg-black dark:border-black dark:text-white dark:hover:bg-white dark:hover:text-black"
+          >
+            <ChevronLeft className="mr-2 h-4 w-4" />
+            Logout
+          </Button>
+          )}
 
 
         </div>
@@ -231,172 +259,148 @@ export default function ProjectDetailsPage({
 
             </CardContent>
           </Card>
-          <Tabs defaultValue="notes" className="w-full">
+          <Tabs defaultValue="modules" className="w-full">
             <TabsList>
-             
+
+              <TabsTrigger value="modules">Modules</TabsTrigger>
               <TabsTrigger value="notes">Notes</TabsTrigger>
               <TabsTrigger value="comments">Comments</TabsTrigger>
-              <TabsTrigger value="modules">Modules</TabsTrigger>
               <TabsTrigger value="payments">Payments</TabsTrigger>
             </TabsList>
-           
+
             <TabsContent value="notes">
-               {/* Notes */}
+              {/* Notes */}
               <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle>Notes</CardTitle>
-                <Button
-                  onClick={() => setIsEditingNotes(!isEditingNotes)}
-                  variant="ghost"
-                  size="icon"
-                >
-                  {isEditingNotes ? <X className="h-4 w-4" /> : <Edit2 className="h-4 w-4" />}
-                </Button>
-              </CardHeader>
-              <CardContent>
-                {isEditingNotes ? (
-                  <NotesForm
-                    editingId={projectData.id}
-                    initialNotes={projectData.notes}
-                    onUpdateSuccess={() => setIsEditingNotes(false)} // ✅ Exit edit mode on success
-                  />
-                ) : (
-                  <div
-  className="prose notes-container"
-  dangerouslySetInnerHTML={{
-    __html: projectData.notes
-      ? projectData.notes
-          .replace(/(\n\s*){2,}/g, "\n") // Replaces multiple blank lines with a single blank line
-          .replace(/\n/g, "<br />")
-      : "No notes available.", // Fallback if notes are null or undefined
-  }}
-></div>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle>Notes</CardTitle>
+                  <Button
+                    onClick={() => setIsEditingNotes(!isEditingNotes)}
+                    variant="ghost"
+                    size="icon"
+                  >
+                    {isEditingNotes ? <X className="h-4 w-4" /> : <Edit2 className="h-4 w-4" />}
+                  </Button>
+                </CardHeader>
+                <CardContent>
+                  {isEditingNotes ? (
+                    <NotesForm
+                      editingId={projectData.id}
+                      initialNotes={projectData.notes}
+                      onUpdateSuccess={() => setIsEditingNotes(false)} // ✅ Exit edit mode on success
+                    />
+                  ) : (
+                    <div
+                      className="prose notes-container"
+                      dangerouslySetInnerHTML={{
+                        __html: projectData.notes
+                          ? projectData.notes
+                            .replace(/(\n\s*){2,}/g, "\n") // Replaces multiple blank lines with a single blank line
+                            .replace(/\n/g, "<br />")
+                          : "No notes available.", // Fallback if notes are null or undefined
+                      }}
+                    ></div>
 
-                )}
-              </CardContent>
-            </Card></TabsContent>
+                  )}
+                </CardContent>
+              </Card></TabsContent>
             <TabsContent value="comments">
-                {/* Comments */}
+              {/* Comments */}
               <Card>
-              <CardHeader>
-                <CardTitle>
-                  <div className="flex justify-between items-center">
+                <CardHeader>
+                  <CardTitle>
+                    <div className="flex justify-between items-center">
 
-                  Comments
-                  <CommentForm projectId={projectData.id} userId={projectData.userId} userName={user.name} userRole={user.role} />
-                  </div>
-                </CardTitle>
-              </CardHeader>
-              {projectData.comments.length > 0 ? (<CardContent>
-                <div className="space-y-4">
-                  {projectData.comments.map((comment) => (
-                    <div key={comment.id} className="flex items-start space-x-4 group">
-                      <Avatar>
-                        {/* <AvatarImage
+                      Comments
+                      <CommentForm projectId={projectData.id} userId={projectData.userId} userName={user.name} userRole={user.role} />
+                    </div>
+                  </CardTitle>
+                </CardHeader>
+                {projectData.comments.length > 0 ? (<CardContent>
+                  <div className="space-y-4">
+                    {projectData.comments.map((comment) => (
+                      <div key={comment.id} className="flex items-start space-x-4 group">
+                        <Avatar>
+                          {/* <AvatarImage
                         src={projectData.client.image || "/placeholder.svg"}
                       /> */}
-                        <AvatarFallback>
-                          {getInitials(comment.userName)}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1">
-                        <div className="flex items-center">
+                          <AvatarFallback>
+                            {getInitials(comment.userName)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1">
+                          <div className="flex items-center">
 
-                          <p className="font-semibold ">{comment.userName}</p>
-                          <CommentForm projectId={projectData.id} userId={projectData.userId} userName={user.name} userRole={user.role} editingId={comment.id} initialContent={comment.content} />
+                            <p className="font-semibold ">{comment.userName}</p>
+                            <CommentForm projectId={projectData.id} userId={projectData.userId} userName={user.name} userRole={user.role} editingId={comment.id} initialContent={comment.content} />
+                          </div>
+                          <div className="prose">
+                            {parse(comment.content)}
+                          </div>
+                          {/* <p className="text-sm text-gray-500">{comment.content}</p> */}
                         </div>
-                        <div className="prose">
-                          {parse(comment.content)}
-                        </div>
-                        {/* <p className="text-sm text-gray-500">{comment.content}</p> */}
                       </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>) :
-                <p>No Comment Yet</p>
-              }
-            </Card>
+                    ))}
+                  </div>
+                </CardContent>) :
+                  <p className="ml-6 mb-4">No Comment Yet</p>
+                }
+              </Card>
             </TabsContent>
             <TabsContent value="modules">
-              
-          {/* Modules */}
+
+              {/* Modules */}
 
               <Card>
-              <CardHeader>
-                <CardTitle>
-                  <div className="flex items-center justify-between">
-                    Project Modules
-                    <ModuleForm projectId={projectData.id} userId={user.id} userName={user.name} />
-                  </div>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ScrollArea>
-                  {projectData.modules.length > 0 ? (
-                    <div className="group grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                      {projectData.modules.map((module) => (
-                        <Card
-                          key={module.id}
-                          className="bg-gradient-to-br from-indigo-50 to-purple-50 hover:from-indigo-100 hover:to-purple-100 transition-colors cursor-pointer"
-                        >
-                          <CardHeader className="p-4">
-                            <CardTitle className="text-sm font-medium justify-between flex items-center space-x-2">
-                              {module.name}
-                              <div className="flex items-center gap-3">
-                              <ModuleForm editingId={module.id} initialContent={module.name} projectId={projectData.id} userId={user.id} userName={user.name} />
-                              <AlertDialog>
-      <AlertDialogTrigger asChild>
-      <button onClick={()=>handleModuleDelete(module.id)} className="opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100">
-                                <Trash className="w-4 h-4 text-red-500" />
-                              </button>
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>
-            <div className="flex items-center text-red-600">
-              <TriangleAlert  className="w-5 h-5 font-bold mr-2" />
-                            Are you absolutely sure?
-            </div>
-          </AlertDialogTitle>
-          <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete your
-            Module.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction asChild>
-            <button onClick={()=>handleModuleDelete(module.id)}>
-Continue and Delete
-
-            </button>
-
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-                     <Link className="opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100"
-                      href={`/project/modules/${module.id}?pId=${module.projectId}`}>
-                      <Eye className="w-4 h-4 text-purple-500" />
-                      </Link>        
-                              </div>
-                            </CardTitle>
-                          </CardHeader>
-                        </Card>
-                      ))}
+                <CardHeader>
+                  <CardTitle>
+                    <div className="flex items-center justify-between">
+                      Project Modules
+                      <ModuleForm projectId={projectData.id} userId={user.id} userName={user.name} />
                     </div>
-                  ) : (
-                    <div className="h-full flex items-center justify-between">
-                      <div className="space-y-4 justify-center items-center">
-                        <h2>No Modules yet</h2>
-                        {/* <Image src={emptyfolder} alt="No Modules" className="w-36 h-auto"/> */}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ScrollArea>
+                    {projectData.modules.length > 0 ? (
+                      <div className="group grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        {projectData.modules.map((module) => (
+                          <Card
+                            key={module.id}
+                            className="bg-gradient-to-br from-indigo-50 to-purple-50 hover:from-indigo-100 hover:to-purple-100 transition-colors cursor-pointer"
+                          >
+                            <CardHeader className="p-4">
+                              <CardTitle className="text-sm font-medium justify-between flex items-center space-x-2">
+                                {module.name}
+                                <div className="flex items-center gap-3">
+                                  <ModuleForm editingId={module.id} initialContent={module.name} projectId={projectData.id} userId={user.id} userName={user.name} />
 
+                                  <button onClick={() => handleModuleDelete(module.id)} className="opacity-0 transition-opacity  ease-in-out group-hover:opacity-100">
+                                    <Trash className="w-4 h-4 text-red-500" />
+                                  </button>
+
+
+                                  <Link className="opacity-0 transition-opacity  ease-in-out group-hover:opacity-100"
+
+                                    href={`/project/modules/${module.id}?pId=${module.projectId}`}>
+                                    <Eye className="w-4 h-4 text-purple-500" />
+                                  </Link>
+                                </div>
+                              </CardTitle>
+                            </CardHeader>
+                          </Card>
+                        ))}
                       </div>
-                    </div>
-                  )}
-                </ScrollArea>
-                {/* Pagination for many modules
+                    ) : (
+                      <div className="h-full flex items-center justify-between">
+                        <div className="space-y-4 justify-center items-center">
+                          <h2>No Modules yet</h2>
+                          {/* <Image src={emptyfolder} alt="No Modules" className="w-36 h-auto"/> */}
+
+                        </div>
+                      </div>
+                    )}
+                  </ScrollArea>
+                  {/* Pagination for many modules
               <div className="flex justify-center mt-4 space-x-2">
                 <Button variant="outline" size="sm">
                   Previous
@@ -405,86 +409,104 @@ Continue and Delete
                   Next
                 </Button>
               </div> */}
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
             </TabsContent>
             <TabsContent value="payments">
-{/* Invoices and Payments */}
-          
-<Card>
-            <CardHeader>
-              <CardTitle>
-                <div className="flex items-center justify-between">
+              {/* Invoices and Payments */}
 
-                Invoices & Payments
-                    <PaymentForm projectId={projectData.id} userId={projectData.userId} clientId={projectData.clientId} remainingAmount={remainingAmount} />
-                </div>
+              <Card>
+                <CardHeader>
+                  <CardTitle>
+                    <div className="flex items-center justify-between">
 
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Tabs defaultValue="payments">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="payments">Payments</TabsTrigger>
-                  <TabsTrigger value="invoices">Invoices</TabsTrigger>
-                </TabsList>
-                <TabsContent value="invoices">
-                  <ul className="space-y-2">
+                      Invoices & Payments
+                      {role === "USER" && <PaymentForm projectId={projectData.id} userId={projectData.userId} clientId={projectData.clientId} remainingAmount={remainingAmount} />}
+                    </div>
 
-                    {projectData.payments.map((invoice) => (
-                      <li
-                        key={invoice.id}
-                        className="flex justify-between items-center p-2 hover:bg-gray-100 rounded-md"
-                      >
-                        <div>
-                          <p className="font-medium">#{invoice.invoiceNumber}</p>
-                          <p className="text-sm text-gray-500">
-                            {new Date(invoice.date).toLocaleDateString()}
-                          </p>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Tabs defaultValue="payments">
+                    <TabsList className="grid w-full grid-cols-2">
+                      <TabsTrigger value="payments">Payments</TabsTrigger>
+                      <TabsTrigger value="invoices">Invoices</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="invoices">
+                      <ul className="space-y-2">
+
+                        {projectData.payments.map((invoice) => (
+                          <li
+                            key={invoice.id}
+                            className="flex justify-between items-center p-2 hover:bg-gray-100 rounded-md"
+                          >
+                            <div>
+                              <p className="font-medium">#{invoice.invoiceNumber}</p>
+                              <p className="text-sm text-gray-500">
+                                {new Date(invoice.date).toLocaleDateString()}
+                              </p>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <span className="font-semibold">
+                                ${invoice.amount.toLocaleString()}
+                              </span>
+                              <Button variant="outline" size="sm" asChild>
+                                <a href={`/project/invoice/${invoice.id}?project=${projectData.slug}`}>
+                                  <Eye className="h-4 w-4 mr-2" />
+                                  View
+                                </a>
+                              </Button>
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    </TabsContent>
+                    <TabsContent value="payments">
+                      <ul className="space-y-2">
+                        {projectData.payments.map((payment) => (
+                          <li
+                            key={payment.id}
+                            className="flex justify-between items-center p-2 hover:bg-gray-100 rounded-md"
+                          >
+                              <p className="text-sm">
+                                {new Date(payment.date).toLocaleDateString()}
+                              </p>
+                            <div>
+                              <p className="font-medium">{payment.title}</p>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <span className="font-semibold text-green-600">
+                                ${payment.amount.toLocaleString()}
+                              </span>
+                             
+                            </div>
+                          </li>
+                        ))}
+                        <Separator />
+                        <div className="flex text-sm items-center justify-between">
+                          <p>Payment Progress ({(paidAmount === 0) ? 0 : ((paidAmount * 100 / projectData.budget).toFixed(2))})</p>
+                          <p>${paidAmount}{" "}/{" "}${projectData.budget}</p>
                         </div>
-                        <div className="flex items-center space-x-2">
-                          <span className="font-semibold">
-                            ${invoice.amount.toLocaleString()}
-                          </span>
-                          <Button variant="outline" size="sm" asChild>
-                            <a href={`/project/invoice/${invoice.id}?project=${projectData.slug}`}>
-                              <Eye className="h-4 w-4 mr-2" />
-                              View
-                            </a>
-                          </Button>
+                        <div className="mt-4 w-full h-2 rounded-full bg-black/20">
+                          <div
+                            className={`h-full rounded-full transition-all duration-500 ease-in-out ${paidAmount < projectData.budget * 0.7 ? "bg-green-500" :
+                              paidAmount >= projectData.budget * 0.7 && paidAmount < projectData.budget ? "bg-orange-500" :
+                                "bg-red-500"
+                              }`}
+                            style={{
+                              width: `${Math.min((paidAmount / (projectData.budget || 1)) * 100, 100)}%`,
+                            }}
+                          ></div>
                         </div>
-                      </li>
-                    ))}
-                  </ul>
-                </TabsContent>
-                <TabsContent value="payments">
-                  <ul className="space-y-2">
-                    {projectData.payments.map((payment) => (
-                      <li
-                        key={payment.id}
-                        className="flex justify-between items-center p-2 hover:bg-gray-100 rounded-md"
-                      >
-                        <div>
-                          <p className="font-medium">{payment.title}</p>
-                          <p className="text-sm text-gray-500">
-                            {new Date(payment.date).toLocaleDateString()}
-                          </p>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <span className="font-semibold text-green-600">
-                            ${payment.amount.toLocaleString()}
-                          </span>
-                          <Button variant="outline" size="sm" >
-                            View Invoice
-                          </Button>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </TabsContent>
-              </Tabs>
-            </CardContent>
-          </Card>
+                        <div className="flex text-sm items-center justify-between">
+                    <p>Paid: {paidAmount}</p>
+                    <p>Remaining: {projectData.budget-paidAmount}</p> 
+                    </div>
+                      </ul>
+                    </TabsContent>
+                  </Tabs>
+                </CardContent>
+              </Card>
             </TabsContent>
           </Tabs>
         </div>
@@ -493,11 +515,16 @@ Continue and Delete
           {/* Client Card */}
           <Card>
             <CardHeader>
-              <CardTitle>Client Details</CardTitle>
+              <div className="flex items-center justify-between">
+
+              <CardTitle>{role === "USER" ? "Client":"User"} Details</CardTitle>
+                 {role === "USER" &&  <InviteClient row={projectData} />}
+              </div>
             </CardHeader>
             <CardContent>
               <div className="flex items-center space-x-4">
-                <Avatar className="h-12 w-12">
+                {role === "USER" ? (
+                  <Avatar className="h-12 w-12">
                   <AvatarImage
                     src={projectData.client.image || "/placeholder.svg?text=AC"}
                   />
@@ -506,7 +533,20 @@ Continue and Delete
                     {projectData.client.lastName.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
-                <div>
+                )
+                :
+                (
+                <Avatar className="h-12 w-12">
+                  {projectData.user.id ? (<AvatarImage src={projectData.user.image??"/placeholder.svg?text=AC"} />) :(
+                    <AvatarFallback>
+                    {projectData.user.name.substring(0,2).toUpperCase()}
+                  </AvatarFallback>
+                  )}
+                </Avatar>
+              )}
+                {
+                  role === "USER" ? (
+                    <div>
                   <p className="font-semibold">{projectData.client.name}</p>
                   <p className="text-sm text-gray-500">
                     {projectData.client.email}
@@ -514,7 +554,26 @@ Continue and Delete
                   <p className="text-sm text-gray-500">
                     {projectData.client.phone}
                   </p>
+                  <p className="text-sm text-gray-500">
+                    {projectData.client.companyName}
+                  </p>
                 </div>
+                  ):
+                  (
+                    <div>
+                  <p className="font-semibold">{projectData.user.name}</p>
+                  <p className="text-sm text-gray-500">
+                    {projectData.user.email}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    {user.phone}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    {projectData.user.companyName || "Individual Client"}
+                  </p>
+                </div>
+                  )
+                }
               </div>
             </CardContent>
           </Card>
@@ -537,10 +596,10 @@ Continue and Delete
                   </Avatar>
                 ))}
               </div>
-              <Button variant="outline" className="mt-4 w-full">
+             {role === "USER" &&  <Button variant="outline" className="mt-4 w-full">
                 <Users className="mr-2 h-4 w-4" />
                 Manage Team
-              </Button>
+              </Button>}
             </CardContent>
           </Card>
           {/* Project Budget */}
@@ -577,8 +636,8 @@ Continue and Delete
               <div className="mt-4 w-full h-2 rounded-full bg-black/20">
                 <div
                   className={`h-full rounded-full transition-all duration-500 ease-in-out ${paidAmount < projectData.budget * 0.7 ? "bg-green-500" :
-                      paidAmount >= projectData.budget * 0.7 && paidAmount < projectData.budget ? "bg-orange-500" :
-                        "bg-red-500"
+                    paidAmount >= projectData.budget * 0.7 && paidAmount < projectData.budget ? "bg-orange-500" :
+                      "bg-red-500"
                     }`}
                   style={{
                     width: `${Math.min((paidAmount / (projectData.budget || 1)) * 100, 100)}%`,
@@ -632,10 +691,6 @@ Continue and Delete
               </p>
             </CardContent>
           </Card> */}
-
-
-
-          
         </div>
       </div>
     </div>

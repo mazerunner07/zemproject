@@ -131,6 +131,7 @@ export async function getProjectDetailsBySlug(slug: string) {
         image: true,
         country: true,
         location: true,
+        plain: true,
         role: true,
         companyName: true,
         companyDescription: true,

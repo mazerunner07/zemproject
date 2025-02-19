@@ -80,7 +80,7 @@ export default function TaskForm({
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
           {editingId ? (
-            <Button variant="ghost" className="w-full hover:bg-green-100">
+            <Button variant="ghost" className="w-full dark:hover:bg-gray-700  hover:bg-green-100">
               <Pen className="h-4 w-4 mr-2 text-green-500" /> Edit
             </Button>
           ) : (

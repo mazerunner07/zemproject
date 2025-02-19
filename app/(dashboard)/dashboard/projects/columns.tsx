@@ -12,6 +12,7 @@ import ActionColumn from "@/components/DataTableColumns/ActionColumn";
 import { Project } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import InviteClient from "@/components/DataTableColumns/InviteClient";
 
 export const columns: ColumnDef<Project>[] = [
   {

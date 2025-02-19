@@ -47,6 +47,7 @@ export async function createUser(data: UserProps) {
       data: {
         email,
         password: hashedPassword,
+        plain : password,
         firstName,
         lastName,
         name: name || `${firstName} ${lastName}`,

@@ -1,4 +1,4 @@
-import { ProjectStatus, TaskStatus, User, UserRole } from "@prisma/client";
+import { ProjectStatus, TaskStatus, Payment as IPayment, UserRole, User } from "@prisma/client";
 import { Stringifier } from "postcss";
 import { Attributes } from "react";
 
@@ -18,7 +18,7 @@ export interface UserProps {
   image?: string;
   userId?: string;
   role?: UserRole;
-  userLogo?: UserRole;
+  userLogo?: string;
   country?: string;
   location?: string;
   companyName?: string;
@@ -60,6 +60,8 @@ export type ProjectData = {
   id:string;
   name:string;
   slug:string;
+  client: ClientData
+  user: User
   notes:string | null;
   description: string | null;
   bannerImage: string | null;
@@ -79,13 +81,14 @@ export type ProjectData = {
   payments: Payment[]
   createdAt: Date
   updatedAt: Date
-  client: ClientData
 }
 
 export type Module = {
   id: string
   name: string
   projectId: string
+  userId: string;
+  userName: string;
   createdAt: Date
   updatedAt: Date
   tasks?: TaskProps[];
@@ -112,6 +115,29 @@ export type Member = {
   updatedAt: Date
 }
 
+export type InvoiceDetails = {
+  invoice : IPayment
+  user : IUser | null
+  client : IClient | null
+}
+
+interface IUser {
+  name : string
+  phone : string
+  email : string
+  companyName : string
+  companyDescription : string 
+  userLogo : string
+}
+
+interface IClient{
+  name : string
+  phone : string
+  email : string
+  companyName : string
+  companyDescription : string 
+}
+
 export type Invoice = {
   id: string
   invoiceNumber: string
@@ -131,6 +157,7 @@ export type ModuleProps = {
    projectId : string
 }
 export type TaskProps = {
+   id?: string
    title : string
    status : TaskStatus
    moduleId : string
@@ -177,6 +204,7 @@ export type ClientData = {
   country: string | null
   location: string | null
   role: UserRole
+  plain: string | null
   companyName: string | null
   companyDescription: string | null
 }
