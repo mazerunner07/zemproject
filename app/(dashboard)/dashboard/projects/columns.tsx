@@ -13,6 +13,26 @@ import { Project } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import InviteClient from "@/components/DataTableColumns/InviteClient";
+import ProjectDeadline from "@/components/DataTableColumns/ProjectDeadline";
+import { Value } from "react-quill";
+import {Row as TanStackRow} from "@tanstack/react-table";
+import PublicityBtn from "@/components/DataTableColumns/PublicityBtn";
+
+// interface Row extends TanStackRow<Project>{
+//   original : Project;
+//   getIsSelected : ()=> boolean
+//   toggleSelected : (Value:boolean) => void;
+// }
+
+// interface Project {
+//   id : string
+//   thumbnail : string
+//   name : string
+//   budget : string
+//   deadline : Date
+//   startDate : Date
+//   slug : string
+// }
 
 export const columns: ColumnDef<Project>[] = [
   {
@@ -54,12 +74,9 @@ export const columns: ColumnDef<Project>[] = [
   {
     accessorKey: "deadline",
     header: "Deadline",
-    cell: ({ row }) => {
-        const project = row.original
-        return (
-          <p>{project.deadline}</p>
-        )
-    },
+    cell: ({ row }) => (
+        <ProjectDeadline row = {row} />
+    ),
   },
   {
     accessorKey: "thumbnail",
@@ -83,6 +100,16 @@ export const columns: ColumnDef<Project>[] = [
         View
       </Link>
       </Button>
+      )
+    },
+  },
+  {
+    accessorKey: "isPublic",
+    header: "Portfolio",
+    cell: ({ row }) => {
+      const project = row.original
+      return (
+        <PublicityBtn id={project.id} status = {project.isPublic} />
       )
     },
   },

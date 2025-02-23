@@ -34,29 +34,30 @@ model Session {
 }
 
 model User {
-  id                 String          @id @default(uuid())
+  id                 String           @id @default(uuid())
   name               String
   firstName          String
   lastName           String
   phone              String
-  email              String          @unique
+  email              String           @unique
   emailVerified      DateTime?
   image              String?
   userLogo           String?
-  role               UserRole        @default(USER)
+  role               UserRole         @default(USER)
   password           String?
   plain              String?
-  status             Boolean         @default(true)
-  isVerified         Boolean         @default(false)
+  status             Boolean          @default(true)
+  isVerified         Boolean          @default(false)
   token              Int?
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
   country            String?
   location           String?
   userId             String?
   companyDescription String?
   companyName        String?
   accounts           Account[]
+  guestProjects      GuestProject[]
   invoices           Invoice[]
   payments           Payment[]
   portfolioItems     PortfolioItem[]
@@ -82,6 +83,7 @@ model Project {
   description    String?
   startDate      DateTime?        @default(now())
   endDate        DateTime?
+  isPublic       Boolean          @default(false)
   clientId       String
   userId         String
   createdAt      DateTime         @default(now())
@@ -116,6 +118,19 @@ model ProjectComment {
   project   Project  @relation(fields: [projectId], references: [id])
 }
 
+model GuestProject {
+  id           String   @id @default(uuid())
+  projectLink  String
+  projectName  String
+  guestName    String
+  projectOwner String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [guestId], references: [id])
+  guestId      String
+  ownerId      String
+}
+
 model Module {
   id        String   @id @default(uuid())
   name      String
@@ -128,20 +143,21 @@ model Module {
   project   Project  @relation(fields: [projectId], references: [id])
   tasks     Task[]
 }
+
 enum TaskStatus {
   TODO
   INPROGRESS
   COMPLETE
-} 
+}
 
 model Task {
-  id          String    @id @default(uuid())
-  title       String
-  status      TaskStatus @default(TODO)
-  moduleId    String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  module      Module    @relation(fields: [moduleId], references: [id])
+  id        String     @id @default(uuid())
+  title     String
+  status    TaskStatus @default(TODO)
+  moduleId  String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  module    Module     @relation(fields: [moduleId], references: [id])
 }
 
 model Member {
@@ -176,7 +192,7 @@ model Payment {
   amount        Float
   date          DateTime @default(now())
   method        String
-  title        String
+  title         String
   projectId     String
   userId        String
   createdAt     DateTime @default(now())

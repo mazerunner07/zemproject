@@ -1,4 +1,5 @@
 import { getProjectDetailsBySlug } from '@/actions/projects';
+import { getExistingUsers } from '@/actions/users';
 import ProjectDetailsPage from '@/components/projects/ProjectDetailPage'
 import { authOptions } from '@/config/auth';
 import { getServerSession } from 'next-auth';
@@ -21,9 +22,10 @@ const returnUrl = `/project/${slug}`;
 if (!session) {
   redirect(`/login?returnUrl=${returnUrl}`);
 }
+const existingUsers = await getExistingUsers() || []
     return (
       <div>
-        <ProjectDetailsPage session={session} projectData={projectData} />
+        <ProjectDetailsPage existingUsers={existingUsers} session={session} projectData={projectData} />
       </div>
     );
   } catch (error) {

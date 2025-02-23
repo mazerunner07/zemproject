@@ -7,6 +7,8 @@ import { db } from "@/prisma/db";
 import { InvoiceDetails } from "@/types/types";
 import { revalidatePath } from "next/cache";
 import { Resend } from 'resend';
+import { ExistingUser } from "./users";
+import MemberInvitation from "@/components/EmailTemplate/MemberInvitation";
 export async function sendInvoiceLink(data: InvoiceDetails, invoiceLink: string) {
   
   try {
@@ -45,6 +47,49 @@ export async function sendClientInvitation(data: InvitationProps) {
         loginUrl : data.loginUrl
       })
     });
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}
+export type InvitationDetailsProps = {
+  projectName : string
+  projectOwner : string
+  projectOwnerId : string
+  loginLink : string
+}
+export async function sendMemberInvitation(members: ExistingUser[],projectData : InvitationDetailsProps) {
+  const mails = members.map((member)=>{
+    return{
+      from: "Zem-Project@resend.dev",
+      to: "projectmin95@gmail.com",
+      subject: `Invitation to ${projectData.projectName}`,
+      react: MemberInvitation({ 
+        memberName : member.name,
+        projectOwner :  projectData.projectOwner,
+        projectName: projectData.projectName,
+        loginUrl : projectData.loginLink,
+        
+      })
+    }
+  })
+  try {
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    members.map(async (member)=>{
+      const res = await db.guestProject.create({
+        data : {
+          projectLink : projectData.loginLink,
+          projectName : projectData.projectName,
+          projectOwner : projectData.projectOwner,
+          guestName : member.name,
+          guestId:member.id,
+          ownerId : projectData.projectOwnerId
+        }
+      })
+      console.log(res)
+    })
+    // const loginUrl = data.loginUrl
+    const res = await resend.batch.send(mails);
   } catch (error) {
     console.log(error);
     return null;

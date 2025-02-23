@@ -82,6 +82,34 @@ export type ProjectData = {
   createdAt: Date
   updatedAt: Date
 }
+export type ProjectWithUser = {
+  id:string;
+  name:string;
+  slug:string;
+  user: User
+  notes:string | null;
+  description: string | null;
+  bannerImage: string | null;
+  gradient: string | null;
+  thumbnail: string | null;
+  budget: number | null;
+  deadline: number | null
+  startDate: Date | null
+  endDate: Date | null;
+  status: ProjectStatus
+  clientId: string
+  userId: string
+  createdAt: Date
+  updatedAt: Date
+}
+export type ProjectWithPayments = {
+  id:string;
+  name:string;
+  slug:string;
+  thumbnail: string | null;
+  payments: Payment[]
+}
+export type DetailedUserProjects = ProjectWithPayments[]
 
 export type Module = {
   id: string

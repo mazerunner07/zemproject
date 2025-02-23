@@ -5,6 +5,7 @@ import {
   Bell,
   Cable,
   CircleUser,
+  Combine,
   Component,
   DollarSign,
   ExternalLink,
@@ -64,16 +65,16 @@ export default function Sidebar() {
       href: "/dashboard/projects",
       icon: LayoutGrid,
     },
+    {
+      title: "Guest Projects",
+      href: "/dashboard/guest-projects",
+      icon: Combine,
+    },
   ]
   },
   {
-    title: "Finace" ,
+    title: "Finance" ,
     links:[
-      {
-        title: "Invoices",
-        href: "/dashboard/invoices",
-        icon: DollarSign,
-      },
       {
         title: "Payments",
         href: "/dashboard/payments",
@@ -89,11 +90,7 @@ export default function Sidebar() {
             href: "/dashboard/members",
             icon: User2,
         },
-        {
-            title: "Roles",
-            href: "/dashboard/roles",
-            icon: Lock,
-        },
+        
       ],
     },
   {
@@ -105,7 +102,7 @@ export default function Sidebar() {
             icon: User2,
         },
         {
-            title: "Bullk Emails",
+            title: "Bulk Emails",
             href: "/dashboard/bulk-emails",
             icon: Lock,
         },
@@ -116,7 +113,7 @@ export default function Sidebar() {
           links:[
             {
               title: "Generate Portfolio",
-              href: "/dashboard/portfoilio",
+              href: "/dashboard/portfolio",
               icon: User2,
             },
         ],

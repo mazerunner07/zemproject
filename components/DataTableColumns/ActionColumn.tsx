@@ -57,7 +57,15 @@ export default function ActionColumn({
         }
         toast.success(`${model} Deleted Successfully`);
       } else if(model === "project") {
+        console.log("id : ",id)
         const res = await deleteProject(id);
+        if (res?.ok) {
+          window.location.reload();
+        }
+        toast.success(`${model} Deleted Successfully`);
+      }
+      else if(model === "client") {
+        const res = await deleteClient(id);
         if (res?.ok) {
           window.location.reload();
         }

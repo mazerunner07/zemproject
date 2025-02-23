@@ -9,6 +9,7 @@ import { useReactToPrint } from 'react-to-print'
 import { sendInvoiceLink } from '@/actions/email'
 import toast from 'react-hot-toast'
 import { usePathname } from 'next/navigation'
+import BackBtn from './BackBtn'
 
 export default function Invoice({ invoiceDetails, project, role }: { role: string, project: string, invoiceDetails: InvoiceDetails | null }) {
     const contentToPrint = useRef(null);
@@ -38,10 +39,7 @@ export default function Invoice({ invoiceDetails, project, role }: { role: strin
         <div className="max-w-2xl  mx-auto p-8">
             <div className="flex mb-2 justify-between items-center">
                 <Button asChild variant="outline" className=''>
-                    <Link href={`/project/${project}`} className='flex items-center'>
-                        <ChevronLeft className='mr-2 h-4 w-4' />
-                        Back To Project
-                    </Link>
+                    <BackBtn />
                 </Button>
                 <div className="flex justify-end gap-x-2">
                     {role === "USER" && 

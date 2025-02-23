@@ -47,7 +47,7 @@ export async function createUser(data: UserProps) {
       data: {
         email,
         password: hashedPassword,
-        plain : password,
+        plain: password,
         firstName,
         lastName,
         name: name || `${firstName} ${lastName}`,
@@ -61,7 +61,7 @@ export async function createUser(data: UserProps) {
         companyDescription
       },
     });
-  revalidatePath("/dashboard/users");
+    revalidatePath("/dashboard/users");
     return {
       error: null,
       status: 200,
@@ -105,6 +105,29 @@ export async function getUserById(id: string) {
       },
     });
 
+    return user;
+  } catch (error) {
+    console.error("Error in Get User By Id", error);
+  }
+}
+export type ExistingUser = {
+  id: string,
+  name: string,
+  email: string
+}
+export async function getExistingUsers() {
+  try {
+    const user = await db.user.findMany({
+      where: {
+        role: "USER"
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true
+      }
+    });
+console.log("user: ",user )
     return user;
   } catch (error) {
     console.error("Error in Get User By Id", error);

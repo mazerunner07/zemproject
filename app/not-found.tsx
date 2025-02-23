@@ -13,7 +13,7 @@ export default async function NotFound() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex items-center justify-center px-4 sm:px-6 lg:px-8">
       <div className="max-w-lg w-full space-y-8 text-center">
-        <div className="animate-bounce">
+        <div className=" animate-bounce">
           <svg
             className="mx-auto h-24 w-24 text-primary"
             fill="none"
