@@ -18,6 +18,7 @@ import {
   LayoutGrid,
   LineChart,
   Lock,
+  Mail,
   Menu,
   Package,
   Package2,
@@ -102,6 +103,11 @@ export default function Sidebar() {
             icon: User2,
         },
         {
+            title: "Subscribers",
+            href: "/dashboard/subscribers",
+            icon: Mail,
+        },
+        {
             title: "Bulk Emails",
             href: "/dashboard/bulk-emails",
             icon: Lock,
@@ -157,8 +163,8 @@ export default function Sidebar() {
           title: "Setting" ,
             links:[
               {
-                  title: "Account Settings",
-                  href: "/dashboard/account-settings",
+                  title: "Change Password",
+                  href: "/dashboard/change-password",
                   icon: User2,
               },
               {

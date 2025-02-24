@@ -75,6 +75,18 @@ export async function getUserMembers(userId: string | undefined) {
     return null;
   }
 }
+export async function getUserProjectsCount(userId: string | undefined) {
+  if (!userId) return null;
+
+  try {
+    return await db.project.count({
+      where: { userId },
+    });
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}
 export async function getUserProject(userId: string | undefined) {
   if (!userId) return null;
 
@@ -162,6 +174,8 @@ export async function updateProjectById(id: string, data: ProjectProps) {
         endDate: data.endDate ? new Date(data.endDate).toISOString() : null,
         budget: data.budget,
         notes: data.notes,
+        freeDomain: data.freeDomain,
+        customDomain: data.customDomain, 
       },
     });
   } catch (error) {

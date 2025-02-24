@@ -37,6 +37,8 @@ export type ProjectProps = {
   bannerImage: string;
   gradient: string;
   thumbnail: string;
+  freeDomain?: string;
+  customDomain?: string;
   startDate: any;
   endDate: any;
   status: ProjectStatus;
@@ -46,26 +48,45 @@ export type ProjectProps = {
   deadline: number;
 };
 
+export type PortfolioProps = {
+  userId: string;
+  name: string
+  profileImage: string
+  location: string
+  projectCount: number
+  email: string
+  bookingLink: string
+  description: string
+  twitterUrl: string
+  youtubeUrl: string
+  linkedinUrl: string
+  instagramUrl: string
+  githubUrl: string
+}
+
+
 export type ModuleData = {
-  id:string;
-  name:string;
-  userName:string;
-  userId:string
-  projectId:string
-  tasks:Module[]
-  createdAt:Date;
-  updatedAt:Date
+  id: string;
+  name: string;
+  userName: string;
+  userId: string
+  projectId: string
+  tasks: Module[]
+  createdAt: Date;
+  updatedAt: Date
 }
 export type ProjectData = {
-  id:string;
-  name:string;
-  slug:string;
+  id: string;
+  name: string;
+  slug: string;
   client: ClientData
   user: User
-  notes:string | null;
+  notes: string | null;
   description: string | null;
   bannerImage: string | null;
   gradient: string | null;
+  freeDomain: string | null;
+  customDomain: string | null;
   thumbnail: string | null;
   budget: number | null;
   deadline: number | null
@@ -83,11 +104,11 @@ export type ProjectData = {
   updatedAt: Date
 }
 export type ProjectWithUser = {
-  id:string;
-  name:string;
-  slug:string;
+  id: string;
+  name: string;
+  slug: string;
   user: User
-  notes:string | null;
+  notes: string | null;
   description: string | null;
   bannerImage: string | null;
   gradient: string | null;
@@ -103,9 +124,9 @@ export type ProjectWithUser = {
   updatedAt: Date
 }
 export type ProjectWithPayments = {
-  id:string;
-  name:string;
-  slug:string;
+  id: string;
+  name: string;
+  slug: string;
   thumbnail: string | null;
   payments: Payment[]
 }
@@ -134,36 +155,36 @@ export type ProjectComment = {
 }
 
 export type Member = {
-  id:string
+  id: string
   name: string
   email: string
   role: string
-  projectId:  string
+  projectId: string
   createdAt: Date
   updatedAt: Date
 }
 
 export type InvoiceDetails = {
-  invoice : IPayment
-  user : IUser | null
-  client : IClient | null
+  invoice: IPayment
+  user: IUser | null
+  client: IClient | null
 }
 
 interface IUser {
-  name : string
-  phone : string
-  email : string
-  companyName : string
-  companyDescription : string 
-  userLogo : string
+  name: string
+  phone: string
+  email: string
+  companyName: string
+  companyDescription: string
+  userLogo: string
 }
 
-interface IClient{
-  name : string
-  phone : string
-  email : string
-  companyName : string
-  companyDescription : string 
+interface IClient {
+  name: string
+  phone: string
+  email: string
+  companyName: string
+  companyDescription: string
 }
 
 export type Invoice = {
@@ -179,20 +200,20 @@ export type Invoice = {
 }
 
 export type ModuleProps = {
-   name : string
-   userName : string
-   userId : string
-   projectId : string
+  name: string
+  userName: string
+  userId: string
+  projectId: string
 }
 export type TaskProps = {
-   id?: string
-   title : string
-   status : TaskStatus
-   moduleId : string
+  id?: string
+  title: string
+  status: TaskStatus
+  moduleId: string
 }
 
 export type Payment = {
-  id:string
+  id: string
   amount: number
   date: Date
   title: string
@@ -203,7 +224,7 @@ export type Payment = {
   updatedAt: Date
   invoiceNumber: string
 }
-export type PaymentProps={
+export type PaymentProps = {
   amount: number
   tax: number
   date: string
@@ -212,17 +233,17 @@ export type PaymentProps={
   method: string
   projectId: string
   userId: string
-  clientId : string
+  clientId: string
 }
-export type CommentProps={
-  content : string
-  projectId : string
-  userName : string
-  userRole : UserRole
-  userId :string
+export type CommentProps = {
+  content: string
+  projectId: string
+  userName: string
+  userRole: UserRole
+  userId: string
 }
 export type ClientData = {
-  id:string
+  id: string
   name: string
   firstName: string
   lastName: string

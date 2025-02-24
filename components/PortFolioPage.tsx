@@ -2,14 +2,17 @@
 
 import { useState } from "react"
 import Image from "next/image"
-import { Building2, Instagram } from "lucide-react"
+import { Building2, Calendar, Github, Instagram, Linkedin, Mail, Twitter, Youtube } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Project } from "@prisma/client"
+import { PortfolioProfile, Project } from "@prisma/client"
 import PortfolioCard from "./projects/PortfolioCard"
 import { ProjectWithUser } from "@/types/types"
+import { profile } from "console"
+import Link from "next/link"
+import SubscribeForm from "./Forms/SubscribeForm"
 type ProjectCardProps = {
     title : string,
     description : string,
@@ -37,58 +40,70 @@ const ProjectCard = ({project}:{project:Project}) => {
       </Card>
     )
   }
-  export default function PortFolioPage({ projects }: {projects : ProjectWithUser[]}) {
+  export default function PortFolioPage({ projects,profile }: {projects : ProjectWithUser[],profile:PortfolioProfile}) {
     const [email, setEmail] = useState("")
   
     return (
       <div className="flex min-h-screen bg-gray-50">
         {/* Sidebar */}
-        <aside className="sticky top-0 h-screen w-90 flex-shrink-0 border-r bg-white p-8">
+        <div className="sticky top-0 h-screen w-[35%] flex-shrink-0 border-r bg-white p-8">
           <div className="flex flex-col items-center space-y-4">
-            <Avatar className="h-32 w-32">
-              <AvatarImage
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-02-23%20104218-sYz0MUD1EhKvIXBZzUqAu1U8O2byVn.png"
-                alt="Profile"
-              />
-              <AvatarFallback>ML</AvatarFallback>
-            </Avatar>
-            <h1 className="text-2xl font-bold">Marc Lou</h1>
+            <Image width={300} className="rounded-lg" height={300} src={profile.profileImage ??"/placeholder.svg"} alt={profile.name} />
+            <h1 className="text-2xl font-bold">{profile.name}</h1>
             <div className="flex items-center space-x-2 text-gray-600">
               <Building2 className="h-4 w-4" />
-              <span>Bali</span>
+              <span>{profile.location}</span>
               <span>•</span>
-              <span>$108.7k/month</span>
+              <span>{profile.projectCount} Projects</span>
             </div>
-            <p className="text-center italic text-gray-600">I was fired everywhere so I hired myself.</p>
-            <p className="text-center text-sm text-gray-600">
-              32,851 entrepreneurs read {" "}
-              <a href="#" className="text-blue-600 hover:underline">
-                Just Ship It:
-              </a>
+            <div className="flex gap-3  justify-between items-center">
+            <Button asChild>
+              <Link href={profile.bookingLink}>
+              <Calendar className="h-4 w-4 mr-2" />
+              Book Appointment
+              </Link>
+            </Button>
+            <Button asChild variant="outline">
+              <Link href="mailto:projectmin95@gmail.com">
+              <Mail className="h-4 w-4 mr-2" />
+              Mail Me
+              </Link>
+            </Button>
+            </div>
+            
+            <p className="text-center text-wrap w-full text-sm p-5">
+             {profile.description}
             </p>
-            <p className="text-center text-sm text-gray-600">
-              I share how to find startup ideas, launch fast, and get profitable 👇
-            </p>
-            <div className="w-full space-y-4 pt-4">
-              <Input
+            {/* Subscribe */}
+            <div className="w-full">
+              <SubscribeForm userId={profile.userId} />
+              {/* <Input
                 type="email"
                 placeholder="Your email..."
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
                 className="w-full"
               />
-              <Button className="w-full bg-yellow-500 hover:bg-yellow-600">Subscribe</Button>
+              <Button className="w-full bg-blue-500 hover:bg-blue-600">Subscribe</Button> */}
             </div>
             <div className="flex items-center space-x-4 pt-4">
-              <Button variant="outline" className="flex items-center space-x-2">
-                <span className="text-gray-600">Build your Indie Page</span>
-              </Button>
-              <Button variant="outline" size="icon">
-                <Instagram className="h-4 w-4" />
-              </Button>
+                <Link className="hover:bg-blue-200 ring-blue-200 ring-1 rounded-full p-2" href={profile.twitterUrl??""}>
+                <Twitter className="hover:scale-110  h-4 w-4" />
+                </Link>
+                <Link className="hover:bg-red-200 ring-red-200 ring-1 rounded-full p-2" href={profile.youtubeUrl??""}>
+                <Youtube className="h-4 w-4 hover:scale-110" />
+                </Link>
+                <Link className="hover:bg-blue-200 ring-blue-200 ring-1 rounded-full p-2" href={profile.linkedinUrl??""}>
+                <Linkedin className="h-4 w-4 hover:scale-110" />
+                </Link>
+                <Link className="hover:bg-red-200 ring-red-200 ring-1 rounded-full p-2" href={profile.instagramUrl??""}>
+                <Instagram className="h-4 w-4 hover:scale-110" />
+                </Link>
+                <Link className="hover:bg-blue-200 ring-blue-200 ring-1 rounded-full p-2" href={profile.githubUrl??""}>
+                <Github className="h-4 w-4 hover:scale-110" />
+                </Link>
             </div>
           </div>
-        </aside>
+        </div>
   
         {/* Main Content */}
         <main className="flex-1 p-8">

@@ -118,7 +118,7 @@ export async function deletePayment(id: string) {
     const deletePayment = await db.payment.delete({
       where: { id },
     });
-
+revalidatePath("/dashboard/project/")
     return {
       ok: true,
       data: deletePayment,

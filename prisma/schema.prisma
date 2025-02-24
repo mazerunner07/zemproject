@@ -34,28 +34,30 @@ model Session {
 }
 
 model User {
-  id                 String           @id @default(uuid())
+  id                 String            @id @default(uuid())
   name               String
   firstName          String
   lastName           String
   phone              String
-  email              String           @unique
+  email              String            @unique
   emailVerified      DateTime?
   image              String?
   userLogo           String?
-  role               UserRole         @default(USER)
+  role               UserRole          @default(USER)
   password           String?
   plain              String?
-  status             Boolean          @default(true)
-  isVerified         Boolean          @default(false)
+  status             Boolean           @default(true)
+  isVerified         Boolean           @default(false)
   token              Int?
-  createdAt          DateTime         @default(now())
-  updatedAt          DateTime         @updatedAt
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
   country            String?
   location           String?
   userId             String?
   companyDescription String?
   companyName        String?
+  portfolioProfile   PortfolioProfile?
+  subscriber         Subscriber[]
   accounts           Account[]
   guestProjects      GuestProject[]
   invoices           Invoice[]
@@ -90,6 +92,8 @@ model Project {
   updatedAt      DateTime         @updatedAt
   bannerImage    String?
   gradient       String?
+  freeDomain     String?          @default("http://test.vercel.app")
+  customDomain   String?          @default("http://test.app")
   notes          String?
   slug           String           @unique
   thumbnail      String?
@@ -129,6 +133,35 @@ model GuestProject {
   user         User     @relation(fields: [guestId], references: [id])
   guestId      String
   ownerId      String
+}
+
+model PortfolioProfile {
+  id           String   @id @default(uuid())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name         String
+  profileImage String?
+  location     String
+  projectCount Float
+  email        String?
+  bookingLink  String
+  description  String
+  twitterUrl   String?
+  youtubeUrl   String?
+  linkedinUrl  String?
+  instagramUrl String?
+  githubUrl    String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Subscriber {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  email     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Module {

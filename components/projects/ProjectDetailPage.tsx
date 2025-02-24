@@ -62,6 +62,8 @@ import InviteClient from "../DataTableColumns/InviteClient";
 import { CodeSandboxLogoIcon } from "@radix-ui/react-icons";
 import InviteMembers from "./InviteMembers";
 import { ExistingUser } from "@/actions/users";
+import { DomainCard } from "./DomainCard";
+import PaymentDeleteButton from "./PaymentDeleteButton";
 
 interface TimelineProps {
   startDate: string | Date;
@@ -185,7 +187,7 @@ export default function ProjectDetailsPage({
   const remainingAmount = projectData.budget ? projectData.budget - paidAmount : 0
   const [isEditing, setIsEditing] = useState(false);
   const [isEditingNotes, setIsEditingNotes] = useState(false);
-
+  
   if (!projectData) {
     return <div>Project not found</div>;
   }
@@ -197,6 +199,23 @@ export default function ProjectDetailsPage({
       console.error("Logout error:", error);
     }
   }
+  
+  const handleEdit = async (domainType: "freeDomain" | "customDomain", newDomain: string) => {
+    try {
+      const response = await fetch("/api/domains/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ projectId: projectData.id, domainType, newDomain }),
+      });
+  
+      if (!response.ok) throw new Error("Failed to update domain");
+  
+      toast.success("Domain updated successfully");
+    } catch (error) {
+      console.error(error);
+      toast.error("Error updating domain");
+    }
+  };
   
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 p-8">
@@ -535,6 +554,7 @@ export default function ProjectDetailsPage({
                     <span className="font-semibold text-green-600 dark:text-green-400">
                       ${payment.amount.toLocaleString()}
                     </span>
+                    <PaymentDeleteButton paymentId={payment.id} />
                   </div>
                 </li>
               ))}
@@ -683,7 +703,13 @@ export default function ProjectDetailsPage({
   </Card>
   
   {/* Timeline */}
-  <Timeline startDate={projectData.startDate} endDate={projectData.endDate} />
+  <Timeline startDate={projectData.startDate??""} endDate={projectData.endDate??""} />
+
+  {/* Domain */}
+
+  <DomainCard projectData={projectData} />
+
+
 </div>
 
       </div>

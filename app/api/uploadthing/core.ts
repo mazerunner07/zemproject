@@ -25,6 +25,12 @@ export const ourFileRouter = {
       return { uploadedBy: "JB" };
     }
   ),
+  profileImage: f({ image: { maxFileSize: "1MB" } }).onUploadComplete(
+    async ({ metadata, file }) => {
+      console.log("file url", file.url);
+      return { uploadedBy: "JB" };
+    }
+  ),
   imageUploader: f({ image: { maxFileSize: "4MB" } })
   .middleware(async ({ req }) => {
     const user = await getAuthUser();
