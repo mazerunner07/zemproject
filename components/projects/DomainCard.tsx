@@ -29,7 +29,7 @@ interface DomainCardProps {
   projectData: ProjectData;
 }
 
-export function DomainCard({ projectData }: DomainCardProps) {
+export function DomainCard({ projectData,isPrivate = true }: {ProjectData:DomainCardProps,isPrivate?:boolean}) {
   const [isEditingFree, setIsEditingFree] = useState(false);
   const [isEditingCustom, setIsEditingCustom] = useState(false);
   const [freeDomain, setFreeDomain] = useState(projectData.freeDomain ?? "");
@@ -54,7 +54,7 @@ export function DomainCard({ projectData }: DomainCardProps) {
               <Globe className="h-4 w-4 text-gray-500" />
             </div>
             <div className="flex-1">
-              {isEditingFree ? (
+              {isEditingFree && isPrivate ? (
                <FreeDomainForm editingId={projectData.id} initialDomain={projectData.freeDomain} onUpdateSuccess={(newDomain) => {
                 setFreeDomain(newDomain); // ✅ Update state after saving
                 setIsEditingFree(false);
@@ -68,7 +68,7 @@ export function DomainCard({ projectData }: DomainCardProps) {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            {isEditingFree ? (
+            {isEditingFree && isPrivate ? (
               <>
                 <Button variant="ghost" size="icon" onClick={() => setIsEditingFree(false)}>
                   <X className=" ml-4 h-4 w-4" />
@@ -76,13 +76,16 @@ export function DomainCard({ projectData }: DomainCardProps) {
               </>
             ) : (
               <>
+              {isPrivate && (
+                <>
                 <Button variant="ghost" size="icon" onClick={() => copyToClipboard(freeDomain)}>
                   <Copy className="h-4 w-4" />
                 </Button>
                 <Button variant="ghost" size="icon" onClick={() => setIsEditingFree(true)}>
                   <Edit2 className="h-4 w-4" />
                 </Button>
-
+                </>
+              )}
               </>
             )}
           </div>
@@ -95,7 +98,7 @@ export function DomainCard({ projectData }: DomainCardProps) {
               <Globe className="h-4 w-4 text-gray-500" />
             </div>
             <div className="flex-1">
-              {isEditingCustom ? (
+              {isEditingCustom && isPrivate ? (
                 <CustomDomainForm editingId={projectData.id} initialDomain={projectData.customDomain} onUpdateSuccess={(newDomain) => {
                   setCustomDomain(newDomain); // ✅ Update state after saving
                   setIsEditingCustom(false);
@@ -108,7 +111,7 @@ export function DomainCard({ projectData }: DomainCardProps) {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            {isEditingCustom ? (
+            {isEditingCustom && isPrivate ? (
               <>
                 <Button variant="ghost" size="icon" onClick={() => setIsEditingCustom(false)}>
                   <X className="ml-4 h-4 w-4" />
@@ -116,12 +119,16 @@ export function DomainCard({ projectData }: DomainCardProps) {
               </>
             ) : (
               <>
+              {isPrivate && (
+                <>
                 <Button variant="ghost" size="icon" onClick={() => copyToClipboard(customDomain)}>
                   <Copy className="h-4 w-4" />
                 </Button>
                 <Button variant="ghost" size="icon" onClick={() => setIsEditingCustom(true)}>
                   <Edit2 className="h-4 w-4" />
                 </Button>
+                </>
+              )}
               </>
             )}
           </div>

@@ -21,7 +21,7 @@ type MultipleImageInputProps = {
   endpoint?: any;
 };
 export type FileProps = {
-  title: string;
+  name: string;
   type: string;
   size: number;
   url: string;
@@ -86,21 +86,12 @@ export default function MultipleFileUpload({
         >
           {label}
         </label>
-        {files && (
-          <button
-            onClick={() => setFiles([])}
-            type="button"
-            className="flex space-x-2  bg-slate-900 rounded-md shadow text-slate-50  py-2 px-4"
-          >
-            <Pencil className="w-5 h-5" />
-            <span>Change Files</span>
-          </button>
-        )}
+        
       </div>
       {files.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2  gap-4">
           {files.map((file, i) => {
-            const extension = file.title.split(".").pop(); // Extract file extension
+            const extension = file.name.split(".").pop(); // Extract file extension
             return (
               <div key={i} className="relative mb-6">
                 <button
@@ -113,7 +104,7 @@ export default function MultipleFileUpload({
                 <div className="py-2 rounded-md px-6 bg-white dark:bg-slate-800 text-slate-800 flex items-center dark:text-slate-200 border border-slate-200">
                   {getFileIcon(extension)} {/* Render appropriate icon */}
                   <div className="flex flex-col">
-                    <span className="line-clamp-1">{file.title}</span>
+                    <span className="line-clamp-1">{file.name}</span>
                     {file.size > 0 && (
                       <span className="text-xs">
                         {(file.size / 1000).toFixed(2)} kb
@@ -133,15 +124,14 @@ export default function MultipleFileUpload({
             console.log(res);
             const urls = res.map((item) => {
               return {
-                url: item.url,
-                title: item.name,
+                url: item.ufsUrl,
+                name: item.name,
                 size: item.size,
                 type: item.type,
               };
             });
             setFiles(urls);
             console.log(urls);
-            console.log(res);
             console.log("Upload Completed");
           }}
           onUploadError={(error) => {

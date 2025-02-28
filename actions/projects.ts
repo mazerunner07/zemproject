@@ -137,7 +137,7 @@ export async function getUserRecentProject(userId: string | undefined) {
     return [];
   }
 }
-export async function getUserPublicProject(userId: string | undefined) {
+export async function getUserPublicFeaturedProject(userId: string | undefined) {
   if (!userId) return []; // Return an empty array instead of null
   try {
     return await db.project.findMany({
@@ -145,7 +145,24 @@ export async function getUserPublicProject(userId: string | undefined) {
       where: { userId , isPublic : true},
       include:{
         user:true
-      }
+      },
+      take:4
+    });
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+}
+export async function getUserPublicOtherProject(userId: string | undefined) {
+  if (!userId) return []; // Return an empty array instead of null
+  try {
+    return await db.project.findMany({
+      orderBy: { createdAt: "desc" },
+      where: { userId , isPublic : true},
+      include:{
+        user:true
+      },
+      skip:4
     });
   } catch (error) {
     console.log(error);

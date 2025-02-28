@@ -26,13 +26,14 @@ export default function SunEditorComponent({
         height: "200px",
         buttonList: [
           ["bold", "italic", "underline", "strike"],
-          ["formatBlock"],
+          ["fontSize", "formatBlock"], // Add fontSize selection
           ["list", "align"],
           ["link", "image"],
           ["undo", "redo"],
           ["removeFormat"],
         ],
         defaultTag: "div",
+        defaultStyle: "font-size: 16px;", // Set default text size to large
       });
 
       sunEditorInstance.current.setContents(value);

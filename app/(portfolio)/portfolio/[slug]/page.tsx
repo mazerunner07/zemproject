@@ -1,5 +1,5 @@
 import { getPortfolioByUserId } from '@/actions/portfolio'
-import { getUserPublicProject } from '@/actions/projects'
+import { getUserPublicFeaturedProject, getUserPublicOtherProject } from '@/actions/projects'
 import PortFolioPage from '@/components/PortFolioPage'
 import { getAuthUser } from '@/config/useAuth'
 import { notFound } from 'next/navigation'
@@ -16,12 +16,13 @@ export default async function page({
   if (!id) {
     return notFound()
   } 
-    const projects = await getUserPublicProject(id as string)||[]
+    const otherProjects = await getUserPublicOtherProject(id as string)||[]
+    const featured = await getUserPublicFeaturedProject(id as string)||[]
     const profile = await getPortfolioByUserId(id as string)
   return (
     <div>
       {profile && profile.id && (
-      <PortFolioPage profile = {profile} projects = {projects} />
+      <PortFolioPage otherProjects = {otherProjects} profile = {profile} projects = {featured} />
       )}
     </div>
   )

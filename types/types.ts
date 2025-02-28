@@ -1,4 +1,4 @@
-import { ProjectStatus, TaskStatus, Payment as IPayment, UserRole, User } from "@prisma/client";
+import { ProjectStatus, TaskStatus, Payment as IPayment, UserRole, User, File } from "@prisma/client";
 import { Stringifier } from "postcss";
 import { Attributes } from "react";
 
@@ -256,4 +256,24 @@ export type ClientData = {
   plain: string | null
   companyName: string | null
   companyDescription: string | null
+}
+
+export interface FolderProps {
+  name: string
+  userId: string
+}
+export interface FileProps {
+  name: string; // Assuming 'title' is used in UI
+  type: string;
+  url: string;
+  size: number; // Change to string if needed
+  folderId: string;
+}
+
+export interface UserFolder{
+  id : string
+  name: string
+  userId: string
+  files :File[]
+  createdAt: Date
 }

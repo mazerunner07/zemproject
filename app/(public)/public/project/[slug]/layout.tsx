@@ -11,10 +11,6 @@ export default async function ProjectLayout({
 }: {
   children: ReactNode;
 }) {
-  // const session = await getServerSession(authOptions);
-  // if (!session) {
-  //   redirect("/login");
-  // }
   return (
     <div>
       {children}

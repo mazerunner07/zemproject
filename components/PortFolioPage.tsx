@@ -13,6 +13,8 @@ import { ProjectWithUser } from "@/types/types"
 import { profile } from "console"
 import Link from "next/link"
 import SubscribeForm from "./Forms/SubscribeForm"
+import { OtherPortfolioProjects } from "./OtherPortfolioProjects"
+import { Separator } from "./ui/separator"
 type ProjectCardProps = {
     title : string,
     description : string,
@@ -40,10 +42,11 @@ const ProjectCard = ({project}:{project:Project}) => {
       </Card>
     )
   }
-  export default function PortFolioPage({ projects,profile }: {projects : ProjectWithUser[],profile:PortfolioProfile}) {
+  export default function PortFolioPage({ otherProjects,projects,profile }: {otherProjects:ProjectWithUser[],projects : ProjectWithUser[],profile:PortfolioProfile}) {
     const [email, setEmail] = useState("")
   
     return (
+      <>
       <div className="flex min-h-screen bg-gray-50">
         {/* Sidebar */}
         <div className="sticky top-0 h-screen w-[35%] flex-shrink-0 border-r bg-white p-8">
@@ -108,13 +111,18 @@ const ProjectCard = ({project}:{project:Project}) => {
         {/* Main Content */}
         <main className="flex-1 p-8">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          {projects.slice(0,4).map((project,index) => (
+          {projects.map((project,index) => (
   <PortfolioCard key={index} project={project} />
 ))}
 
           </div>
         </main>
       </div>
+      <Separator />
+        <div className="">
+          <OtherPortfolioProjects otherProjects={otherProjects} />
+        </div>
+      </>
     )
   }
 

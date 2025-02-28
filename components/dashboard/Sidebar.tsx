@@ -107,11 +107,6 @@ export default function Sidebar() {
             href: "/dashboard/subscribers",
             icon: Mail,
         },
-        {
-            title: "Bulk Emails",
-            href: "/dashboard/bulk-emails",
-            icon: Lock,
-        },
       ],
     },
     {
@@ -139,26 +134,26 @@ export default function Sidebar() {
           },
         ],
       },
-      {
-        title: "Reports" ,
-          links:[
-            {
-                title: "Project Progress",
-                href: "/dashboard/project-progress",
-                icon: User2,
-            },
-            {
-                title: "Financial Summary",
-                href: "/dashboard/financial-summary",
-                icon: Lock,
-            },
-            {
-                title: "Time Tracking",
-                href: "/dashboard/time-tracking",
-                icon: Lock,
-            },
-          ],
-        },
+      // {
+      //   title: "Reports" ,
+      //     links:[
+      //       {
+      //           title: "Project Progress",
+      //           href: "/dashboard/project-progress",
+      //           icon: User2,
+      //       },
+      //       {
+      //           title: "Financial Summary",
+      //           href: "/dashboard/financial-summary",
+      //           icon: Lock,
+      //       },
+      //       {
+      //           title: "Time Tracking",
+      //           href: "/dashboard/time-tracking",
+      //           icon: Lock,
+      //       },
+      //     ],
+      //   },
         {
           title: "Setting" ,
             links:[
@@ -166,16 +161,6 @@ export default function Sidebar() {
                   title: "Change Password",
                   href: "/dashboard/change-password",
                   icon: User2,
-              },
-              {
-                  title: "Notifications",
-                  href: "/dashboard/notifications",
-                  icon: Lock,
-              },
-              {
-                  title: "Integrations",
-                  href: "/dashboard/integrations",
-                  icon: Lock,
               },
             ],
           },

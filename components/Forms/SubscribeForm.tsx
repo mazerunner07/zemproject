@@ -40,8 +40,13 @@ export default function SubscribeForm({
     try {
       console.log("front",data)
       setLoading(true);
-      await createSubscription(data);
-  
+      const res = await createSubscription(data);
+      if (res?.status === 409) {
+        setLoading(false);
+        toast.error(res.error);
+        reset()
+        return;
+      }
       toast.success("Subscribe!!!");
       router.refresh();
     } catch (error) {

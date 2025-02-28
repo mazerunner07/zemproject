@@ -37,7 +37,7 @@ export default function PortfolioCard({project}:{project:ProjectWithUser}) {
             </h2>
             <div className="flex flex-row justify-between items-center mt-10">
               <span className="text-sm text-gray-500">{getNormalDate(project.startDate)}</span>
-              <Link href ="" className="relative z-10 px-6 py-2 bg-black text-white font-bold rounded-xl block text-xs">
+              <Link href ={`/public/project/${project.slug}`} className="relative z-10 px-6 py-2 bg-black text-white font-bold rounded-xl block text-xs">
                 Read More
               </Link>
             </div>

@@ -46,11 +46,13 @@ export default function ProjectBanner({
   name,
   editingId,
   bg,
+  isPrivate=true
 }: {
   bannerImage: string | undefined;
   name: string;
-  editingId: string;
+  editingId?: string;
   bg: string | null;
+  isPrivate?: boolean;
 }) {
   const router = useRouter();
   const [gradient, setGradient] = useState(bg || gradients[0]);
@@ -129,7 +131,7 @@ export default function ProjectBanner({
   }
 
   return (
-    <div className={cn("relative group h-48 rounded-lg mb-8 overflow-hidden", gradient)}>
+    <div className={cn("relative w-full group h-48 rounded-lg mb-8 overflow-hidden", gradient)}>
       <img
         src={bannerImage || "/placeholder.svg?height=192&width=1024"}
         alt={name}
@@ -138,7 +140,7 @@ export default function ProjectBanner({
 
       <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end">
         <div className=" flex items-center">
-          {editing ? (<form onSubmit={handleSubmit(updateProjectTitle)} className="flex max-w-[600px] items-center gap-3">
+          {editing && isPrivate ? (<form onSubmit={handleSubmit(updateProjectTitle)} className="flex max-w-[600px] items-center gap-3">
             <TextInput
               register={register}
               errors={errors}
@@ -152,18 +154,25 @@ export default function ProjectBanner({
            <h1 className="text-4xl font-bold text-white">{projectName}</h1>
           }
 
-          {!editing && <Button onClick={()=>{
+          {!editing && !isPrivate && ( <Button onClick={()=>{
           setEditing(true); reset({name:projectName});
           }} variant="link" size="icon" className="">
-            <Pen className="h-4 w-4 text-white opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100" />
-          </Button>}
+            {isPrivate && <Pen className="h-4 w-4 text-white opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100" />}
+            {/* <Pen className="h-4 w-4 text-white opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100" /> */}
+          </Button>)}
         </div>
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="text-white border opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100 hover:bg-white/20">
+        {isPrivate && (
+
+          <Sheet>
+            {!editing && !isPrivate && (
+              <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="text-white border opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100 hover:bg-white/20">
+
               <Edit className="h-4 w-4" />
+
             </Button>
-          </SheetTrigger>
+            </SheetTrigger>
+            )}
           <SheetContent>
             <SheetHeader>
               <DialogTitle>Edit Project Banner</DialogTitle>
@@ -255,6 +264,7 @@ export default function ProjectBanner({
             </SheetHeader>
           </SheetContent>
         </Sheet>
+        )}
       </div>
     </div>
   );
