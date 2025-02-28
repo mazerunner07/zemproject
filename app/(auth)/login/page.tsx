@@ -1,22 +1,22 @@
+"use client";
+
 import LoginForm from "@/components/Forms/LoginForm";
-import { authOptions } from "@/config/auth";
-import { Lock, Mail } from "lucide-react";
-import { getServerSession } from "next-auth";
-import Link from "next/link";
-import { redirect } from "next/navigation";
-import React from "react";
+import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams: Record<string, string | string[] | undefined>;
-}) {
-  const returnUrl = (searchParams?.returnUrl as string) || "/dashboard";
-  const session = await getServerSession(authOptions);
+export default function Page() {
+  const searchParams = useSearchParams();
+  const returnUrl = searchParams.get("returnUrl") || "/dashboard";
+  const { data: session } = useSession();
+  const router = useRouter();
 
-  if (session) {
-    redirect(returnUrl);
-  }
+  useEffect(() => {
+    if (session) {
+      router.replace(returnUrl);
+    }
+  }, [session, returnUrl, router]);
 
   return (
     <section>
