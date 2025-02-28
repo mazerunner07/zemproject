@@ -16,7 +16,6 @@ import {
   Menu,
   Package,
   Package2,
-  Search,
   ShoppingCart,
   User2,
   Users,
