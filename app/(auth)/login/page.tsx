@@ -1,22 +1,21 @@
-"use client";
-
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/config/auth";
+import { redirect } from "next/navigation";
 import LoginForm from "@/components/Forms/LoginForm";
-import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 
-export default function Page() {
-  const searchParams = useSearchParams();
-  const returnUrl = searchParams.get("returnUrl") || "/dashboard";
-  const { data: session } = useSession();
-  const router = useRouter();
+interface PageProps {
+  searchParams: Record<string, string | string[] | undefined>;
+}
 
-  useEffect(() => {
-    if (session) {
-      router.replace(returnUrl);
-    }
-  }, [session, returnUrl, router]);
+export default async function Page({ searchParams }: PageProps) {
+  const returnUrl = searchParams?.returnUrl
+    ? String(searchParams.returnUrl)
+    : "/dashboard";
+
+  const session = await getServerSession(authOptions);
+  if (session) {
+    redirect(returnUrl);
+  }
 
   return (
     <section>

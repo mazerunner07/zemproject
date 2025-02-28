@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    turbo: false, // Disable Turbopack
+  },
   reactStrictMode: false, // Disable Strict Mode (temporary fix for react-quill)
   images: {
     remotePatterns: [
