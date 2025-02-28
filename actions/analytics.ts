@@ -8,7 +8,7 @@ export type AnalyticsProps = {
       total: number;
       href: string;
       icon : any;
-      isCurrency : boolean
+      isCurrency?: boolean
 }
 export async function getDashboardOverview(userId: string | undefined) {
   if(userId){

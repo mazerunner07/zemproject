@@ -14,7 +14,7 @@ export default function RecentClients({ recentClients = [] }: RecentClientsProps
         <CardTitle>Clients</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="flex items-center flex-nowrap gap-4 overflow-x-auto pb-4">
+        <div>
           {recentClients.length > 0 ? (
             recentClients.map((client) => (
               <div
@@ -26,7 +26,7 @@ export default function RecentClients({ recentClients = [] }: RecentClientsProps
                     <AvatarImage src="/avatars/01.png" alt={client.name || "Avatar"} />
                     <AvatarFallback>{getInitials(client.name)}</AvatarFallback>
                   </Avatar>
-                  <div className="ml-4 space-y-1">
+                  <div className="ml-6 space-y-1">
                     <p className="text-sm font-medium leading-none">{client.name}</p>
                     <p className="text-sm text-muted-foreground">{client.email}</p>
                   </div>

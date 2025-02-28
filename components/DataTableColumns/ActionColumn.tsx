@@ -125,8 +125,8 @@ export default function ActionColumn({
           <span>Delete</span>
         </DropdownMenuItem> */}
         <DropdownMenuItem>
-          <Link href={editEndpoint} className="flex item gap-2">
-            <Pencil className="w-4 h-4 " />
+          <Link href={editEndpoint} className="text-green-600 gap-4 flex items-center w-full hover:text-green-700 transition-all duration-500 cursor-pointer">
+            <Pencil className="w-4 h-4 ml-1 flex-shrink-0" />
             <span>Edit</span>
           </Link>
         </DropdownMenuItem>

@@ -130,7 +130,7 @@ export async function getUserRecentProject(userId: string | undefined) {
     return await db.project.findMany({
       orderBy: { createdAt: "desc" },
       where: { userId },
-      take: 1,
+      
     });
   } catch (error) {
     console.log(error);

@@ -16,7 +16,7 @@ export default function OverviewCard({item}:{item : AnalyticsProps}) {
           </Icon>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{item.isCurrency && <span>$</span>}{" "}{item.isCurrency ? item.total.toLocaleString() : item.total.toString().padStart(2,"0")}</div>
+          <div className="text-2xl font-bold">{item.isCurrency && <span></span>}{" "}{item.isCurrency ? item.total.toLocaleString() : item.total.toString().padStart(2,"0")}</div>
           <Link href ={item.href} className="text-xs text-muted-foreground">
             View Details
           </Link>

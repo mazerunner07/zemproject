@@ -47,8 +47,13 @@ export default function ProjectForm({
       name: initialData?.name,
       description: initialData?.description || "",
       budget: initialData?.budget || 0,
-      startDate: initialData?.startDate|| null,
-      endDate: initialData?.endDate || null,
+      startDate: initialData?.startDate
+      ? convertIsoToDateString(initialData.startDate)
+      : null,
+    endDate: initialData?.endDate
+      ? convertIsoToDateString(initialData.endDate)
+      : null,
+    deadline: initialData?.deadline || 0,
     },
   });
   const router = useRouter();
