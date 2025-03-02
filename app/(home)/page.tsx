@@ -22,11 +22,12 @@ import Showcase from "@/components/frontend/showcase";
 import { getKitUsers } from "@/actions/users";
 import HeroSection from "@/components/frontend/hero-section";
 import TabbedFeatures from "@/components/frontend/tabbed-features";
+import HeroSectionWrapper from "@/components/frontend/HeroSectionWrapper";
 export default async function Home() {
   const count = (await getKitUsers()) ?? 0;
   return (
     <main className="min-h-screen">
-      <HeroSection />
+       <HeroSectionWrapper />
       <div className="mx-auto max-w-6xl py-16">
         <div className="">
           <ComparisonFeatures />

@@ -29,7 +29,7 @@ interface DomainCardProps {
   projectData: ProjectData;
 }
 
-export function DomainCard({ projectData,isPrivate = true }: {ProjectData:DomainCardProps,isPrivate?:boolean}) {
+export function DomainCard({ projectData, isPrivate = true }: DomainCardProps & { isPrivate?: boolean }) {
   const [isEditingFree, setIsEditingFree] = useState(false);
   const [isEditingCustom, setIsEditingCustom] = useState(false);
   const [freeDomain, setFreeDomain] = useState(projectData.freeDomain ?? "");

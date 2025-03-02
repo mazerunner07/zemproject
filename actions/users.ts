@@ -183,15 +183,27 @@ export async function updateUserPassword(id: string, data: PasswordProps) {
     console.log(error);
   }
 }
+
 export async function getKitUsers() {
-  const endpoint = process.env.KIT_API_ENDPOINT as string;
+  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000";
+  const endpoint = `${baseUrl}/api/users/count`;
+
+  console.log("Fetching count from:", endpoint);
+
   try {
-    const res = await fetch(endpoint, {
-      next: { revalidate: 0 }, // Revalidate immediately
-    });
-    const response = await res.json();
-    const count = response.count;
-    return count;
+    const res = await fetch(endpoint, { cache: "no-store" });
+
+    if (!res.ok) {
+      throw new Error(`Failed to fetch: ${res.status} ${res.statusText}`);
+    }
+
+    const contentType = res.headers.get("content-type");
+    if (!contentType || !contentType.includes("application/json")) {
+      throw new Error(`Invalid response type: ${contentType}`);
+    }
+
+    const data = await res.json();
+    return data.count ?? 0;
   } catch (error) {
     console.error("Error fetching the count:", error);
     return 0;

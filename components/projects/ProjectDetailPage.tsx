@@ -2,20 +2,11 @@
 
 import {
   CalendarDays,
-  DollarSign,
   Edit2,
-  MessageSquare,
-  Users,
   ChevronLeft,
-  Plus,
   X,
-
   Eye,
-  EyeIcon,
-  Edit,
-  Pen,
   Trash,
-  TriangleAlert,
 } from "lucide-react";
 import { useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -36,17 +27,6 @@ import NotesForm from "../Forms/NotesForm";
 import { useReactToPrint } from "react-to-print";
 import { useRef } from "react";
 import ProjectBanner from './ProjectBanner';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
 import { ModeToggle } from "../mode-toggle";
 import { AvatarMenuButton } from "../dashboard/AvatarMenuButton";
 import CommentForm from "../Forms/CommentForm";
@@ -59,7 +39,6 @@ import Link from "next/link";
 import { signOut } from "next-auth/react";
 import { Separator } from "../ui/separator";
 import InviteClient from "../DataTableColumns/InviteClient";
-import { CodeSandboxLogoIcon } from "@radix-ui/react-icons";
 import InviteMembers from "./InviteMembers";
 import { ExistingUser } from "@/actions/users";
 import { DomainCard } from "./DomainCard";
@@ -79,6 +58,8 @@ async function handleModuleDelete(id: string) {
 
   }
 }
+
+
 
 const Timeline = ({ startDate, endDate }: TimelineProps) => {
   const [timelineStats, setTimelineStats] = useState({
@@ -174,6 +155,7 @@ export default function ProjectDetailsPage({
   projectData: ProjectData;
 }) {
   const router = useRouter();
+  const budget = projectData.budget ?? 1;
   const user = session?.user
   let role = user?.role
   if (user.id !== projectData.user.id) {
@@ -245,11 +227,17 @@ export default function ProjectDetailsPage({
         </div>
         <div className="flex gap-3">
           <ModeToggle />
-          <AvatarMenuButton session={session} />
+          <AvatarMenuButton session={session ?? null} />
         </div>
       </div>
 
-      <ProjectBanner bg={projectData.gradient} editingId={projectData.id} name={projectData.name} bannerImage={projectData.bannerImage} />
+      <ProjectBanner
+  bg={projectData.gradient}
+  editingId={projectData.id}
+  name={projectData.name}
+  bannerImage={projectData.bannerImage ?? undefined} 
+/>
+
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
@@ -559,31 +547,33 @@ export default function ProjectDetailsPage({
                 </li>
               ))}
               <Separator className="dark:bg-gray-700" />
-              <div className="flex text-sm items-center justify-between text-gray-900 dark:text-gray-100">
-                <p>
-                  Payment Progress ({(paidAmount === 0) ? 0 : ((paidAmount * 100 / projectData.budget).toFixed(2))})
-                </p>
-                <p>${paidAmount} / ${projectData.budget}</p>
-              </div>
-              <div className="mt-4 w-full h-2 rounded-full bg-black/20 dark:bg-gray-700">
-                <div
-                  className={`h-full rounded-full transition-all duration-500 ease-in-out ${
-                    paidAmount < projectData.budget * 0.7
-                      ? "bg-green-500"
-                      : paidAmount >= projectData.budget * 0.7 && paidAmount < projectData.budget
-                      ? "bg-orange-500"
-                      : "bg-red-500"
-                  }`}
-                  style={{
-                    width: `${Math.min((paidAmount / (projectData.budget || 1)) * 100, 100)}%`,
-                  }}
-                ></div>
-              </div>
-              <div className="flex text-sm items-center justify-between text-gray-900 dark:text-gray-100">
-                <p>Paid: {paidAmount}</p>
-                <p>Remaining: {projectData.budget - paidAmount}</p>
-              </div>
-            </ul>
+              
+
+<div className="flex text-sm items-center justify-between text-gray-900 dark:text-gray-100">
+  <p>Payment Progress ({(paidAmount === 0) ? 0 : ((paidAmount * 100 / budget).toFixed(2))}%)</p>
+  <p>${paidAmount} / ${budget}</p>
+</div>
+
+<div className="mt-4 w-full h-2 rounded-full bg-black/20 dark:bg-gray-700">
+  <div
+    className={`h-full rounded-full transition-all duration-500 ease-in-out ${
+      paidAmount < budget * 0.7
+        ? "bg-green-500"
+        : paidAmount >= budget * 0.7 && paidAmount < budget
+        ? "bg-orange-500"
+        : "bg-red-500"
+    }`}
+    style={{
+      width: `${Math.min((paidAmount / budget) * 100, 100)}%`,
+    }}
+  ></div>
+</div>
+
+<div className="flex text-sm items-center justify-between text-gray-900 dark:text-gray-100">
+  <p>Paid: {paidAmount}</p>
+  <p>Remaining: {budget - paidAmount}</p>
+</div>
+</ul>
           </TabsContent>
         </Tabs>
       </CardContent>
@@ -686,10 +676,19 @@ export default function ProjectDetailsPage({
         </div>
       </div>
       <div className="mt-4 w-full h-2 rounded-full bg-black/20 dark:bg-gray-700">
-        <div
-          className={`h-full rounded-full transition-all duration-500 ease-in-out ${paidAmount < projectData.budget * 0.7 ? "bg-green-500" : paidAmount >= projectData.budget * 0.7 && paidAmount < projectData.budget ? "bg-orange-500" : "bg-red-500"}`}
-          style={{ width: `${Math.min((paidAmount / (projectData.budget || 1)) * 100, 100)}%` }}
-        ></div>
+<div
+  className={`h-full rounded-full transition-all duration-500 ease-in-out ${
+    paidAmount < budget * 0.7
+      ? "bg-green-500"
+      : paidAmount >= budget * 0.7 && paidAmount < budget
+      ? "bg-orange-500"
+      : "bg-red-500"
+  }`}
+  style={{
+    width: `${projectData.budget ? Math.min((paidAmount / budget) * 100, 100) : 0}%`,
+  }}
+></div>
+
       </div>
       <div className="flex justify-between mt-2">
         <p className="text-sm text-gray-500 dark:text-gray-400">
