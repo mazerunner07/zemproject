@@ -9,7 +9,7 @@ export default async function page() {
   return (
     <>
     {projects.length>0 ? (
-        <div className='grid grid-cols-12 lg:grid-cols-2 p-8'>
+        <div className='dark:bg-[#121212] grid p-8'>
         <GuestProjects projects = {projects} />
       </div>
     ):(

@@ -207,108 +207,114 @@ const router = useRouter();
     }
   }
   return (
-    <Card className="w-full max-w-2xl mx-auto shadow-lg">
-      <CardHeader className="flex p-4 pb-3">
-        <h2 className="text-lg font-medium">New Message</h2>
-      </CardHeader>
-<Separator />
-      <CardContent className="p-4 space-y-4">
-        <FormSelectInput
-          label="Select Recipients"
-          options={allEmails}
-          option={selectedRecipient}
-          setOption={setSelectedRecipient}
-          toolTipText="Add New Recipients"
-          href="/dashboard/clients/new"
-        />
+    <Card className="w-full max-w-2xl mx-auto shadow-lg dark:bg-[#121212] text-[#E0E0E0] border dark:border-[#333333]">
+  <CardHeader className="flex p-4 pb-3">
+    <h2 className="text-lg text-black dark:text-white font-medium">New Message</h2>
+  </CardHeader>
+  <Separator className="bg-[#333333]" />
+  
+  <CardContent className="p-4 space-y-4">
+    <FormSelectInput
+      label="Select Recipients"
+      options={allEmails}
+      option={selectedRecipient}
+      setOption={setSelectedRecipient}
+      toolTipText="Add New Recipients"
+      href="/dashboard/clients/new"
+      
+    />
 
-        <div className="space-y-1">
-          <label className="text-sm font-medium">Subject</label>
-          <Input
-            placeholder="Type here..."
-            value={subject}
-            onChange={(e) => setSubject(e.target.value)}
-          />
-        </div>
+    <div className="space-y-1">
+      <label className="text-sm text-black dark:text-white font-medium">Subject</label>
+      <Input
+        placeholder="Type here..."
+        value={subject}
+        onChange={(e) => setSubject(e.target.value)}
+        className="dark:bg-[#1E1E1E] border dark:border-[#333333] dark:text-[#E0E0E0] placeholder-gray-400"
+      />
+    </div>
 
-        <SunEditorComponent
-  label="Compose Mail"
-  value={content}
-  onChange={setContent}// Prevent passive event issue
-/>
+    <SunEditorComponent
+      label="Compose Mail"
+      value={content}
+      onChange={setContent}
+      className="dark:bg-[#1E1E1E] border dark:border-[#333333] dark:text-[#E0E0E0]"
+    />
 
-
-        {files.length > 0 && (
-          <div className="space-y-2">
-            <div className="text-sm font-medium">Attachments</div>
-            <div className="space-y-2">
-              {files.map((file, i) => {
-                const extension = file.name.split(".").pop();
-                return (
-                  <div key={i} className="relative">
-                    <button
-                      type="button"
-                      onClick={() => handleImageRemove(i)}
-                      className="absolute -top-2 -right-2 bg-slate-100 text-red-600 rounded-full"
-                    >
-                      <XCircle />
-                    </button>
-                    <div className="py-2 px-6 bg-white dark:bg-slate-800 flex items-center border rounded-md">
-                      {getFileIcon(extension)}
-                      <div className="ml-4">
-                        <span className="block text-sm font-medium">{file.name}</span>
-                        {file.size > 0 && (
-                          <span className="text-xs text-gray-500">{(file.size / 1000).toFixed(2)} KB</span>
-                        )}
-                      </div>
-                    </div>
+    {files.length > 0 && (
+      <div className="space-y-2">
+        <div className="text-sm font-medium">Attachments</div>
+        <div className="space-y-2">
+          {files.map((file, i) => {
+            const extension = file.name.split(".").pop();
+            return (
+              <div key={i} className="relative">
+                <button
+                  type="button"
+                  onClick={() => handleImageRemove(i)}
+                  className="absolute -top-2 -right-2 bg-[#272727] text-red-500 rounded-full p-1"
+                >
+                  <XCircle />
+                </button>
+                <div className="py-2 px-6 bg-[#1E1E1E] flex items-center border border-[#333333] rounded-md">
+                  {getFileIcon(extension)}
+                  <div className="ml-4">
+                    <span className="block text-sm font-medium">{file.name}</span>
+                    {file.size > 0 && (
+                      <span className="text-xs text-gray-400">
+                        {(file.size / 1000).toFixed(2)} KB
+                      </span>
+                    )}
                   </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-      </CardContent>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    )}
+  </CardContent>
 
-      <CardFooter className="flex items-center justify-between px-4 py-2 border-t">
-        {type === "single" && (
-          <Dialog>
-          <DialogTrigger asChild>
-            <Button variant="ghost">
-              <Paperclip className="" />
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Upload your Files</DialogTitle>
-            </DialogHeader>
-            <form onSubmit={onSubmit} className="space-y-4">
-              <MultipleFileUpload
-                label="Add attachments"
-                files={files}
-                setFiles={setFiles}
-                endpoint="mailAttachments"
-              />
-            </form>
-          </DialogContent>
-        </Dialog>
-        )}
+  <CardFooter className="flex items-center justify-between px-4 py-2 border-t border-[#333333]">
+    {type === "single" && (
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button variant="ghost" className="text-black dark:text-[#E0E0E0]">
+            <Paperclip />
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="bg-[#121212] border border-[#333333]">
+          <DialogHeader>
+            <DialogTitle>Upload your Files</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={onSubmit} className="space-y-4">
+            <MultipleFileUpload
+              label="Add attachments"
+              files={files}
+              setFiles={setFiles}
+              endpoint="mailAttachments"
+            />
+          </form>
+        </DialogContent>
+      </Dialog>
+    )}
 
-        <Button 
-          onClick={onSubmit} 
-          disabled={isSubmitting}
-          className="flex items-center bg-blue-500 hover:bg-blue-600 space-x-2"
-        >
-          {isSubmitting ? (
-            <span>Sending...</span>
-          ) : (
-            <>
-              <Plus className="h-4 w-4" />
-              <span>Send Email</span>
-            </>
-          )}
-        </Button>
-      </CardFooter>
-    </Card>
+    <Button 
+      onClick={onSubmit} 
+      disabled={isSubmitting}
+      className="flex items-center bg-blue-500 hover:bg-blue-600 dark:text-[#121212] px-4 py-2 rounded-lg"
+    >
+      {isSubmitting ? (
+        <span>Sending...</span>
+      ) : (
+        <>
+          <Plus className="h-4 w-4" />
+          <span>Send Email</span>
+        </>
+      )}
+    </Button>
+  </CardFooter>
+</Card>
+
   );
 }

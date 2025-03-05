@@ -13,6 +13,7 @@ import SubmitButton from "../FormInputs/SubmitButton";
 import { Sheet, SheetContent, SheetHeader, SheetTrigger } from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DialogTitle } from "@/components/ui/dialog";
+import { updateProjectById } from "@/actions/projects";
 
 // ✅ Define the missing ProjectProps type
 interface ProjectProps {
@@ -21,10 +22,7 @@ interface ProjectProps {
 }
 
 // ✅ Placeholder function for updating the project
-async function updateProjectById(id: string, data: any) {
-  console.log(`Updating project ${id} with data:`, data);
-  return new Promise((resolve) => setTimeout(resolve, 1000));
-}
+
 
 const gradients = [
   "bg-gradient-to-r from-[#0f2027] via-[#203a43] to-[#2c5364]",
@@ -133,7 +131,7 @@ export default function ProjectBanner({
   return (
     <div className={cn("relative w-full group h-48 rounded-lg mb-8 overflow-hidden", gradient)}>
       <img
-        src={bannerImage || "/placeholder.svg?height=192&width=1024"}
+        src={imageUrl || "/placeholder.svg?height=192&width=1024"}
         alt={name}
         className="w-full h-full object-cover mix-blend-overlay"
       />
@@ -154,17 +152,15 @@ export default function ProjectBanner({
            <h1 className="text-4xl font-bold text-white">{projectName}</h1>
           }
 
-          {!editing && !isPrivate && ( <Button onClick={()=>{
+          {!editing && isPrivate && ( <Button onClick={()=>{
           setEditing(true); reset({name:projectName});
           }} variant="link" size="icon" className="">
-            {isPrivate && <Pen className="h-4 w-4 text-white opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100" />}
+            <Pen className="h-4 w-4 text-white opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100" />
             {/* <Pen className="h-4 w-4 text-white opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100" /> */}
           </Button>)}
         </div>
-        {isPrivate && (
-
           <Sheet>
-            {!editing && !isPrivate && (
+            {!editing && isPrivate && (
               <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="text-white border opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100 hover:bg-white/20">
 
@@ -264,7 +260,7 @@ export default function ProjectBanner({
             </SheetHeader>
           </SheetContent>
         </Sheet>
-        )}
+
       </div>
     </div>
   );

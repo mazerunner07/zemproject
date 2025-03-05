@@ -1,3 +1,4 @@
+import { getUserById } from "@/actions/users";
 import Navbar from "@/components/dashboard/Navbar";
 import Sidebar from "@/components/dashboard/Sidebar";
 import SidebarV2 from "@/components/pages/SidebarV2";
@@ -16,17 +17,33 @@ export default async function DashboardLayout({
     redirect("/login");
   }
   const role = session.user.role
-  // if (role !== "USER") {
-  //   return notFound()
-  // }
+  
+  if (role !== "USER" && role !== "MEMBER") {
+    return notFound()
+  }
   return (
-    <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
+    <div className="flex min-h-screen">
+      {/* Sidebar */}
       <Sidebar />
-      {/* <SidebarV2 /> */}
-      <div className="flex flex-col">
-        <Navbar session={session} />
-        {children}
-      </div>
+      
+      {/* Main content area with left padding to account for sidebar */}
+      <main className="flex-1 md:pl-64 overflow-x-hidden">
+        {/* Navbar */}
+        <Navbar session={session}  />
+        
+        {/* Page content */}
+        <div className="p-4">
+          {children}
+        </div>
+      </main>
     </div>
+    // <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
+    //   <Sidebar />
+    //   {/* <SidebarV2 /> */}
+    //   <div className="flex flex-col">
+    //     <Navbar session={session} />
+    //     {children}
+    //   </div>
+    // </div>
   );
 }

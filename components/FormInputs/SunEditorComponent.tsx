@@ -13,7 +13,7 @@ interface SunEditorComponentProps {
 
 export default function SunEditorComponent({
   label,
-  className = "sm:col-span-2",
+  className = "sm:col-span-2 w-full",
   value,
   onChange,
 }: SunEditorComponentProps) {
@@ -45,10 +45,10 @@ export default function SunEditorComponent({
 
   return (
     <div className={className}>
-      <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+      <label className="block text-sm  font-medium text-gray-900 dark:text-white mb-2">
         {label}
       </label>
-      <div ref={editorRef} className="border rounded-md p-2 min-h-[200px]" />
+      <div ref={editorRef} className="border rounded-md p-2 w-full min-h-[200px]" />
     </div>
   );
 }

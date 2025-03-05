@@ -2,7 +2,7 @@
 
 import { JSX, useState } from "react"
 import Link from "next/link"
-import { ChevronLeft, FileText, Upload, Plus, MoreVertical, Folder, FolderPlus, Calendar, HardDrive, FileType, Clock, File, AlignJustify } from "lucide-react"
+import { ChevronLeft, FileText, Upload, Plus, MoreVertical, Folder, FolderPlus, Calendar, HardDrive, FileType, Clock, File, AlignJustify, Menu, X } from "lucide-react"
 import {
   FaFilePdf,
   FaImage,
@@ -28,36 +28,28 @@ import { formatBytes } from "@/lib/formatBytes"
 import formatUpdatedAt from "@/lib/formatUpdatedAt"
 import { MdTextSnippet } from "react-icons/md";
 
-// Add this before the component
 const calculateStoragePercentage = (used: number, total: number) => {
   return (used / total) * 100
 }
 
-// interface Folder {
-//   name: string
-//   items: number
-//   size: string
-//   storage: {
-//     used: number
-//     total: number
-//   }
-// }
-
-
 export default function FileManager({ userId, userFolders }: { userId: string, userFolders: UserFolder[] }) {
   const [selectedFile, setSelectedFile] = useState<PrismaFile | null>(null)
   const [activeFolder, setActiveFolder] = useState("Reports 2022")
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const params = useSearchParams();
   const selectedFolderId = params.get("fId") ?? "";
   const selectedFolder = userFolders.find((folder) => folder.id === selectedFolderId) || userFolders[0];
+  
   if (!selectedFolder) {
     return <p className="p-4 text-center text-gray-500">No folders available</p>;
   }
+  
   const totalSpace = Number(((2*1073741824) / userFolders.length).toFixed(2))
   const usedSpace = selectedFolder.files.reduce((acc, item) => {
     return acc + item.size
   }, 0)
   const usagePercentage = usedSpace * 100 / totalSpace;
+
   function getFileIcon(mimeType: string | undefined) {
     if (!mimeType) return <FaFileAlt className="w-6 h-6 text-gray-500" />;
 
@@ -82,31 +74,29 @@ export default function FileManager({ userId, userFolders }: { userId: string, u
     return iconMap[mimeType] || <FaFileAlt className="w-6 h-6 text-gray-500" />;
   }
 
-  // Update the folders data
-
-
-  // const files: File[] = [
-  //   {
-  //     name: "Contracts_320_2022.pdf",
-  //     type: "PDF",
-  //     created: "2/10/2022",
-  //     size: "120.5 MB",
-  //     lastModified: "11/10/2022 - 10:30",
-  //   },
-  //   {
-  //     name: "Contracts_320_2022.pdf",
-  //     type: "XLS",
-  //     created: "2/10/2022",
-  //     size: "120.5 MB",
-  //     lastModified: "11/10/2022 - 10:30",
-  //   },
-  //   // Add more files as needed
-  // ]
-
   return (
-    <div className="h-screen flex">
-      {/* Left Sidebar */}
-      <div className="w-72 border-r bg-background p-4">
+    <div className="h-screen flex flex-col md:flex-row">
+      {/* Mobile Folder Selector - Only on Mobile */}
+      <div className="md:hidden p-4 flex items-center justify-between border-b">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        >
+          {isSidebarOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+        </Button>
+        <div className="flex items-center gap-2">
+          <span className="text-lg font-semibold">{selectedFolder.name}</span>
+          <FileUploadForm folderId={selectedFolder.id} />
+        </div>
+      </div>
+
+      {/* Left Sidebar - Mobile and Desktop */}
+      <div className={cn(
+        "fixed md:static inset-y-0 left-0 z-50 w-72 bg-background border-r p-4 transform transition-transform md:translate-x-0",
+        isSidebarOpen ? "translate-x-0" : "-translate-x-full",
+        "md:block" // Ensure sidebar is visible on desktop
+      )}>
         <div className="flex items-center mb-4 justify-between">
           <h2 className="text-lg font-semibold">Folders</h2>
           <FolderForm userId={userId} />
@@ -119,90 +109,63 @@ export default function FileManager({ userId, userFolders }: { userId: string, u
               }, 0)
               return(
                 <Link
-              key={folder.name}
-              href={`/dashboard/file-manager?fId=${folder.id}`}
-              onClick={() => setActiveFolder(folder.name)}
-              className={cn(
-                "flex flex-col p-2 rounded-lg hover:bg-blue-50",
-                activeFolder === folder.name && "bg-blue-100",
-              )}
-            >
-              <div className="flex items-center justify-between w-full">
-                <div className="flex items-center gap-3">
-                  <Folder className="h-5 w-5  text-blue-500" />
-                  <span>{folder.name}</span>
-                </div>
-                <button className="opacity-0 group-hover:opacity-100">
-                  <MoreVertical className="h-4 w-4 text-muted-foreground" />
-                </button>
-              </div>
-              <div className="text-sm text-muted-foreground ml-8">
-                {folder.files.length} items · {formatBytes(usedSpace)}
-              </div>
-              {/* <div className="mt-2 ml-8">
-                <div className="h-1.5 w-full bg-secondary rounded-full overflow-hidden">
-                  <div
-                    className={cn(
-                      "h-full transition-all",
-                      calculateStoragePercentage(folder.storage.used, folder.storage.total) > 50
-                        ? "bg-red-500"
-                        : "bg-green-500",
-                    )}
-                    style={{
-                      width: `${calculateStoragePercentage(folder.storage.used, folder.storage.total)}%`,
-                    }}
-                  />
-                </div>
-              </div> */}
-            </Link>
+                  key={folder.name}
+                  href={`/dashboard/file-manager?fId=${folder.id}`}
+                  onClick={() => {
+                    setActiveFolder(folder.name);
+                    setIsSidebarOpen(false);
+                  }}
+                  className={cn(
+                    "flex flex-col p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-[#272727] transition-colors",
+                    activeFolder === folder.name && "bg-blue-100 dark:bg-[#323232]",
+                  )}
+                >
+                  <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center gap-3">
+                      <Folder className="h-5 w-5 text-blue-500" />
+                      <span>{folder.name}</span>
+                    </div>
+                    <button className="opacity-0 group-hover:opacity-100">
+                      <MoreVertical className="h-4 w-4 text-muted-foreground" />
+                    </button>
+                  </div>
+                  <div className="text-sm text-muted-foreground ml-8">
+                    {folder.files.length} items · {formatBytes(usedSpace)}
+                  </div>
+                </Link>
               )
-})}
+            })}
           </div>
         </ScrollArea>
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
-        <div className="border-b p-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon">
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            <h1 className="text-xl font-semibold">{selectedFolder.name}</h1>
-          </div>
-          <div className="flex gap-2">
-            <FileUploadForm folderId={selectedFolder.id} />
-          </div>
-        </div>
-
-        <div className="p-4">
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Main Content Area */}
+        <div className="p-4 overflow-y-auto">
           <div className="rounded-lg border p-4 mb-4">
             <div className="flex items-center justify-between mb-4">
               <div className="text-sm text-muted-foreground">Folders / {selectedFolder.name}</div>
               <div className="text-sm text-muted-foreground">{formatBytes(usedSpace)} of {formatBytes(totalSpace)} used</div>
             </div>
             <div className="mb-4">
-            <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
-  <div
-    className={cn(
-      "h-full transition-all rounded-full",
-      usagePercentage > 90
-        ? "bg-red-500"
-        : usagePercentage > 50
-          ? "bg-lime-500"
-          : "bg-green-500"
-    )}
-    style={{ width: `${usagePercentage}%` }}
-  />
-</div>
-
+              <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
+                <div
+                  className={cn(
+                    "h-full transition-all rounded-full",
+                    usagePercentage > 90
+                      ? "bg-red-500"
+                      : usagePercentage > 50
+                        ? "bg-lime-500"
+                        : "bg-green-500"
+                  )}
+                  style={{ width: `${usagePercentage}%` }}
+                />
+              </div>
             </div>
-
           </div>
 
-
-
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {selectedFolder.files.map((file, i) => (
               <button
                 key={i}
@@ -211,7 +174,9 @@ export default function FileManager({ userId, userFolders }: { userId: string, u
               >
                 <div className="flex-col items-start justify-center mb-4">
                   <div className="flex justify-center items-center gap-2 p-2 rounded-lg shadow-sm bg-gray-50">
-                    {getFileIcon(file.type)}
+                    <Link href={file.url} className="" target="_blank">
+                      {getFileIcon(file.type)}
+                    </Link>
                   </div>
                 </div>
                 <div className="text-sm font-medium truncate">{file.name}</div>
@@ -223,7 +188,7 @@ export default function FileManager({ userId, userFolders }: { userId: string, u
 
       {/* Document Info Sheet */}
       <Sheet open={!!selectedFile} onOpenChange={() => setSelectedFile(null)}>
-        <SheetContent className="w-96 p-6">
+        <SheetContent className="w-full sm:w-96 p-6">
           <SheetHeader>
             <SheetTitle className="text-lg font-semibold flex items-center gap-2">
               <AlignJustify className="w-5 h-5 text-primary" /> File Information
@@ -270,4 +235,3 @@ export default function FileManager({ userId, userFolders }: { userId: string, u
     </div>
   )
 }
-

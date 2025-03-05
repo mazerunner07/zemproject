@@ -30,7 +30,7 @@ export default function GuestProjects({ projects, isOwner = false }: { projects:
   }, []);
 
   return (
-    <div className="flex flex-col bg-gray-100 rounded-lg w-full h-full dark:bg-gray-900 text-gray-900 dark:text-gray-100 p-6">
+    <div className="flex flex-col bg-gray-100 rounded-lg w-full h-full dark:bg-[#323232] text-gray-900 dark:text-gray-100 p-6">
       <div className="flex-row justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">
           {isOwner ? "Members" : "Guest Projects"}
@@ -58,7 +58,7 @@ export default function GuestProjects({ projects, isOwner = false }: { projects:
             return (
               <div 
                 key={index} 
-                className="flex md:flex-row justify-between items-center md:items-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300"
+                className="flex md:flex-row justify-between items-center md:items-center p-4 bg-white dark:bg-[#121212] rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300"
               >
                 <div className="flex-1">
                   <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">

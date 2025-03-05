@@ -9,7 +9,7 @@ export default async function page() {
     const clients = await getUserClient(user?.id??"")||[]
     const subscribers = await getUserSubscribers(user?.id??"")||[]
   return (
-    <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-slate-100 flex dark:bg-[#121212] items-center justify-center p-4">
       <EmailCompose clients = {clients} subscribers = {subscribers} />
     </div>
   )

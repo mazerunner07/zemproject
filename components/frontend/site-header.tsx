@@ -116,7 +116,7 @@ const features = [
   },
 ];
 
-export default function SiteHeader({ session }: { session: Session | null }) {
+export default function SiteHeader({ session,userLogo }: { session: Session | null ,userLogo?:string})  {
   const [open, setOpen] = React.useState(false);
   const [showFeatures, setShowFeatures] = React.useState(false);
   // const router = useRouter();
@@ -242,7 +242,7 @@ export default function SiteHeader({ session }: { session: Session | null }) {
             <Link href="/dashboard">
               <Avatar>
                 <AvatarImage
-                  src={session?.user?.image ?? ""}
+                  src={userLogo ?? ""}
                   alt={session?.user?.name ?? ""}
                 />
                 <AvatarFallback>

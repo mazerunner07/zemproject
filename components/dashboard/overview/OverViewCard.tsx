@@ -6,8 +6,8 @@ import Link from "next/link"
 export default function OverviewCard({item}:{item : AnalyticsProps}) {
   const Icon = item.icon
   return (
-    <div className="grid gap-4">
-      <Card>
+    <div className="grid gap-4 ">
+      <Card className="dark:bg-[#323232]">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">{item.title}</CardTitle>
           <Icon

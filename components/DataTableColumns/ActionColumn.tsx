@@ -95,7 +95,7 @@ export default function ActionColumn({
             <Button
               variant={"ghost"}
               size={"sm"}
-              className="text-red-600 hover:text-red-700 transition-all duration-500 cursor-pointer "
+              className="text-red-600  w-full hover:text-red-700 transition-all duration-500 cursor-pointer "
             >
               <Trash className="w-4 h-4  mr-2 flex-shrink-0" />
               <span>Delete</span>
@@ -125,8 +125,8 @@ export default function ActionColumn({
           <span>Delete</span>
         </DropdownMenuItem> */}
         <DropdownMenuItem>
-          <Link href={editEndpoint} className="text-green-600 gap-4 flex items-center w-full hover:text-green-700 transition-all duration-500 cursor-pointer">
-            <Pencil className="w-4 h-4 ml-1 flex-shrink-0" />
+          <Link href={editEndpoint} className="text-green-600 flex justify-evenly  w-full hover:text-green-700 transition-all duration-500 cursor-pointer">
+            <Pencil className="w-4 h-4 mr-3 flex-shrink-0" />
             <span>Edit</span>
           </Link>
         </DropdownMenuItem>

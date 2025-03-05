@@ -61,7 +61,7 @@ export default function Invoice({ invoiceDetails, project, role }: { role: strin
             </div>
 
             <div ref={contentToPrint} className="relative flex flex-col bg-white shadow-lg rounded-xl pointer-events-auto dark:bg-neutral-800">
-                <div className="relative overflow-hidden min-h-32 bg-gray-900 text-center rounded-t-xl dark:bg-neutral-950">
+                <div className="relative overflow-hidden min-h-32 bg-gray-900 text-center rounded-t-xl dark:bg-[#121212]">
 
 
 

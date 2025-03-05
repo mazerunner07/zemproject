@@ -191,6 +191,8 @@ export async function updateProjectById(id: string, data: ProjectProps) {
         endDate: data.endDate ? new Date(data.endDate).toISOString() : null,
         budget: data.budget,
         notes: data.notes,
+        bannerImage: data.bannerImage,
+        gradient: data.gradient,
         freeDomain: data.freeDomain,
         customDomain: data.customDomain, 
       },

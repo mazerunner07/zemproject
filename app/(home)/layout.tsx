@@ -1,3 +1,4 @@
+import { getUserById } from "@/actions/users";
 import PromoBanner from "@/components/frontend/PromoBanner";
 import { SiteBanner } from "@/components/frontend/site-banner";
 import Footer from "@/components/frontend/site-footer";
@@ -14,6 +15,8 @@ export default async function HomeLayout({
   children: ReactNode;
 }) {
   const session = await getServerSession(authOptions);
+
+
   return (
     <div className="bg-white">
       {/* <PromoBanner /> */}

@@ -83,11 +83,10 @@ export default function PortfolioForm({
     }
   
     data.userId = user.id; // Now safely assigning userId
-
+    data.projectCount = parseFloat(data.projectCount.toString());
     try {
-  
       if (editingId) {
-        await updatePortfolioById(editingId, data);
+        const res = await updatePortfolioById(editingId, data);
         router.refresh()
         toast.success("Updated successfully!");
       } else {

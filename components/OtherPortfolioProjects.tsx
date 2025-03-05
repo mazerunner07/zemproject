@@ -31,12 +31,12 @@ const Card = ({
 
 export function OtherPortfolioProjects({otherProjects}: {otherProjects:ProjectWithUser[]}) {
   return (
-    <div className="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden">
+    <div className="dark:bg-[#121212]  relative flex h-screen w-full flex-col items-center justify-center overflow-hidden">
       <div className="max-w-2xl mx-auto">
       <h1 className="scroll-m-20  text-4xl font-extrabold tracking-tight lg:text-5xl">
         My Other Projects
       </h1>
-      <p className="leading-7 [&:not(:first-child)]:mt-6">
+      <p className="leading-7  [&:not(:first-child)]:mt-6">
         These are some of my other Projects.
       </p>
       </div>
@@ -50,8 +50,7 @@ export function OtherPortfolioProjects({otherProjects}: {otherProjects:ProjectWi
           <Card key={review.username} {...review} />
         ))}
       </Marquee> */}
-      <div className="pointer-events-none absolute inset-y-0 left-0 w-1/4 bg-gradient-to-r from-background"></div>
-      <div className="pointer-events-none absolute inset-y-0 right-0 w-1/4 bg-gradient-to-l from-background"></div>
+      
     </div>
   );
 }

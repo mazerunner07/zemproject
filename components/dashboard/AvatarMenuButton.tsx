@@ -23,7 +23,7 @@ import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-export function AvatarMenuButton({ session }: { session: Session | null }) {
+export function AvatarMenuButton({ session,userLogo }: { session: Session | null,userLogo?:string }) {
   const router = useRouter();
   // Handle case when session is null
   if (!session) return null;
@@ -55,7 +55,7 @@ export function AvatarMenuButton({ session }: { session: Session | null }) {
     <Sheet>
       <SheetTrigger asChild>
         <Avatar className="cursor-pointer">
-          <AvatarImage src={user.image ?? ""} alt={user.name ?? "User"} />
+          <AvatarImage src={userLogo ?? ""} alt={user.name ?? "User"} />
           <AvatarFallback>{initials}</AvatarFallback>
         </Avatar>
       </SheetTrigger>
@@ -65,7 +65,7 @@ export function AvatarMenuButton({ session }: { session: Session | null }) {
         <SheetHeader>
           <div className="flex items-center space-x-3 pb-3 border-b">
             <Avatar>
-              <AvatarImage src={user.image ?? ""} alt={user.name ?? "User"} />
+              <AvatarImage src={userLogo ?? ""} alt={user.name ?? "User"} />
               <AvatarFallback>{initials}</AvatarFallback>
             </Avatar>
             <div>

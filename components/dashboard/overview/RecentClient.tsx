@@ -9,7 +9,7 @@ interface RecentClientsProps {
 
 export default function RecentClients({ recentClients = [] }: RecentClientsProps) {
   return (
-    <Card className="w-full">
+    <Card className="w-full dark:bg-[#323232]">
       <CardHeader>
         <CardTitle>Clients</CardTitle>
       </CardHeader>
@@ -19,11 +19,11 @@ export default function RecentClients({ recentClients = [] }: RecentClientsProps
             recentClients.map((client) => (
               <div
                 key={client.id}
-                className="flex-none flex items-center bg-white p-4 rounded-lg shadow-sm sm:min-w-[500px] w-full sm:w-auto justify-between"
+                className="flex-none flex items-center bg-white dark:bg-[#121212] mb-1 p-4 rounded-lg shadow-sm sm:min-w-[500px] w-full sm:w-auto justify-between"
               >
                 <div className="flex items-center">
                   <Avatar className="h-9 w-9 flex-shrink-0">
-                    <AvatarImage src="/avatars/01.png" alt={client.name || "Avatar"} />
+                    <AvatarImage src={client.image ?? ""} alt={client.name || "Avatar"} />
                     <AvatarFallback>{getInitials(client.name)}</AvatarFallback>
                   </Avatar>
                   <div className="ml-6 space-y-1">

@@ -10,7 +10,7 @@ export default async function page() {
   const user = await getAuthUser();
   const clients: User[] = (await getUserClient(user?.id)) || [];
   return (
-    <div className="p-8">
+    <div className="dark:bg-[#121212] p-8">
       <TableHeader
         title="Clients"
         linkTitle="Add Client"

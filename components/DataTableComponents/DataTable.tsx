@@ -90,7 +90,7 @@ export default function DataTable<TData, TValue>({
     <div className="space-y-4">
       {model === "project" && (<ProjectSummary data={isSearch ? searchResults : filteredData}/>)}
       <div className="flex justify-between items-center gap-8">
-        <div className="flex-1 w-full">
+        <div className="flex-1 w-full ">
           <SearchBar
             data={data}
             onSearch={setSearchResults}
