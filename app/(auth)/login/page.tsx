@@ -4,13 +4,11 @@ import { redirect } from "next/navigation";
 import LoginForm from "@/components/Forms/LoginForm";
 
 interface PageProps {
-  searchParams: Record<string, string | string[] | undefined>;
+  searchParams?: Record<string, string | string[] | undefined>;
 }
 
-export default async function Page({ searchParams }: PageProps) {
-  const returnUrl = searchParams?.returnUrl
-    ? String(searchParams.returnUrl)
-    : "/dashboard";
+export default async function Page({ searchParams = {} }: PageProps) {
+  const returnUrl = searchParams.returnUrl ? String(searchParams.returnUrl) : "/dashboard";
 
   const session = await getServerSession(authOptions);
   if (session) {
@@ -23,6 +21,3 @@ export default async function Page({ searchParams }: PageProps) {
     </section>
   );
 }
-
-
-
