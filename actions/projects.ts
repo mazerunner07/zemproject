@@ -176,6 +176,8 @@ export async function updateProjectById(id: string, data: ProjectProps) {
     throw new TypeError(`Invalid data: ${JSON.stringify(data)}`);
   }
 
+  console.log("Data Update:", data);
+
   try {
     return await db.project.update({
       where: { id },
@@ -184,17 +186,20 @@ export async function updateProjectById(id: string, data: ProjectProps) {
         slug: data.slug,
         description: data.description,
         thumbnail: data.thumbnail,
-        startDate: data.startDate ? new Date(data.startDate).toISOString() : null,
         clientId: data.clientId,
         userId: data.userId,
-        deadline: data.deadline,
-        endDate: data.endDate ? new Date(data.endDate).toISOString() : null,
         budget: data.budget,
         notes: data.notes,
+        deadline : data.deadline,
         bannerImage: data.bannerImage,
         gradient: data.gradient,
         freeDomain: data.freeDomain,
-        customDomain: data.customDomain, 
+        customDomain: data.customDomain,
+
+        // Only update dates if they are provided
+        ...(data.startDate !== undefined && { startDate: new Date(data.startDate).toISOString() }),
+        ...(data.endDate !== undefined && { endDate: new Date(data.endDate).toISOString() }),
+        
       },
     });
   } catch (error) {
@@ -202,6 +207,7 @@ export async function updateProjectById(id: string, data: ProjectProps) {
     throw error;
   }
 }
+
 export async function updateProjectPublicity(id: string, isPublic: boolean) {
   try {
     const updatedProject = await db.project.update({

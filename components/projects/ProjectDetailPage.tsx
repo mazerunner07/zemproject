@@ -43,7 +43,6 @@ import InviteMembers from "./InviteMembers";
 import { ExistingUser } from "@/actions/users";
 import { DomainCard } from "./DomainCard";
 import PaymentDeleteButton from "./PaymentDeleteButton";
-import { json } from "stream/consumers";
 
 interface TimelineProps {
   startDate: string | Date;
@@ -315,33 +314,25 @@ export default function ProjectDetailsPage({
           {isEditingNotes ? <X className="h-4 w-4" /> : <Edit2 className="h-4 w-4" />}
         </Button>
       </CardHeader>
-      <CardContent className="">
-        <div className="prose lg:prose-xl">
-
+      <CardContent>
         {isEditingNotes ? (
           <NotesForm
-          isEditable = {true}
             editingId={projectData.id}
-            initialNotes={JSON.parse(projectData.notes??"")}
+            initialNotes={projectData.notes}
             onUpdateSuccess={() => setIsEditingNotes(false)}
-            />
-          ) : (
-            <>
-          {projectData.notes ? (
-            <NotesForm
-            isEditable = {false}
-              editingId={projectData.id}
-              initialNotes={JSON.parse(projectData.notes)}
-              />
-            
-          ) : (
-            <div className="notes-container dark:prose-invert">
-            No Notes Available
-            </div>
-          )}
-          </>
+          />
+        ) : (
+          <div
+            className="prose notes-container dark:prose-invert"
+            dangerouslySetInnerHTML={{
+              __html: projectData.notes
+                ? projectData.notes
+                    .replace(/(\n\s*){2,}/g, "\n")
+                    .replace(/\n/g, "<br />")
+                : "No notes available.",
+            }}
+          ></div>
         )}
-        </div>
       </CardContent>
     </Card>
   </TabsContent>

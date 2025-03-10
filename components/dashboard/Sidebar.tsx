@@ -1,227 +1,126 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import {
   Bell,
-  Cable,
-  CircleUser,
   Combine,
-  Component,
-  DollarSign,
-  ExternalLink,
-  Gem,
-  Grid,
   Handshake,
-  Home,
   HomeIcon,
-  KeySquare,
   LayoutGrid,
-  LineChart,
   Lock,
-  Mail,
+  LogOut,
+  MailsIcon,
   Menu,
-  Package,
-  Package2,
   Search,
-  ShoppingCart,
-  Star,
-  User2,
+  Settings,
+  Settings2Icon,
+  UserCircle,
+  UserPlus2,
   Users,
 } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { usePathname } from "next/navigation";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import { ScrollArea } from "@/components/ui/scroll-area"
+import { usePathname } from "next/navigation";
 import Logo from "../global/Logo";
+
 export default function Sidebar() {
-  const sidebarLinks = [
-    {
-    title: "Dashboard",
-    links:[
-    {
-      title: "Overview",
-      href: "/dashboard",
-      icon: HomeIcon,
-    },
-  ]
-  },
-    {
-    title: "Client & Projects",
-    links:[
-    {
-      title: "Clients",
-      href: "/dashboard/clients",
-      icon: Users,
-    },
-    {
-      title: "Projects",
-      href: "/dashboard/projects",
-      icon: LayoutGrid,
-    },
-    {
-      title: "Guest Projects",
-      href: "/dashboard/guest-projects",
-      icon: Combine,
-    },
-  ]
-  },
-  {
-    title: "Finance" ,
-    links:[
-      {
-        title: "Payments",
-        href: "/dashboard/payments",
-        icon: Handshake,
-      },
-    ],
-  },
-  {
-    title: "Team" ,
-      links:[
-        {
-            title: "Members",
-            href: "/dashboard/members",
-            icon: User2,
-        },
-        
-      ],
-    },
-  {
-    title: "Communication" ,
-      links:[
-        {
-            title: "Emails",
-            href: "/dashboard/emails",
-            icon: User2,
-        },
-        {
-            title: "Subscribers",
-            href: "/dashboard/subscribers",
-            icon: Mail,
-        },
-      ],
-    },
-    {
-      title: "Portfolio" ,
-          links:[
-            {
-              title: "Generate Portfolio",
-              href: "/dashboard/portfolio",
-              icon: User2,
-            },
-        ],
-    },
-    {
-      title: "Brand" ,
-        links:[
-          {
-              title: "Settings",
-              href: "/dashboard/brand-setting",
-              icon: User2,
-          },
-          {
-              title: "File Manager",
-              href: "/dashboard/file-manager",
-              icon: Lock,
-          },
-        ],
-      },
-      // {
-      //   title: "Reports" ,
-      //     links:[
-      //       {
-      //           title: "Project Progress",
-      //           href: "/dashboard/project-progress",
-      //           icon: User2,
-      //       },
-      //       {
-      //           title: "Financial Summary",
-      //           href: "/dashboard/financial-summary",
-      //           icon: Lock,
-      //       },
-      //       {
-      //           title: "Time Tracking",
-      //           href: "/dashboard/time-tracking",
-      //           icon: Lock,
-      //       },
-      //     ],
-      //   },
-        {
-          title: "Setting" ,
-            links:[
-              {
-                  title: "Change Password",
-                  href: "/dashboard/change-password",
-                  icon: User2,
-              },
-            ],
-          },
-  ];
-  
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const pathname = usePathname();
+
+  const sidebarLinks = [
+    { title: "Dashboard", links: [{ title: "Overview", href: "/dashboard", icon: HomeIcon }] },
+    { title: "Client & Projects", links: [
+      { title: "Clients", href: "/dashboard/clients", icon: Users },
+      { title: "Projects", href: "/dashboard/projects", icon: LayoutGrid },
+      { title: "Guest Projects", href: "/dashboard/guest-projects", icon: Combine }
+    ] },
+    { title: "Finance", links: [{ title: "Payments", href: "/dashboard/payments", icon: Handshake }] },
+    { title: "Team", links: [{ title: "Members", href: "/dashboard/members", icon: UserPlus2 }] },
+    { title: "Communication", links: [
+      { title: "Emails", href: "/dashboard/emails", icon: MailsIcon },
+      { title: "Subscribers", href: "/dashboard/subscribers", icon: Bell }
+    ] },
+    { title: "Portfolio", links: [{ title: "Generate Portfolio", href: "/dashboard/portfolio", icon: UserCircle }] },
+    { title: "Brand", links: [
+      { title: "Settings", href: "/dashboard/brand-setting", icon: Settings2Icon },
+      { title: "File Manager", href: "/dashboard/file-manager", icon: Lock }
+    ] },
+    { title: "Settings", links: [{ title: "Change Password", href: "/dashboard/change-password", icon: Settings }] }
+  ];
+
+  const filteredLinks = sidebarLinks.map(section => ({
+    ...section,
+    links: section.links.filter(link => link.title.toLowerCase().includes(searchTerm.toLowerCase()))
+  })).filter(section => section.links.length > 0);
+
   return (
-    <div className="fixed inset-y-0 left-0 z-50 hidden w-64 flex-col border-r bg-muted/40 md:flex">
-      <div className="flex h-full max-h-screen flex-col">
-        {/* Logo and Notification Section */}
-        <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-          <Link href="/" className="flex items-center gap-2 font-semibold">
-            <Logo />
-          </Link>
-          {/* <Button variant="outline" size="icon" className="ml-auto h-8 w-8">
-            <Bell className="h-4 w-4" />
-            <span className="sr-only">Toggle notifications</span>
-          </Button> */}
+    <>
+      {/* Mobile Toggle Button */}
+      <Button onClick={() => setIsOpen(!isOpen)} className="md:hidden fixed top-4 left-4 z-50 bg-gray-800 text-white p-2 rounded-md">
+        <Menu className="h-6 w-6" />
+      </Button>
+
+      {/* Sidebar */}
+      <div className={cn(
+        "fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r bg-white dark:bg-gray-900 shadow-lg transition-transform duration-300 md:translate-x-0",
+        isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+      )}>
+        {/* Logo Section */}
+        <div className="flex items-center justify-between p-4 border-b dark:border-gray-700">
+          <Logo />
+          <Button onClick={() => setIsOpen(false)} className="md:hidden">✕</Button>
         </div>
 
-        {/* Navigation Links */}
-        <div className="flex-1 overflow-y-auto">
-          <ScrollArea className="h-full w-full">
-            <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
-              {sidebarLinks.map((section, i) => (
-                <div key={i}>
-                  <h3 className="mb-2 px-4 text-sm font-semibold">{section.title}</h3>
-                  {section.links.map((item, j) => {
-                    const Icon = item.icon;
-                    const isActive = item.href === pathname;
-                    return (
-                      <Link
-                        key={j}
-                        href={item.href}
-                        className={cn(
-                          "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary",
-                          isActive && "bg-muted text-primary"
-                        )}
-                      >
-                        <Icon className="h-4 w-4" />
-                        {item.title}
-                      </Link>
-                    );
-                  })}
-                </div>
-              ))}
-            </nav>
-          </ScrollArea>
+        {/* Search Bar */}
+        <div className="p-4">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-gray-300 dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+            />
+          </div>
         </div>
+
+        {/* Navigation */}
+        <ScrollArea className="flex-1 px-4">
+          {filteredLinks.map((section, i) => (
+            <div key={i} className="mb-4">
+              <h3 className="text-xs text-gray-500 dark:text-gray-400 uppercase px-3 mb-2">{section.title}</h3>
+              {section.links.map((item, j) => {
+                const Icon = item.icon;
+                const isActive = item.href === pathname;
+                return (
+                  <Link
+                    key={j}
+                    href={item.href}
+                    className={cn(
+                      "flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:bg-gray-100 dark:hover:bg-gray-700",
+                      isActive ? "bg-gray-200 dark:bg-gray-700 text-black dark:text-white" : "text-gray-700 dark:text-gray-300"
+                    )}
+                  >
+                    <Icon className="h-5 w-5" />
+                    {item.title}
+                  </Link>
+                );
+              })}
+            </div>
+          ))}
+        </ScrollArea>
 
         {/* Logout Section */}
-        <div className="p-4">
-          <Card>
-            <Button size="sm" className="w-full">
-              Logout
-            </Button>
-          </Card>
+        <div className="p-4 border-t dark:border-gray-700">
+          <Button size="sm" className="w-full bg-[#00B1F3] hover:bg-red-300 text-white">
+          <LogOut className="" />
+            Logout</Button>
         </div>
       </div>
-    </div>
+    </>
   );
 }
-

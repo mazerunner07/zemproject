@@ -141,7 +141,7 @@ export default function Navbar({ session, userLogo }: { session: Session, userLo
   const pathname = usePathname();
 
   return (
-    <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
+    <header className="flex dark:bg-[#0F172A] h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
       <Sheet>
         <SheetTrigger asChild>
           <Button variant="outline" size="icon" className="shrink-0 md:hidden">
@@ -190,15 +190,15 @@ export default function Navbar({ session, userLogo }: { session: Session, userLo
       </Sheet>
 
       {/* Rest of the Navbar remains the same */}
-      <div className="w-full flex-1">
+      <div className="w-full  flex-1">
         <form>
           <div className="relative">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Search products..."
-              className="w-full appearance-none bg-background pl-8 shadow-none md:w-2/3 lg:w-1/3"
-            />
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                        <input
+                          type="text"
+                          placeholder="Search"
+                          className="w-full pl-10 pr-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-gray-300 dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+                        />
           </div>
         </form>
       </div>
