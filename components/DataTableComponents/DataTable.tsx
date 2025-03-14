@@ -89,7 +89,7 @@ export default function DataTable<TData, TValue>({
   return (
     <div className="space-y-4">
       {model === "project" && (<ProjectSummary data={isSearch ? searchResults : filteredData}/>)}
-      <div className="flex justify-between items-center gap-8">
+      <div className="flex justify-between items-center gap-8 ">
         <div className="flex-1 w-full ">
           <SearchBar
             data={data}
@@ -97,8 +97,9 @@ export default function DataTable<TData, TValue>({
             setIsSearch={setIsSearch} 
           />
         </div>
-        <div className="flex items-center gap-2 ">
+        <div className="flex items-center gap-2  ">
           <DateRangeFilter
+          
             data={data}
             onFilter={setFilteredData}
             setIsSearch={setIsSearch}
@@ -110,7 +111,7 @@ export default function DataTable<TData, TValue>({
           />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="h-8 gap-1 dark:bg-[#0F172A]">
+              <Button variant="outline" size="sm" className="h-8 gap-1 ">
                 <ListFilter className="h-3.5 w-3.5" />
                 <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
                   Filter
@@ -132,7 +133,7 @@ export default function DataTable<TData, TValue>({
       </div>
 
       <div className="rounded-md border">
-        <Table>
+        <Table className="bg-white dark:bg-[#0F172A]">
           <TableHeader className="">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>

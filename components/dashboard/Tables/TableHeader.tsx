@@ -172,7 +172,7 @@ export default function TableHeader({
   return (
     <div className=" mb-3">
       <div className="flex justify-between items-center border-b border-gray-200 dark:border-gray-600 py-3">
-        <h2 className="scroll-m-20 border p-4 rounded-lg bg-[#00B1F3] dark:bg-[#0F172A]  text-white text-2xl font-semibold tracking-tight first:mt-0">
+        <h2 className="scroll-m-20 border p-4 rounded-lg bg-[#ffffff] dark:bg-[#0F172A] dark:text-[#ffffff] text-black text-2xl font-semibold tracking-tight first:mt-0">
           Total {title} : {data.length}
         </h2>
         <div className="ml-auto flex items-center gap-2">

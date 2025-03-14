@@ -46,7 +46,7 @@ export default function HeroSection({ count }: HeroSectionProps) {
           <div>
             <StarRating count={5} />
             <p className="dark:text-slate-900">
-              Building success, one project at a time. {count} users onboarded!
+             You Rank Us
             </p>
           </div>
         </div>

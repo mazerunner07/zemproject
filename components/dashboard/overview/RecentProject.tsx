@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Project } from '@prisma/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import 'remixicon/fonts/remixicon.css';
 
 interface RecentProjectsProps {
   recentProjects?: Project[];
@@ -26,7 +27,7 @@ export default function RecentProjects({ recentProjects = [] }: RecentProjectsPr
   const prevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
 
   return (
-    <Card className="w-full dark:bg-[#1E293B] bg-[#F5F5F7] shadow-md">
+    <Card className="w-full dark:bg-[#1E293B] bg-[#F8FAFB] shadow-md">
       <CardHeader className="pb-2">
         <CardTitle className="text-2xl">Recent Projects</CardTitle>
         <p className="text-gray-600 dark:text-gray-400 mt-2">
@@ -53,7 +54,7 @@ export default function RecentProjects({ recentProjects = [] }: RecentProjectsPr
                     whileHover={{ scale: 1.02 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <div className="relative h-48 w-full">
+                    <div className="relative h-48 w-full ">
                       <Image
                         src={project.thumbnail ?? '/placeholder.svg'}
                         alt={project.name}
@@ -62,17 +63,17 @@ export default function RecentProjects({ recentProjects = [] }: RecentProjectsPr
                         className="object-cover"
                       />
                     </div>
-                    <div className="p-4">
-                      <h3 className="text-xl font-semibold mb-2 dark:text-white">{project.name}</h3>
+                    <div className="p-4 bg-[#ffffff] dark:bg-[#0f172a]">
+                      <h3 className="text-xl font-semibold mb-2 text-black dark:text-white">{project.name}</h3>
                       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                         <span className="text-2xl font-bold text-green-600 dark:text-green-400">
                           ${project.budget?.toLocaleString() ?? 'N/A'}
                         </span>
                         <Link
                           href={`/project/${project.slug}`}
-                          className="w-full sm:w-auto bg-blue-500 dark:bg-[#007BFF] dark:hover:bg-[#3B82F6] text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors text-center"
+                          className="grid gap-4 justify-between items-center w-full sm:w-auto bg-[#01B1F3] dark:bg-[#007BFF] radi dark:hover:bg-[#3B82F6]  text-white px-4 py-2 rounded-sm hover:bg-blue-600 transition-colors text-center"
                         >
-                          View
+                          <i className="ri-arrow-right-up-line"></i>
                         </Link>
                       </div>
                     </div>

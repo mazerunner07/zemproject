@@ -3,7 +3,7 @@
 import { PasswordProps } from "@/components/Forms/ChangePasswordForm";
 import { db } from "@/prisma/db";
 import { UserProps } from "@/types/types";
-import bcrypt, { compare } from "bcrypt";
+import bcrypt, { compare } from "bcryptjs";
 import { revalidatePath } from "next/cache";
 
 export async function createUser(data: UserProps) {

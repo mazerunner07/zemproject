@@ -2,6 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { User } from "@prisma/client";
 import { getInitials } from "@/lib/generateInitials";
+import 'remixicon/fonts/remixicon.css';
 
 interface RecentClientsProps {
   recentClients?: User[];
@@ -9,7 +10,7 @@ interface RecentClientsProps {
 
 export default function RecentClients({ recentClients = [] }: RecentClientsProps) {
   return (
-    <Card className="w-full dark:bg-[#1E293B] bg-[#F5F5F7]">
+    <Card className="w-full dark:bg-[#1E293B] bg-[#F8FAFB]">
       <CardHeader>
         <CardTitle className="">Clients</CardTitle>
       </CardHeader>

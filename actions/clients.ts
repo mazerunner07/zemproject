@@ -3,7 +3,7 @@
 import { db } from "@/prisma/db";
 import { UserProps } from "@/types/types";
 import { UserRole } from "@prisma/client";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { revalidatePath } from "next/cache";
 
 export async function createClient(data: UserProps) {

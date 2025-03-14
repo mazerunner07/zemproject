@@ -116,7 +116,10 @@ export default withUt({
   			'border-beam': 'border-beam calc(var(--duration)*1s) infinite linear',
   			marquee: 'marquee var(--duration) infinite linear',
   			'marquee-vertical': 'marquee-vertical var(--duration) linear infinite'
-  		}
+  		},
+			fontFamily: {
+        helvetica: ["Helvetica Neue", "Helvetica", "Arial", "sans-serif"],
+      },
   	}
   },
   plugins: [

@@ -20,6 +20,7 @@ import { useSession } from "next-auth/react";
 import { CustomerReviews } from "@/components/frontend/CustomerReviews";
 import Showcase from "@/components/frontend/showcase";
 import { getKitUsers } from "@/actions/users";
+import 'remixicon/fonts/remixicon.css';
 import HeroSection from "@/components/frontend/hero-section";
 import TabbedFeatures from "@/components/frontend/tabbed-features";
 import HeroSectionWrapper from "@/components/frontend/HeroSectionWrapper";
