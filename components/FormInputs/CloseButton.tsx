@@ -10,7 +10,7 @@ export default function CloseButton({
   parent?: string;
 }) {
   return (
-    <Button type="button" variant="outline" asChild>
+    <Button type="button" className="dark:hover:bg-red-400 dark:bg-red-500" variant="outline" asChild>
       <Link
         href={
           parent === "" ? `/dashboard${href}` : `/dashboard/${parent}${href}`

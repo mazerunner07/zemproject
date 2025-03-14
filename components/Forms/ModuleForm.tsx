@@ -83,7 +83,7 @@ export default function ModuleForm({
               <Pen className="h-4 text-green-500 w-4 ml-2" />
             </button>
           ) : (
-            <Button variant="outline" className="w-full" onClick={() => setIsOpen(true)}>
+            <Button variant="outline" className="w-full bg-[#00B1F3] hover:bg-[#56cdf8] text-white" onClick={() => setIsOpen(true)}>
               <Plus className="mr-2 h-4 w-4" />
               Add Module
             </Button>

@@ -26,14 +26,11 @@ export default function SunEditorComponent({
         height: "200px",
         buttonList: [
           ["bold", "italic", "underline", "strike"],
-          ["fontSize", "formatBlock"], // Add fontSize selection
-          ["list", "align"],
-          ["link", "image"],
           ["undo", "redo"],
           ["removeFormat"],
         ],
         defaultTag: "div",
-        defaultStyle: "font-size: 16px;", // Set default text size to large
+        defaultStyle: "font-size: 20px;", // Set default text size to large
       });
 
       sunEditorInstance.current.setContents(value);
@@ -48,7 +45,7 @@ export default function SunEditorComponent({
       <label className="block text-sm  font-medium text-gray-900 dark:text-white mb-2">
         {label}
       </label>
-      <div ref={editorRef} className="border rounded-md p-2 w-full min-h-[200px]" />
+      <div ref={editorRef} className=" border rounded-md p-2 w-full min-h-[200px]" />
     </div>
   );
 }

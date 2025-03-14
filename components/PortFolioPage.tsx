@@ -37,10 +37,10 @@ export default function PortFolioPage({
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   const renderSidebarContent = () => (
-    <div className="flex flex-col items-center space-y-6 w-full px-4">
+    <div className="flex  flex-col items-center space-y-5 w-full px-4">
       <Image
-        width={300}
-        height={300}
+        width={275}
+        height={275}
         className="rounded-lg shadow-lg border border-[#1E40AF] max-w-[250px] w-full"
         src={profile.profileImage ?? "/placeholder.svg"}
         alt={profile.name}
@@ -55,7 +55,7 @@ export default function PortFolioPage({
 
       {/* Buttons */}
       <div className="flex flex-col gap-3 w-full">
-        <Button asChild className="bg-[#1E40AF] hover:bg-[#3B5998] text-white w-full">
+        <Button asChild className="bg-[#00B1F3] hover:bg-[#56cdf8] text-white w-full">
           <Link href={profile.bookingLink}>
             <Calendar className="h-4 w-4 mr-2" />
             Book Appointment
@@ -64,7 +64,7 @@ export default function PortFolioPage({
         <Button
           asChild
           variant="outline"
-          className="border border-[#1E40AF] text-[#1E3A8A] hover:bg-[#A5B4FC] w-full"
+          className="border bg-[#ffffff] text-[#00B1F3] w-full"
         >
           <Link href="mailto:projectmin95@gmail.com">
             <Mail className="h-4 w-4 mr-2" />
@@ -131,12 +131,12 @@ export default function PortFolioPage({
       {/* Main Layout */}
       <div className="flex flex-col lg:flex-row min-h-screen bg-[#FFFFFF] text-[#1E3A8A]">
         {/* Desktop Sidebar */}
-        <div className="hidden lg:block sticky top-0 h-screen w-[35%] flex-shrink-0 border-r border-[#1E40AF] dark:bg-[#121212]  p-8 overflow-y-auto">
+        <div className="hidden lg:block sticky top-0 h-screen w-[35%] flex-shrink-0 border-r border-[#1E40AF] dark:bg-[#0F172A]  p-8 overflow-y-auto">
           {renderSidebarContent()}
         </div>
         {/* Main Content */}
-        <main className="flex-1 dark:bg-[#121212] p-4 lg:p-8">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-2">
+        <main className="flex-1 dark:bg-[#0F172A] p-4 lg:p-8">
+          <div className="grid grid-cols-1  gap-6 md:grid-cols-2 lg:grid-cols-2">
             {projects.map((project, index) => (
               <PortfolioCard key={index} project={project} />
             ))}

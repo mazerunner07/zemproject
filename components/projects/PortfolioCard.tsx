@@ -7,7 +7,7 @@ import Link from "next/link";
 
 export default function PortfolioCard({project}:{project:ProjectWithUser}) {
   return (
-    <div key={project.id}  className="w-[90%] mx-auto">
+    <div key={project.id}  className="w-[90%]  mx-auto">
       <FollowerPointerCard
         title={
           <TitleComponent
@@ -28,7 +28,7 @@ export default function PortfolioCard({project}:{project:ProjectWithUser}) {
               className={`group-hover:scale-95 group-hover:rounded-2xl transform object-cover transition duration-200 h-[200px]`}
             />
           </div>
-          <div className=" p-4">
+          <div className="dark:bg-[#1E293B] p-4">
             <h2 className="font-bold my-2 text-lg dark:text-[#E0E0E0] text-zinc-700">
               {project.name}
             </h2>
@@ -37,7 +37,7 @@ export default function PortfolioCard({project}:{project:ProjectWithUser}) {
             </h2>
             <div className="flex flex-row justify-between items-center mt-10">
               <span className="text-sm text-gray-500">{getNormalDate(project.startDate)}</span>
-              <Link href ={`/public/project/${project.slug}`} className="relative z-10 px-6 py-2 bg-black text-white font-bold rounded-xl block text-xs">
+              <Link href ={`/public/project/${project.slug}`} className="relative z-10 px-6 py-2 bg-[#00B1F3] hover:bg-[#56cdf8] text-white font-bold rounded-xl block text-xs">
                 Read More
               </Link>
             </div>

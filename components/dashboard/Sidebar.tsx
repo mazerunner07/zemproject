@@ -59,7 +59,7 @@ export default function Sidebar() {
   return (
     <>
       {/* Mobile Toggle Button */}
-      <Button onClick={() => setIsOpen(!isOpen)} className="md:hidden fixed top-4 left-4 z-50 bg-gray-800 text-white p-2 rounded-md">
+      <Button onClick={() => setIsOpen(!isOpen)} className="md:hidden fixed top-2 left-4 z-50 bg-gray-800 text-white p-2 rounded-md">
         <Menu className="h-6 w-6" />
       </Button>
 
@@ -101,7 +101,7 @@ export default function Sidebar() {
                     key={j}
                     href={item.href}
                     className={cn(
-                      "flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:bg-gray-100 dark:hover:bg-gray-700",
+                      "flex items-center gap-3 mb-1 rounded-lg px-3 py-2 transition-all hover:bg-gray-100 dark:hover:bg-gray-700",
                       isActive ? "bg-gray-200 dark:bg-gray-700 text-black dark:text-white" : "text-gray-700 dark:text-gray-300"
                     )}
                   >

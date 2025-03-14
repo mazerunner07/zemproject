@@ -41,7 +41,7 @@ export function DomainCard({ projectData, isPrivate = true }: DomainCardProps & 
   };
 
   return (
-    <Card>
+    <Card className="dark:bg-gray-800/50 dark:border-gray-700 shadow-lg">
       <CardHeader>
         <CardTitle className="text-xl">Domains</CardTitle>
         <CardDescription>Manage the domains associated with {projectData.name}</CardDescription>

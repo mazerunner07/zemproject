@@ -1,5 +1,5 @@
 import { getPortfolioByUserId } from '@/actions/portfolio'
-import { getUserProjectsCount, getUserPublicProject } from '@/actions/projects'
+import { getUserProjectsCount } from '@/actions/projects'
 import { ShareLink } from '@/components/dashboard/ShareLink'
 import PortfolioForm from '@/components/Forms/PortfolioForm'
 import PortFolioPage from '@/components/PortFolioPage'
@@ -22,16 +22,17 @@ export default async function page() {
     const link = `${baseUrl}/portfolio/${slug}?id=${user?.id}`
     
   return (
-    <div className='p-8'>
+    <div className='p-8 dark:bg-[#1E293B] border rounded-lg'>
       <div className="pb-3 flex border-b items-center justify-between">
         <h2 className='scroll-m-20 text-3xl font-semibold tracking-tight first:mt-0'>
           Customize Your Portfolio
         </h2>
         <div className="flex gap-4">
-          <Button><Link target='_blank' className='flex items-center' href = {`/portfolio/${slug}?id=${user?.id}`}>
+          <Button className='bg-[#00B1F3] text-white hover:bg-[#56cdf8]'><Link target='_blank' className='flex items-center ' href = {`/portfolio/${slug}?id=${user?.id}`}>
           <Eye className='w-4 h-4 mr-2' />
           Preview
-          </Link></Button>
+          </Link>
+          </Button>
           <ShareLink link={link} />
         </div>
       </div>

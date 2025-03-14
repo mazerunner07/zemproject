@@ -42,11 +42,11 @@ export function ShareLink({ link }: ShareLinkProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="icon">
+        <Button variant="outline" className="bg-[#00B1F3] text-white hover:bg-[#56cdf8]" size="icon">
           <Share className="h-4 w-4" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-2">
+      <PopoverContent className="w-auto p-2 ">
         <div className="flex space-x-2">
           {shareOptions.map((option) => (
             <TooltipProvider key={option.name}>
@@ -56,7 +56,7 @@ export function ShareLink({ link }: ShareLinkProps) {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="rounded-full hover:scale-110"
+                      className="rounded-full  hover:scale-110"
                       onClick={() => handleShare(option.name, option.url!)}
                     >
                       <option.icon className="h-5 w-5" />

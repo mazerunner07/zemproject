@@ -22,7 +22,7 @@ export default async function DashboardLayout({
     return notFound()
   }
   return (
-    <div className="flex min-h-screen">
+    <div className="flex dark:bg-[#0F172A] min-h-screen">
       {/* Sidebar */}
       <Sidebar />
       

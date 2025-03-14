@@ -15,7 +15,7 @@ export default async function Dashboard() {
 
   return (
     
-    <main className="flex flex-1 dark:bg-[#121212] flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+    <main className="flex flex-1 dark:bg-[#0F172A] flex-col gap-4 p-4 lg:gap-6 lg:p-6">
       {/* Analytics Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {analytics.map((item, i) => (

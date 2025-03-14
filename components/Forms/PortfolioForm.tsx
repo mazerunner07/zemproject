@@ -105,12 +105,12 @@ export default function PortfolioForm({
 
 
 return (
-  <form className="m-6" onSubmit={handleSubmit(saveClient)}>
+  <form className="" onSubmit={handleSubmit(saveClient)}>
 
     <div className="grid grid-cols-12 gap-6 ">
-      <div className="lg:col-span-8 col-span-full space-y-3">
-        <Card>
-          <CardContent>
+      <div className="lg:col-span-8  col-span-full space-y-3">
+        <Card className="dark:bg-[#0F172A]">
+          <CardContent className="">
 
             <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-4">
               <TextInput
@@ -215,8 +215,8 @@ return (
           </CardContent>
         </Card>
       </div>
-      <div className="lg:col-span-4 col-span-full ">
-        <div className="grid auto-rows-max items-start gap-4 ">
+      <div className="lg:col-span-4  col-span-full ">
+        <div className="grid  auto-rows-max items-start gap-4 ">
           <ImageInput
             title="Profile Logo"
             imageUrl={imageUrl}

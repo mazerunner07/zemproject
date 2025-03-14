@@ -16,7 +16,7 @@ export default function ImageInput({
   endpoint,
 }: ImageInputProps) {
   return (
-    <Card className="overflow-hidden">
+    <Card className="dark:bg-[#0F172A] overflow-hidden">
       <CardHeader>
         <CardTitle>{title}</CardTitle>
       </CardHeader>

@@ -7,7 +7,7 @@ export default async function page() {
     const user = await getAuthUser()
     const subscribers = await getUserSubscribers(user?.id ?? "")||[]
   return (
-    <div className='max-w-4xl p-8'>
+    <div className=' p-8'>
       <Subscribers subscribers={subscribers} />
     </div>
   )

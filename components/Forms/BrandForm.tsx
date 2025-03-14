@@ -45,8 +45,8 @@ export default function BrandForm({
     formState: { errors },
   } = useForm<UserProps>({
     defaultValues: {
-      email: initialData?.country || "",
-      phone: initialData?.country || "",
+      email: initialData?.email || "",
+      phone: initialData?.phone || "",
       country: initialData?.country || "",
       location: initialData?.location || "",
       companyName: initialData?.companyName || "",
@@ -64,7 +64,6 @@ export default function BrandForm({
     setLoading(true);
     data.userLogo=imageUrl
     try {
-
       if (editingId) {
         // Update client
         await updateUserById(editingId, data);
@@ -84,11 +83,11 @@ export default function BrandForm({
 
 
   return (
-    <form className="m-6" onSubmit={handleSubmit(saveClient)}>
+    <form className="p-6 border dark:bg-[#1E293B] rounded-lg" onSubmit={handleSubmit(saveClient)}>
 
       <div className="grid grid-cols-12 gap-6 ">
         <div className="lg:col-span-8 col-span-full space-y-3">
-          <Card>
+          <Card className="dark:bg-[#0F172A]">
             <CardContent>
           
           <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-4">

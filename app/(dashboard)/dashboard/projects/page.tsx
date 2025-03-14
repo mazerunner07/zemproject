@@ -11,7 +11,7 @@ export default async function page() {
   const userId = user?.id;
   const projects: Project[] = (await getUserProject(userId)) || [];
   return (
-    <div className="p-8 dark:bg-[#121212]">
+    <div className="p-8 dark:bg-[#1E293B] bg-[#F7F8FF] border rounded-lg">
       <TableHeader
         title="Projects"
         linkTitle="Add Projects"

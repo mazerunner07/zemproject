@@ -54,11 +54,11 @@ export default function DateRangeFilter({
             id="date"
             variant={"outline"}
             className={cn(
-              "w-[300px] justify-start text-left font-normal",
+              "w-[300px] justify-start text-left font-normal dark:bg-[#0F172A]",
               !date && "text-muted-foreground"
             )}
           >
-            <CalendarIcon className="mr-2 h-4 w-4" />
+            <CalendarIcon className="mr-2 h-4 w-4 " />
             {date?.from ? (
               date.to ? (
                 <>
@@ -73,7 +73,7 @@ export default function DateRangeFilter({
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
+        <PopoverContent className="w-auto p-0 dark:bg-[#0F172A]" align="start">
           <Calendar
             initialFocus
             mode="range"

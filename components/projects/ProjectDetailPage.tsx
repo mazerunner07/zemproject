@@ -113,7 +113,7 @@ const Timeline = ({ startDate, endDate }: TimelineProps) => {
   }, [startDate, endDate]);
 
   return (
-    <Card className="bg-white dark:bg-gray-800 shadow-md dark:shadow-lg">
+    <Card className="bg-white dark:bg-gray-800/50 dark:border-gray-700 shadow-lg dark:shadow-lg">
       <CardHeader>
         <CardTitle className="text-gray-900 dark:text-gray-100">Timeline</CardTitle>
       </CardHeader>
@@ -584,7 +584,7 @@ export default function ProjectDetailsPage({
 
         <div className="space-y-8">
   {/* Client Card */}
-  <Card className="bg-white dark:bg-gray-900 text-black dark:text-white">
+  <Card className="bg-white dark:bg-gray-800/50 dark:border-gray-700 shadow-lg text-black dark:text-white">
     <CardHeader>
       <div className="flex items-center justify-between">
         <CardTitle>{role === "USER" ? "Client" : "User"} Details</CardTitle>
@@ -634,19 +634,12 @@ export default function ProjectDetailsPage({
   </Card>
   
   {/* Team Members */}
-  <Card className="bg-white dark:bg-gray-900 text-black dark:text-white">
+  <Card className="bg-white dark:bg-gray-800/50 dark:border-gray-700 shadow-lg text-black dark:text-white">
     <CardHeader>
       <CardTitle>Team Members</CardTitle>
     </CardHeader>
     <CardContent>
-      <div className="flex -space-x-2 overflow-hidden">
-        {projectData.members.map((member) => (
-          <Avatar key={member.id} className="inline-block border-2 border-background">
-            <AvatarImage src={`/placeholder.svg?text=${member.name.charAt(0)}`} />
-            <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
-          </Avatar>
-        ))}
-      </div>
+      
       {role === "USER" && (
         <InviteMembers projectData={projectData} allMembers = {existingUsers.filter((member=>member.id!==user.id))} />
       )}
@@ -654,7 +647,7 @@ export default function ProjectDetailsPage({
   </Card>
   
   {/* Project Budget */}
-  <Card className="bg-white dark:bg-gray-900 text-black dark:text-white">
+  <Card className="bg-white dark:bg-gray-800/50 dark:border-gray-700 shadow-lg text-black dark:text-white">
     <CardHeader>
       <CardTitle>Project Budget</CardTitle>
     </CardHeader>

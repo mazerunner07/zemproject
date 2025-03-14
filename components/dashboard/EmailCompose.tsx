@@ -207,7 +207,7 @@ const router = useRouter();
     }
   }
   return (
-    <Card className="w-full max-w-2xl mx-auto shadow-lg dark:bg-[#121212] text-[#E0E0E0] border dark:border-[#333333]">
+    <Card className="w-full mx-auto shadow-lg dark:bg-[#1E293B] text-[#E0E0E0] border dark:border-[#333333]">
   <CardHeader className="flex p-4 pb-3">
     <h2 className="text-lg text-black dark:text-white font-medium">New Message</h2>
   </CardHeader>
@@ -230,7 +230,7 @@ const router = useRouter();
         placeholder="Type here..."
         value={subject}
         onChange={(e) => setSubject(e.target.value)}
-        className="dark:bg-[#1E1E1E] border dark:border-[#333333] dark:text-[#E0E0E0] placeholder-gray-400"
+        className="dark:bg-[#0F172A] border dark:border-[#333333] dark:text-[#E0E0E0] placeholder-gray-400"
       />
     </div>
 
@@ -238,7 +238,7 @@ const router = useRouter();
       label="Compose Mail"
       value={content}
       onChange={setContent}
-      className="dark:bg-[#1E1E1E] border dark:border-[#333333] dark:text-[#E0E0E0]"
+      className="border w-full dark:text-[#E0E0E0]"
     />
 
     {files.length > 0 && (
@@ -279,7 +279,7 @@ const router = useRouter();
     {type === "single" && (
       <Dialog>
         <DialogTrigger asChild>
-          <Button variant="ghost" className="text-black dark:text-[#E0E0E0]">
+          <Button variant="ghost" className="text-black dark:hover:bg-[#0F172A] dark:text-[#E0E0E0]">
             <Paperclip />
           </Button>
         </DialogTrigger>
@@ -302,7 +302,7 @@ const router = useRouter();
     <Button 
       onClick={onSubmit} 
       disabled={isSubmitting}
-      className="flex items-center bg-blue-500 hover:bg-blue-600 dark:text-[#121212] px-4 py-2 rounded-lg"
+      className="flex items-center bg-[#00B1F3] hover:bg-[#56cdf8] text-white px-4 py-2 rounded-lg"
     >
       {isSubmitting ? (
         <span>Sending...</span>

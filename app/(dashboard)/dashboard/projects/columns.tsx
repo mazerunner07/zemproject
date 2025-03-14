@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import InviteClient from "@/components/DataTableColumns/InviteClient";
 import ProjectDeadline from "@/components/DataTableColumns/ProjectDeadline";
-import { Value } from "react-quill";
+
 import {Row as TanStackRow} from "@tanstack/react-table";
 import PublicityBtn from "@/components/DataTableColumns/PublicityBtn";
 

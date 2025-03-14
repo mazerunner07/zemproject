@@ -88,7 +88,7 @@ export default function CommentForm({
               <Pen className="h-4 w-4 ml-2" />
             </button>
           ) : (
-            <Button variant="outline" className="w-full" onClick={() => setIsOpen(true)}>
+            <Button variant="outline" className="w-full bg-[#00B1F3] hover:bg-[#56cdf8] text-white" onClick={() => setIsOpen(true)}>
               <MessageSquare className="mr-2 h-4 w-4" />
               Add Comment
             </Button>

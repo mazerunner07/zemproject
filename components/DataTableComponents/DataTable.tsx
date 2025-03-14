@@ -37,7 +37,7 @@ import { useState } from "react";
 import SearchBar from "./SearchBar";
 import { DataTableViewOptions } from "./DataTableViewOptions";
 import { Button } from "../ui/button";
-import { ListFilter } from "lucide-react";
+import { ListFilter, Search } from "lucide-react";
 import DateFilters from "./DateFilters";
 import DateRangeFilter from "./DateRangeFilter";
 import { DataTablePagination } from "./DataTablePagination";
@@ -94,7 +94,7 @@ export default function DataTable<TData, TValue>({
           <SearchBar
             data={data}
             onSearch={setSearchResults}
-            setIsSearch={setIsSearch}
+            setIsSearch={setIsSearch} 
           />
         </div>
         <div className="flex items-center gap-2 ">
@@ -110,7 +110,7 @@ export default function DataTable<TData, TValue>({
           />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="h-8 gap-1">
+              <Button variant="outline" size="sm" className="h-8 gap-1 dark:bg-[#0F172A]">
                 <ListFilter className="h-3.5 w-3.5" />
                 <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
                   Filter
@@ -133,7 +133,7 @@ export default function DataTable<TData, TValue>({
 
       <div className="rounded-md border">
         <Table>
-          <TableHeader>
+          <TableHeader className="">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {

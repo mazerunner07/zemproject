@@ -50,5 +50,5 @@ export default function InviteClient({
         }
     console.log("invite sent")
   }
-  return <Button disabled={loading} variant='default' onClick={inviteClient} className="">{loading ? "Sending..." : "Send Invite"} </Button>;
+  return <Button disabled={loading} variant='default' onClick={inviteClient} className="bg-[#00B1F3] hover:bg-[#56cdf8] text-white">{loading ? "Sending..." : "Send Invite"} </Button>;
 }

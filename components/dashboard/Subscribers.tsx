@@ -29,7 +29,7 @@ export default function Subscribers({ subscribers }: { subscribers: Subscriber[]
   }
 
   return (
-    <Card className="p-4 max-w-4xl">
+    <Card className="p-4 dark:bg-[#1E293B]">
       <CardHeader>
         <CardTitle>Mail Subscriber</CardTitle>
       </CardHeader>
@@ -37,7 +37,7 @@ export default function Subscribers({ subscribers }: { subscribers: Subscriber[]
         <h2 className="text-sm text-gray-400 mb-4">Your Subscribers</h2>
         <Table>
           <TableHeader>
-            <TableRow>
+            <TableRow className="hover:dark:bg-transparent">
               <TableHead>Username</TableHead>
               <TableHead>When</TableHead>
               <TableHead className="text-right">Actions</TableHead>
@@ -45,8 +45,8 @@ export default function Subscribers({ subscribers }: { subscribers: Subscriber[]
           </TableHeader>
           <TableBody>
             {list.map((item, i) => (
-              <TableRow key={i}>
-                <TableCell className="font-medium">
+              <TableRow key={i} className="dark:hover:bg-[#0F172A]">
+                <TableCell className="font-medium ">
                   <div className="flex-col">
 
                   {item.username}
@@ -58,10 +58,10 @@ export default function Subscribers({ subscribers }: { subscribers: Subscriber[]
                   </TableCell>
                 <TableCell className="text-sm text-gray-500">{timeAgo(item.createdAt.toString())}</TableCell>
                 <TableCell className="flex justify-end gap-3">
-                  <Button className="flex items-center gap-2">
+                  <Button className="flex items-center bg-[#00B1F3] text-white hover:bg-[#56cdf8] gap-2">
                     <Mail /> Send Mail
                   </Button>
-                  <Button onClick={() => handleDelete(item.id)} variant="outline" className="w-10 flex items-center justify-center">
+                  <Button onClick={() => handleDelete(item.id)} variant="outline" className="w-10 hover:bg-red-100 dark:hover:bg-red-100 dark:bg-[#00B1F3] flex items-center justify-center">
                     <Trash2 className="text-red-500" />
                   </Button>
                 </TableCell>

@@ -16,7 +16,7 @@ const Card = ({
   return (
     <Link href ={`/public/project/${slug}`}
       className={cn(
-        "relative h-full w-96 cursor-pointer overflow-hidden rounded-xl border p-4",
+        "relative h-full w-96 flex flex-col items-center justify-evenly cursor-pointer overflow-hidden rounded-xl border p-4",
         // light styles
         "border-gray-950/[.1] bg-gray-950/[.01] hover:bg-gray-950/[.05]",
         // dark styles
@@ -31,7 +31,7 @@ const Card = ({
 
 export function OtherPortfolioProjects({otherProjects}: {otherProjects:ProjectWithUser[]}) {
   return (
-    <div className="dark:bg-[#121212]  relative flex h-screen w-full flex-col items-center justify-center overflow-hidden">
+    <div className="dark:bg-[#0F172A]  relative flex h-screen w-full flex-col items-center justify-center overflow-hidden">
       <div className="max-w-2xl mx-auto">
       <h1 className="scroll-m-20  text-4xl font-extrabold tracking-tight lg:text-5xl">
         My Other Projects

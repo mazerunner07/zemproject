@@ -126,7 +126,7 @@ export default function ActionColumn({
         </DropdownMenuItem> */}
         <DropdownMenuItem>
           <Link href={editEndpoint} className="text-green-600 flex justify-evenly  w-full hover:text-green-700 transition-all duration-500 cursor-pointer">
-            <Pencil className="w-4 h-4 mr-3 flex-shrink-0" />
+            <Pencil className="w-4 h-4 flex-shrink-0" />
             <span>Edit</span>
           </Link>
         </DropdownMenuItem>

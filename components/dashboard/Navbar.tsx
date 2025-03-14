@@ -33,6 +33,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Input } from "../ui/input";
 import Logo from "../global/Logo";
+import Sidebar from "./Sidebar";
 
 export default function Navbar({ session, userLogo }: { session: Session, userLogo?: string }) {
   const sidebarLinks = [
@@ -142,7 +143,7 @@ export default function Navbar({ session, userLogo }: { session: Session, userLo
 
   return (
     <header className="flex dark:bg-[#0F172A] h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
-      <Sheet>
+      {/* <Sheet>
         <SheetTrigger asChild>
           <Button variant="outline" size="icon" className="shrink-0 md:hidden">
             <Menu className="h-5 w-5" />
@@ -187,12 +188,12 @@ export default function Navbar({ session, userLogo }: { session: Session, userLo
             </Card>
           </div>
         </SheetContent>
-      </Sheet>
-
+      </Sheet> */}
+      
       {/* Rest of the Navbar remains the same */}
       <div className="w-full  flex-1">
         <form>
-          <div className="relative">
+          <div className="relative ml-10">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                         <input
                           type="text"

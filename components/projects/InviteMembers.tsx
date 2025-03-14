@@ -69,7 +69,7 @@ const [sending,setSending] = useState(false)
 
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
-        <Button variant="outline" className="mt-4 w-full dark:border-gray-700 dark:text-white">
+        <Button variant="outline" className="mt-4 w-full bg-[#00B1F3] hover:bg-[#56cdf8] text-white">
           <Users className="mr-2 h-4 w-4" /> Manage Team
         </Button>
       </SheetTrigger>

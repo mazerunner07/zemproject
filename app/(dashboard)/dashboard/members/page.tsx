@@ -9,7 +9,7 @@ export default async function page() {
   return (
     <>
     {projects.length>0 ? (
-        <div className="p-8 max-w-3xl">
+        <div className="p-8">
         <div className="">
           <GuestProjects isOwner={true} projects={projects} />
         </div>

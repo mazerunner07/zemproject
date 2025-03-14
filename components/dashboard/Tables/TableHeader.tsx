@@ -172,15 +172,15 @@ export default function TableHeader({
   return (
     <div className=" mb-3">
       <div className="flex justify-between items-center border-b border-gray-200 dark:border-gray-600 py-3">
-        <h2 className="scroll-m-20  text-2xl font-semibold tracking-tight first:mt-0">
-          {title}({data.length})
+        <h2 className="scroll-m-20 border p-4 rounded-lg bg-[#00B1F3] dark:bg-[#0F172A]  text-white text-2xl font-semibold tracking-tight first:mt-0">
+          Total {title} : {data.length}
         </h2>
         <div className="ml-auto flex items-center gap-2">
           <Button
             onClick={handleExportData}
             size="sm"
             variant="outline"
-            className="h-8 gap-1"
+            className="h-8 gap-1 dark:bg-[#0F172A]"
           >
             <FaFileExcel className="h-3.5 w-3.5" />
             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
@@ -195,7 +195,7 @@ export default function TableHeader({
                   onClick={() => setUploadSuccess(false)}
                   size="sm"
                   variant="outline"
-                  className="h-8 gap-1"
+                  className="h-8 gap-1 dark:bg-[#0F172A]"
                 >
                   <RiFileExcel2Line className="h-3.5 w-3.5" />
                   <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
@@ -386,7 +386,7 @@ export default function TableHeader({
               )}
             </Dialog>
           )}
-          <Button size="sm" asChild className="h-8 gap-1">
+          <Button size="sm" asChild className="bg-[#00B1F3] dark:text-white hover:bg-[#37c6fa] h-8 gap-1">
             <Link href={href}>
               <PlusCircle className="h-3.5 w-3.5" />
               <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">

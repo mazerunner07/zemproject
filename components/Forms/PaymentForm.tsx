@@ -77,7 +77,7 @@ export default function PaymentForm({ projectId, userId, clientId, remainingAmou
       <div className="py-1">
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" className="bg-[#00B1F3] hover:bg-[#56cdf8] text-white" size="sm">
               <Plus className="w-4 h-4 mr-2" />
               Add New Payment
             </Button>

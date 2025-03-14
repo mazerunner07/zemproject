@@ -26,7 +26,7 @@ export default function RecentProjects({ recentProjects = [] }: RecentProjectsPr
   const prevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
 
   return (
-    <Card className="w-full dark:bg-[#323232] shadow-md">
+    <Card className="w-full dark:bg-[#1E293B] bg-[#F5F5F7] shadow-md">
       <CardHeader className="pb-2">
         <CardTitle className="text-2xl">Recent Projects</CardTitle>
         <p className="text-gray-600 dark:text-gray-400 mt-2">
@@ -49,7 +49,7 @@ export default function RecentProjects({ recentProjects = [] }: RecentProjectsPr
                 currentProjects.map((project) => (
                   <motion.div
                     key={project.id}
-                    className="bg-white dark:bg-[#121212] rounded-lg shadow-md overflow-hidden border border-gray-100 dark:border-gray-700"
+                    className="bg-white dark:bg-[#0F172A] rounded-lg shadow-md overflow-hidden border border-gray-100 dark:border-gray-700"
                     whileHover={{ scale: 1.02 }}
                     transition={{ duration: 0.2 }}
                   >
@@ -70,9 +70,9 @@ export default function RecentProjects({ recentProjects = [] }: RecentProjectsPr
                         </span>
                         <Link
                           href={`/project/${project.slug}`}
-                          className="w-full sm:w-auto bg-blue-500 dark:bg-[#1e1e1e] dark:hover:bg-[#333333] text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors text-center"
+                          className="w-full sm:w-auto bg-blue-500 dark:bg-[#007BFF] dark:hover:bg-[#3B82F6] text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors text-center"
                         >
-                          View Project
+                          View
                         </Link>
                       </div>
                     </div>

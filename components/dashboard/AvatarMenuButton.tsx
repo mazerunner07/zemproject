@@ -39,7 +39,7 @@ export function AvatarMenuButton({ session,userLogo }: { session: Session | null
   }
 
   const menuLinks = [
-    { name: "Settings", icon: Settings, href: "/dashboard/settings" },
+    { name: "Settings", icon: Settings, href: "/dashboard/brand-setting" },
     { name: "Client", icon: UserRound, href: "/dashboard/clients" },
     { name: "Project", icon: Presentation, href: "/dashboard/projects" },
   ];
@@ -60,7 +60,7 @@ export function AvatarMenuButton({ session,userLogo }: { session: Session | null
         </Avatar>
       </SheetTrigger>
 
-      <SheetContent>
+      <SheetContent className="dark:bg-[#0F172A]">
         {/* User Info */}
         <SheetHeader>
           <div className="flex items-center space-x-3 pb-3 border-b">
