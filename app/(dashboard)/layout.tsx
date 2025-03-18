@@ -3,8 +3,8 @@
 import Navbar from "@/components/dashboard/Navbar";
 import Sidebar from "@/components/dashboard/Sidebar";
 import React, { ReactNode, useState, useEffect } from "react";
-import { usePathname, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { usePathname, useRouter } from "next/navigation";
 
 // Top Loader Component
 const TopLoader = () => {
@@ -89,14 +89,19 @@ export default function DashboardLayout({
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  // Handle redirects with useEffect (moved outside conditions)
+  // Improved session handling logic
   useEffect(() => {
+    // Wait until session status is confirmed
+    if (status === "loading") return;
+
+    // Redirect if unauthenticated
     if (status === "unauthenticated") {
       router.replace("/login");
-    } else if (
-      session?.user?.role !== "USER" &&
-      session?.user?.role !== "MEMBER"
-    ) {
+      return;
+    }
+
+    // Check user role only if session is fully loaded
+    if (session?.user?.role && !["USER", "MEMBER"].includes(session.user.role)) {
       router.replace("/404");
     }
   }, [status, session?.user?.role, router]);
@@ -117,7 +122,7 @@ export default function DashboardLayout({
         {/* Sidebar */}
         <Sidebar />
 
-        {/* Main content area with left padding to account for sidebar */}
+        {/* Main content area */}
         <main className="flex-1 md:pl-64 overflow-x-hidden">
           {/* Navbar */}
           <Navbar session={session} />
