@@ -163,7 +163,7 @@ export async function deleteClient(id: string) {
         id, // Use the unique identifier
       },
     });
-
+    revalidatePath("/dashboard/clients");
     return {
       ok: true,
       data: deletedClient,

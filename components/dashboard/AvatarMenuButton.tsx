@@ -35,7 +35,7 @@ export function AvatarMenuButton({ session,userLogo }: { session: Session | null
 
   async function handleLogout() {
     await signOut();
-    router.push("/login");
+    router.push("/");
   }
 
   const menuLinks = [

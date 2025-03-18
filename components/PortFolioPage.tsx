@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import {
   Building2,
@@ -24,6 +24,91 @@ import SubscribeForm from "./Forms/SubscribeForm";
 import { OtherPortfolioProjects } from "./OtherPortfolioProjects";
 import { Separator } from "./ui/separator";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { usePathname } from "next/navigation";
+
+// Top Loader Component
+const TopLoader = () => {
+  const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const pathname = usePathname();
+
+  useEffect(() => {
+    let progressInterval: NodeJS.Timeout;
+    
+    const handleRouteChangeStart = () => {
+      setLoading(true);
+      setProgress(0);
+      
+      progressInterval = setInterval(() => {
+        setProgress((prevProgress) => {
+          if (prevProgress >= 100) {
+            clearInterval(progressInterval);
+            return 100;
+          }
+          // Start slow, then accelerate, but never quite reach 100%
+          const increment = prevProgress < 30 ? 5 : prevProgress < 70 ? 3 : 1;
+          return Math.min(prevProgress + increment, 95);
+        });
+      }, 100);
+    };
+
+    const handleRouteChangeComplete = () => {
+      setProgress(100);
+      setTimeout(() => {
+        setLoading(false);
+      }, 200); // Give a small delay before hiding
+    };
+
+    // Create an event system for route changes since Next.js App Router doesn't have built-in events
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const anchorElement = target.closest('a');
+      
+      if (anchorElement && 
+          anchorElement.href && 
+          anchorElement.href.includes(window.location.origin) &&
+          !anchorElement.target && 
+          !anchorElement.hasAttribute('download')) {
+        const targetPath = anchorElement.href.replace(window.location.origin, '');
+        
+        if (targetPath !== pathname) {
+          handleRouteChangeStart();
+        }
+      }
+    };
+
+    document.addEventListener('click', handleClick);
+    
+    return () => {
+      document.removeEventListener('click', handleClick);
+      clearInterval(progressInterval);
+    };
+  }, [pathname]);
+
+  useEffect(() => {
+    // When route changes complete
+    setProgress(100);
+    const timeout = setTimeout(() => {
+      setLoading(false);
+    }, 200);
+
+    return () => clearTimeout(timeout);
+  }, [pathname]);
+
+  if (!loading && progress !== 100) return null;
+  
+  return (
+    <div className="fixed top-0 left-0 right-0 z-[9999] h-1">
+      <div 
+        className="h-full bg-[#01B1F3] transition-all duration-300 ease-out"
+        style={{ 
+          width: `${progress}%`,
+          opacity: loading || progress < 100 ? 1 : 0 
+        }}
+      />
+    </div>
+  );
+};
 
 export default function PortFolioPage({
   otherProjects,
@@ -37,7 +122,7 @@ export default function PortFolioPage({
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   const renderSidebarContent = () => (
-    <div className="flex  flex-col items-center space-y-5 w-full px-4">
+    <div className="flex flex-col items-center space-y-5 w-full px-4">
       <Image
         width={275}
         height={275}
@@ -106,6 +191,9 @@ export default function PortFolioPage({
 
   return (
     <>
+      {/* Top Loader */}
+      <TopLoader />
+      
       {/* Mobile Header */}
       <div className="lg:hidden sticky top-0 z-50 bg-white dark:bg-[#121212] border-b p-4 flex items-center justify-between">
         <Button 
@@ -131,12 +219,12 @@ export default function PortFolioPage({
       {/* Main Layout */}
       <div className="flex flex-col lg:flex-row min-h-screen bg-[#FFFFFF] text-[#1E3A8A]">
         {/* Desktop Sidebar */}
-        <div className="hidden lg:block sticky top-0 h-screen w-[35%] flex-shrink-0 border-r border-[#1E40AF] dark:bg-[#0F172A]  p-8 overflow-y-auto">
+        <div className="hidden lg:block sticky top-0 h-screen w-[35%] flex-shrink-0 border-r border-[#1E40AF] dark:bg-[#0F172A] p-8 overflow-y-auto">
           {renderSidebarContent()}
         </div>
         {/* Main Content */}
         <main className="flex-1 dark:bg-[#0F172A] p-4 lg:p-8">
-          <div className="grid grid-cols-1  gap-6 md:grid-cols-2 lg:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-2">
             {projects.map((project, index) => (
               <PortfolioCard key={index} project={project} />
             ))}
@@ -145,9 +233,9 @@ export default function PortFolioPage({
       </div>
 
       <Separator className="border-[#1E40AF]" />
-      <div className="bg-[#FFFFFF] ">
+      <div className="bg-[#FFFFFF]">
         <OtherPortfolioProjects otherProjects={otherProjects} />
       </div>
     </>
   );
-} 
+}

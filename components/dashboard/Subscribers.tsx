@@ -58,9 +58,9 @@ export default function Subscribers({ subscribers }: { subscribers: Subscriber[]
                   </TableCell>
                 <TableCell className="text-sm text-gray-500">{timeAgo(item.createdAt.toString())}</TableCell>
                 <TableCell className="flex justify-end gap-3">
-                  <Button className="flex items-center bg-[#00B1F3] text-white hover:bg-[#56cdf8] gap-2">
+                  {/* <Button className="flex items-center bg-[#00B1F3] text-white hover:bg-[#56cdf8] gap-2">
                     <Mail /> Send Mail
-                  </Button>
+                  </Button> */}
                   <Button onClick={() => handleDelete(item.id)} variant="outline" className="w-10 hover:bg-red-100 dark:hover:bg-red-100 dark:bg-[#00B1F3] flex items-center justify-center">
                     <Trash2 className="text-red-500" />
                   </Button>

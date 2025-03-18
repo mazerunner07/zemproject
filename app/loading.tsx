@@ -7,16 +7,16 @@ import { motion } from "framer-motion";
 const Loader = () => {
   return (
     <motion.div
-      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 z-50"
+      className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-50 dark:bg-[#0F172A] z-50"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
       <DotLottieReact
-        src="https://lottie.host/b6fbb18c-4b67-44c2-b427-55a3520487a2/4F1TNVGGTN.lottie"
+        src="https://lottie.host/d83527dd-bb3f-4355-98f2-cdcfce526950/Oy6LSUx5JT.lottie"
         loop
         autoplay
-        style={{ width: 200, height: 200 }}
+        style={{ width: 400, height: 400 }}
       />
     </motion.div>
   );

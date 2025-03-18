@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { motion, useInView } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -14,6 +14,7 @@ import {
   Handshake,
   HomeIcon,
   LayoutGrid,
+  Loader2,
   Lock,
   LogOut,
   MailsIcon,
@@ -146,9 +147,25 @@ const Sidebar: React.FC = () => {
       ),
     }))
     .filter((section) => section.links.length > 0);
-
+    const [loading, setLoading] = useState(false);
+    const router = useRouter();
+    useEffect(() => {
+      setLoading(false); // Stop loading when route changes
+    }, [pathname]);
+    const handleNavigation = (href: string) => {
+      if (pathname !== href) {
+        setLoading(true);
+        router.push(href);
+      }
+    };
   return (
     <>
+    {/* Loader */}
+    {loading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-white/80 dark:bg-black/80 z-50">
+          <Loader2 className="h-10 w-10 animate-spin text-[#01B1F3]" />
+        </div>
+      )}
       <Button
         onClick={() => setIsOpen(!isOpen)}
         className="md:hidden fixed top-2 left-4 z-50 bg-gray-800 text-white p-2 rounded-md"

@@ -93,7 +93,7 @@ const [passErr, setPassErr] = useState("");
 
       <div className="grid grid-cols-12 gap-6 ">
         <div className="lg:col-span-8 col-span-full space-y-3">
-          <Card className="bg-[#1E293B]">
+          <Card className="bg-[#F8FAFB] dark:bg-[#1E293B]">
             <CardContent>
           
           <div className="mt-2 pt-6 space-y-4">

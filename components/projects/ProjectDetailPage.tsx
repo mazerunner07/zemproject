@@ -542,7 +542,11 @@ export default function ProjectDetailsPage({
                     <span className="font-semibold text-green-600 dark:text-green-400">
                       ${payment.amount.toLocaleString()}
                     </span>
-                    <PaymentDeleteButton paymentId={payment.id} />
+                    {role === "USER" ? (
+                      <PaymentDeleteButton paymentId={payment.id} />
+                    ) : (
+                      <div className=""></div>
+                    )}
                   </div>
                 </li>
               ))}
@@ -606,7 +610,7 @@ export default function ProjectDetailsPage({
         ) : (
           <Avatar className="h-12 w-12">
             {projectData.user.id ? (
-              <AvatarImage src={projectData.user.image ?? "/placeholder.svg?text=AC"} />
+              <AvatarImage src={projectData.user.userLogo ?? "/placeholder.svg?text=AC"} />
             ) : (
               <AvatarFallback>
                 {projectData.user.name.substring(0, 2).toUpperCase()}
@@ -634,17 +638,17 @@ export default function ProjectDetailsPage({
   </Card>
   
   {/* Team Members */}
+      {role === "USER" && (
   <Card className="bg-white dark:bg-gray-800/50 dark:border-gray-700 shadow-lg text-black dark:text-white">
     <CardHeader>
       <CardTitle>Team Members</CardTitle>
     </CardHeader>
     <CardContent>
       
-      {role === "USER" && (
         <InviteMembers projectData={projectData} allMembers = {existingUsers.filter((member=>member.id!==user.id))} />
-      )}
     </CardContent>
   </Card>
+      )}
   
   {/* Project Budget */}
   <Card className="bg-white dark:bg-gray-800/50 dark:border-gray-700 shadow-lg text-black dark:text-white">

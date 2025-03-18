@@ -27,6 +27,7 @@ import { getNormalDate } from "@/lib/getNormalDate"
 import { formatBytes } from "@/lib/formatBytes"
 import formatUpdatedAt from "@/lib/formatUpdatedAt"
 import { MdTextSnippet } from "react-icons/md";
+import MultipleFileUpload from "../FormInputs/MultipleFileUploader";
 
 const calculateStoragePercentage = (used: number, total: number) => {
   return (used / total) * 100
@@ -160,17 +161,16 @@ export default function FileManager({ userId, userFolders }: { userId: string, u
                         : "bg-green-500"
                   )}
                   style={{ width: `${usagePercentage}%` }}
-                />
-              </div>
-            </div>
-          </div> */}
+                  />
+                  </div>
+                  </div>
+                  </div> */}
           <div className="relative bg-yellow-300 dark:bg-[#1E293B] p-5 mb-5 w-full" style={{ clipPath: 'polygon(51% 0, 66% 33%, 100% 34%, 100% 100%, 0 100%, 0% 60%, 0 0)', borderRadius: '2rem' }}>
             {/* Content */}
             <div className="relative z-10">
               <h2 className="text-lg font-semibold dark:text-white">🔘 Folders / {selectedFolder.name}</h2>
               <p className="text-sm text-gray-600 mt-1 dark:text-white/50">📅 {getNormalDate(selectedFolder.createdAt)}</p>
               <p className="text-sm text-gray-700 mt-1 dark:text-white/50">{formatBytes(usedSpace)} of {formatBytes(totalSpace)} used</p>
-
               {/* Progress Bar */}
               <div className="mt-4">
               <div className="h-2 w-full bg-secondary dark:bg-white rounded-full overflow-hidden">
@@ -186,7 +186,11 @@ export default function FileManager({ userId, userFolders }: { userId: string, u
                   style={{ width: `${usagePercentage}%` }}
                 />
               </div>
+              <div className="flex justify-between mt-2">
               <p className="text-sm mt-1 dark:text-white">{usagePercentage.toFixed(2)}% Storage Used</p>
+            <FileUploadForm folderId={selectedFolder.id} />
+
+              </div>
               </div>
             </div>
           </div>

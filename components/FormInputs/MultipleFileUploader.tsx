@@ -79,10 +79,10 @@ export default function MultipleFileUpload({
   // Function to select the correct icon based on file extension
   return (
     <div className={className}>
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between  items-center mb-4">
         <label
           htmlFor="course-image"
-          className="block text-sm font-medium leading-6 text-gray-900 dark:text-slate-50 mb-2"
+          className="block text-sm font-medium leading-6 text-black dark:text-slate-50 mb-2"
         >
           {label}
         </label>

@@ -230,7 +230,7 @@ const router = useRouter();
         placeholder="Type here..."
         value={subject}
         onChange={(e) => setSubject(e.target.value)}
-        className="dark:bg-[#0F172A] border dark:border-[#333333] dark:text-[#E0E0E0] placeholder-gray-400"
+        className="dark:bg-[#0F172A] border text-black dark:border-[#333333] dark:text-[#E0E0E0] placeholder-gray-400"
       />
     </div>
 
@@ -243,7 +243,7 @@ const router = useRouter();
 
     {files.length > 0 && (
       <div className="space-y-2">
-        <div className="text-sm font-medium">Attachments</div>
+        <div className="text-sm font-medium text-black dark:text-[#E0E0E0]">Attachments</div>
         <div className="space-y-2">
           {files.map((file, i) => {
             const extension = file.name.split(".").pop();
@@ -256,12 +256,12 @@ const router = useRouter();
                 >
                   <XCircle />
                 </button>
-                <div className="py-2 px-6 bg-[#1E1E1E] flex items-center border border-[#333333] rounded-md">
+                <div className="py-2 px-6 dark:bg-[#1E1E1E] flex items-center border border-[#333333] rounded-md">
                   {getFileIcon(extension)}
                   <div className="ml-4">
-                    <span className="block text-sm font-medium">{file.name}</span>
+                    <span className="block text-sm text-black dark:text-[#E0E0E0] font-medium">{file.name}</span>
                     {file.size > 0 && (
-                      <span className="text-xs text-gray-400">
+                      <span className="text-xs text-gray-500">
                         {(file.size / 1000).toFixed(2)} KB
                       </span>
                     )}
@@ -283,11 +283,11 @@ const router = useRouter();
             <Paperclip />
           </Button>
         </DialogTrigger>
-        <DialogContent className="bg-[#121212] border border-[#333333]">
+        <DialogContent className="dark:bg-[#121212] border border-[#333333]">
           <DialogHeader>
             <DialogTitle>Upload your Files</DialogTitle>
           </DialogHeader>
-          <form onSubmit={onSubmit} className="space-y-4">
+          <form onSubmit={onSubmit} className="">
             <MultipleFileUpload
               label="Add attachments"
               files={files}

@@ -194,12 +194,12 @@ export default function Navbar({ session, userLogo }: { session: Session, userLo
       <div className="w-full  flex-1">
         <form>
           <div className="relative ml-10">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                        {/* <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                         <input
                           type="text"
                           placeholder="Search"
                           className="w-full pl-10 pr-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-gray-300 dark:bg-gray-800 dark:border-gray-600 dark:text-white"
-                        />
+                        /> */}
           </div>
         </form>
       </div>
