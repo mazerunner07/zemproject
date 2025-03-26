@@ -14,6 +14,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTrigger } from "@/components/ui/
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DialogTitle } from "@/components/ui/dialog";
 import { updateProjectById } from "@/actions/projects";
+import Image from "next/image";
 
 // ✅ Define the missing ProjectProps type
 interface ProjectProps {
@@ -25,8 +26,8 @@ interface ProjectProps {
 
 
 const gradients = [
-  "bg-gradient-to-r from-[#0f2027] via-[#203a43] to-[#2c5364]",
   "bg-gradient-to-r from-[#373B44] to-[#4286f4]",
+  "bg-transparent bg-black/50",
   "bg-gradient-to-r from-[#141E30] to-[#243B55]",
   "bg-gradient-to-r from-[#fc466b] to-[#3f5efb]",
   "bg-gradient-to-r from-[#ff5f6d] to-[#ffc371]",
@@ -65,10 +66,16 @@ export default function ProjectBanner({
 
   async function handleGradientClick(newGradient: string) {
     setGradient(newGradient);
+    const data = {
+      gradient: newGradient,
+      bannerImage: null,
+    }
+    setGradient(newGradient);
+    setImageUrl("/placeholder.svg");
     if (!editingId) return;
     try {
       setLoading(true);
-      await updateProjectById(editingId, { gradient: newGradient });
+      await updateProjectById(editingId, data);
       toast.success("Gradient updated successfully!");
     } catch (error) {
       toast.error("Failed to update gradient");
@@ -81,8 +88,9 @@ export default function ProjectBanner({
     try {
       setLoading(true);
       if (editingId) {
-        await updateProjectById(editingId, { bannerImage: imageUrl });
+        await updateProjectById(editingId, { bannerImage: imageUrl ,gradient: gradients[1]  });
         toast.success("Banner Updated");
+        setGradient(gradients[1]);
       }
     } catch (error) {
       toast.error("Banner update failed");
@@ -99,7 +107,11 @@ export default function ProjectBanner({
         toast.error("Invalid form data.");
         return;
       }
-      await updateProjectById(editingId, data);
+      await updateProjectById(editingId, { 
+        ...data, 
+        gradient: gradients[1] 
+      });
+      setGradient(gradients[1]);
       toast.success("Banner Updated!");
       reset()
     } catch (error) {
@@ -130,7 +142,9 @@ export default function ProjectBanner({
 
   return (
     <div className={cn("relative w-full group h-48 rounded-lg mb-8 overflow-hidden", gradient)}>
-      <img
+      <Image
+      width={300}
+      height={300}
         src={imageUrl || "/placeholder.svg?height=192&width=1024"}
         alt={name}
         className="w-full h-full object-cover mix-blend-overlay"
@@ -177,27 +191,30 @@ export default function ProjectBanner({
                   <TabsTrigger value="gradient">Gradient</TabsTrigger>
                   <TabsTrigger value="upload">Upload</TabsTrigger>
                   <TabsTrigger value="link">Link</TabsTrigger>
-                  <TabsTrigger value="unsplash">Unsplash</TabsTrigger>
+                    <TabsTrigger value="unsplash">Unsplash</TabsTrigger>
                 </TabsList>
                 <TabsContent value="gradient">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="mb-3">Choose a Gradient</CardTitle>
-                      <div className="grid grid-cols-3 gap-4 px-3">
-                        {gradients.map((item, i) => (
-                          <button
-                            key={i}
-                            onClick={() => handleGradientClick(item)}
-                            className={cn(
-                              "w-20 h-20 rounded-2xl shadow-lg transition-all",
-                              item,
-                              gradient === item ? " scale-110" : ""
-                            )}
-                          />
-                        ))}
-                      </div>
-                    </CardHeader>
-                  </Card>
+                <Card>
+  <CardHeader>
+    <CardTitle className="mb-3">Choose a Gradient</CardTitle>
+
+    {/* Gradient Options */}
+    <div className="grid grid-cols-3 gap-4 px-3">
+      {gradients.map((item, i) => (
+        <button
+          key={i}
+          onClick={() => handleGradientClick(item)}
+          className={cn(
+            "w-20 h-20 rounded-2xl shadow-lg transition-all",
+            item,
+            gradient === item ? "scale-110 ring-2 ring-blue-500" : ""
+          )}
+        />
+      ))}
+    </div>
+  </CardHeader>
+</Card>
+
                 </TabsContent>
                 <TabsContent value="upload">
                   <Card>

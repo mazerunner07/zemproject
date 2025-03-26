@@ -3,6 +3,7 @@
 import { db } from "@/prisma/db";
 import { DollarSign, LayoutGrid, LucideProps, Users } from "lucide-react";
 import { ForwardRefExoticComponent, RefAttributes } from "react";
+import { FaRupeeSign } from "react-icons/fa";
 export type AnalyticsProps = {
   title : string;
       total: number;
@@ -39,7 +40,7 @@ export async function getDashboardOverview(userId: string | undefined) {
       title : "Total Revenue",
       total: totalRevenue,
       href: "/dashboard/projects",
-      icon : DollarSign,
+      icon : FaRupeeSign ,
       isCurrency:true
     },
     {

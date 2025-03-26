@@ -157,7 +157,7 @@ export function sendGeneralEmail({
     }
   }) {
     const {
-      companyName = "Acme Corporation",
+      companyName = "Zem Project",
       logoUrl = "https://your-company-logo-url.com/logo.png",
       primaryColor = "#2563eb",
       accentColor = "#f97316",

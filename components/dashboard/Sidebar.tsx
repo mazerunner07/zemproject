@@ -26,6 +26,7 @@ import {
   UserPlus2,
   Users,
 } from "lucide-react";
+import { signOut } from "next-auth/react";
 
 interface AnimatedItemProps {
   children: React.ReactNode;
@@ -158,6 +159,10 @@ const Sidebar: React.FC = () => {
         router.push(href);
       }
     };
+    async function handleLogout() {
+        await signOut();
+        router.push("/login");
+      }
   return (
     <>
     {/* Loader */}
@@ -231,8 +236,9 @@ const Sidebar: React.FC = () => {
         {/* Logout Section */}
         <div className="p-4 border-t dark:border-gray-700">
           <Button
+          onClick={handleLogout}
             size="sm"
-            className="w-full bg-[#FADBD8] hover:bg-[#e74c3c] hover:text-white text-[#e74c3c] dark:text-[#e74c3c]"
+            className="w-full bg-[#FADBD8] hover:bg-[#e74c3c] hover:text-white text-[#e74c3c] dark:text-[#e74c3c] dark:hover:text-white"
           >
             <LogOut className="mr-2" /> Logout
           </Button>

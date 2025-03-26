@@ -109,8 +109,7 @@ export async function getUserRecentClient(userId: string | undefined) {
         where: {
           role: "CLIENT",
           userId
-        },
-        take:3
+        }
       });
   
       return users;

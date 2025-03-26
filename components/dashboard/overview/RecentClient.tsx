@@ -1,26 +1,55 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { User } from "@prisma/client";
-import { getInitials } from "@/lib/generateInitials";
-import 'remixicon/fonts/remixicon.css';
+import type React from "react"
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 
-interface RecentClientsProps {
-  recentClients?: User[];
+// Add custom scrollbar-hide class
+const scrollbarHideStyles = `
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari and Opera */
+  }
+`
+
+interface RecentClient {
+  id: string
+  name: string
+  email: string
+  image?: string
+  location?: string
 }
 
-export default function RecentClients({ recentClients = [] }: RecentClientsProps) {
+interface RecentClientsProps {
+  recentClients: RecentClient[]
+}
+
+function getInitials(name: string | undefined): string {
+  if (!name) return ""
+  const parts = name.split(" ")
+  let initials = ""
+  for (let i = 0; i < parts.length; i++) {
+    initials += parts[i].charAt(0).toUpperCase()
+  }
+  return initials
+}
+
+const RecentClients: React.FC<RecentClientsProps> = ({ recentClients }) => {
   return (
     <Card className="w-full dark:bg-[#1E293B] bg-[#F8FAFB]">
+      <style>{scrollbarHideStyles}</style>
       <CardHeader>
-        <CardTitle className="">Clients</CardTitle>
+        <CardTitle>Recent Clients</CardTitle>
+        <CardDescription>Here are some of your recent clients.</CardDescription>
       </CardHeader>
       <CardContent>
-        <div>
+        <div className="h-[300px] overflow-y-auto scrollbar-hide">
           {recentClients.length > 0 ? (
             recentClients.map((client) => (
               <div
                 key={client.id}
-                className="flex-none flex items-center bg-white dark:bg-[#0F172A] mb-1 p-4 rounded-lg shadow-sm sm:min-w-[500px] w-full sm:w-auto justify-between"
+                className="flex-none flex items-center bg-white dark:bg-[#0F172A] mb-2 p-4 rounded-lg shadow-sm w-full justify-between"
               >
                 <div className="flex items-center">
                   <Avatar className="h-9 w-9 flex-shrink-0">
@@ -41,5 +70,8 @@ export default function RecentClients({ recentClients = [] }: RecentClientsProps
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }
+
+export default RecentClients
+
